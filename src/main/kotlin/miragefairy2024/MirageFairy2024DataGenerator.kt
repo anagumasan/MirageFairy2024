@@ -10,16 +10,27 @@ import net.minecraft.data.client.ItemModelGenerator
 import net.minecraft.data.client.Models
 
 object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
+
+    val blockStateModelGenerations = mutableListOf<(BlockStateModelGenerator) -> Unit>()
+    val itemModelGenerations = mutableListOf<(ItemModelGenerator) -> Unit>()
+    val englishTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
+    val japaneseTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
+
     override fun onInitializeDataGenerator(fabricDataGenerator: FabricDataGenerator) {
         val pack = fabricDataGenerator.createPack()
         pack.addProvider { output: FabricDataOutput ->
             object : FabricModelProvider(output) {
                 override fun generateBlockStateModels(blockStateModelGenerator: BlockStateModelGenerator) {
-
+                    blockStateModelGenerations.forEach {
+                        it(blockStateModelGenerator)
+                    }
                 }
 
                 override fun generateItemModels(itemModelGenerator: ItemModelGenerator) {
                     itemModelGenerator.register(MirageFairy2024.fairyPlasticItem, Models.GENERATED)
+                    itemModelGenerations.forEach {
+                        it(itemModelGenerator)
+                    }
                 }
             }
         }
@@ -27,6 +38,9 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
             object : FabricLanguageProvider(output, "en_us") {
                 override fun generateTranslations(translationBuilder: TranslationBuilder) {
                     translationBuilder.add(MirageFairy2024.fairyPlasticItem, "Fairy Plastic")
+                    englishTranslations.forEach {
+                        it(translationBuilder)
+                    }
                 }
             }
         }
@@ -34,6 +48,9 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
             object : FabricLanguageProvider(output, "ja_jp") {
                 override fun generateTranslations(translationBuilder: TranslationBuilder) {
                     translationBuilder.add(MirageFairy2024.fairyPlasticItem, "妖精のプラスチック")
+                    japaneseTranslations.forEach {
+                        it(translationBuilder)
+                    }
                 }
             }
         }
