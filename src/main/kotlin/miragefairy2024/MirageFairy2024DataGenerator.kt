@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider
 import net.minecraft.data.client.BlockStateModelGenerator
 import net.minecraft.data.client.ItemModelGenerator
-import net.minecraft.data.client.Models
 
 object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
 
@@ -27,7 +26,6 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
                 }
 
                 override fun generateItemModels(itemModelGenerator: ItemModelGenerator) {
-                    itemModelGenerator.register(MirageFairy2024.fairyPlasticItem, Models.GENERATED)
                     itemModelGenerations.forEach {
                         it(itemModelGenerator)
                     }
@@ -37,7 +35,6 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput ->
             object : FabricLanguageProvider(output, "en_us") {
                 override fun generateTranslations(translationBuilder: TranslationBuilder) {
-                    translationBuilder.add(MirageFairy2024.fairyPlasticItem, "Fairy Plastic")
                     englishTranslations.forEach {
                         it(translationBuilder)
                     }
@@ -47,7 +44,6 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput ->
             object : FabricLanguageProvider(output, "ja_jp") {
                 override fun generateTranslations(translationBuilder: TranslationBuilder) {
-                    translationBuilder.add(MirageFairy2024.fairyPlasticItem, "妖精のプラスチック")
                     japaneseTranslations.forEach {
                         it(translationBuilder)
                     }

@@ -1,6 +1,8 @@
 package miragefairy2024
 
+import miragefairy2024.util.init.configureGeneratedItemModelGeneration
 import miragefairy2024.util.init.configureItemGroup
+import miragefairy2024.util.init.enJa
 import miragefairy2024.util.init.registerItem
 import net.fabricmc.api.ModInitializer
 import net.minecraft.item.Item
@@ -20,5 +22,7 @@ object MirageFairy2024 : ModInitializer {
         logger.info("Hello Fabric world!")
         fairyPlasticItem.registerItem(Identifier("miragefairy2024", "fairy_plastic"))
         fairyPlasticItem.configureItemGroup(ItemGroups.INGREDIENTS)
+        fairyPlasticItem.configureGeneratedItemModelGeneration()
+        fairyPlasticItem.enJa("Fairy Plastic", "妖精のプラスチック")
     }
 }
