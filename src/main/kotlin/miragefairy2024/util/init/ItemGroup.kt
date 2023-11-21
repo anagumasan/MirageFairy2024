@@ -5,7 +5,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.registry.RegistryKey
 
-fun Item.configureItemGroup(itemGroup: RegistryKey<ItemGroup>) {
+fun Item.registerItemGroup(itemGroup: RegistryKey<ItemGroup>) {
     ItemGroupEvents.modifyEntriesEvent(itemGroup).register {
         it.add(this)
     }

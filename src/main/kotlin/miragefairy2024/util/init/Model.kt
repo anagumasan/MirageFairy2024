@@ -5,10 +5,10 @@ import net.minecraft.data.client.Model
 import net.minecraft.data.client.Models
 import net.minecraft.item.Item
 
-fun Item.configureItemModelGeneration(model: Model) {
+fun Item.registerItemModelGeneration(model: Model) {
     MirageFairy2024DataGenerator.itemModelGenerations += {
         it.register(this, model)
     }
 }
 
-fun Item.configureGeneratedItemModelGeneration() = this.configureItemModelGeneration(Models.GENERATED)
+fun Item.registerGeneratedItemModelGeneration() = this.registerItemModelGeneration(Models.GENERATED)
