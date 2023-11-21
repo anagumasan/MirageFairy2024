@@ -9,7 +9,7 @@ import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import org.slf4j.LoggerFactory
 
-object DUMMY12345678 : ModInitializer {
+object MirageFairy2024 : ModInitializer {
     private val logger = LoggerFactory.getLogger("miragefairy2024")
 
     val fairyPlasticItem = Item(Item.Settings())
