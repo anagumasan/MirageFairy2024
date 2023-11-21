@@ -1,3 +1,5 @@
 *       text eol=lf
 *.bat   text eol=crlf
 *.jar  -text
+*.png  -text
+*.pdn  -text
