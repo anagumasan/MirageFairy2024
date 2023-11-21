@@ -19,6 +19,14 @@ enum class MaterialCard(
         "fairy_plastic", "Fairy Plastic", "妖精のプラスチック",
         listOf(Poem("Thermoplastic organic polymer", "凍てつく記憶の宿る石。")),
     ),
+    XARPITE(
+        "xarpite", "Xarpite", "紅天石",
+        listOf(Poem("Binds astral flux with magnetic force", "黒鉄の鎖は繋がれる。血腥い魂の檻へ。")),
+    ),
+    MIRANAGITE(
+        "miranagite", "Miranagite", "蒼天石",
+        listOf(Poem("Astral body crystallized by anti-entropy", "秩序の叛乱、天地創造の逆光。")),
+    ),
     ;
 
     val item = Item(Item.Settings())
