@@ -8,6 +8,8 @@ object MirageFairy2024 : ModInitializer {
     val modId = "miragefairy2024"
     val logger = LoggerFactory.getLogger("miragefairy2024")
 
+    val onClientInit = mutableListOf<(ClientProxy) -> Unit>()
+
     override fun onInitialize() {
         initMaterialsModule()
     }
