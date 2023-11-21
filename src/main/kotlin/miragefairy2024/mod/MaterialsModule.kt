@@ -27,6 +27,10 @@ enum class MaterialCard(
         "miranagite", "Miranagite", "蒼天石",
         listOf(Poem("Astral body crystallized by anti-entropy", "秩序の叛乱、天地創造の逆光。")),
     ),
+    FAIRY_RUBBER(
+        "fairy_rubber", "Fairy Rubber", "夜のかけら",
+        listOf(Poem("Minimize the risk of losing belongings", "空は怯える夜精に一握りの温かい闇を与えた")),
+    ),
     ;
 
     val item = Item(Item.Settings())
