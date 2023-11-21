@@ -1,4 +1,4 @@
-package dummy12345678
+package miragefairy2024
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator

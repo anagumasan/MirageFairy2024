@@ -1,4 +1,4 @@
-package dummy12345678.mixin.client;
+package miragefairy2024.mixin.client;
 
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;

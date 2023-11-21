@@ -17,19 +17,19 @@
   "entrypoints": {
     "main": [
       {
-        "value": "dummy12345678.DUMMY12345678",
+        "value": "miragefairy2024.DUMMY12345678",
         "adapter": "kotlin"
       }
     ],
     "client": [
       {
-        "value": "dummy12345678.DUMMY12345678Client",
+        "value": "miragefairy2024.DUMMY12345678Client",
         "adapter": "kotlin"
       }
     ],
     "fabric-datagen": [
       {
-        "value": "dummy12345678.DUMMY12345678DataGenerator",
+        "value": "miragefairy2024.DUMMY12345678DataGenerator",
         "adapter": "kotlin"
       }
     ]

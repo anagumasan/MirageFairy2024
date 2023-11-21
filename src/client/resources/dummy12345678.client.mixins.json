@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "dummy12345678.mixin.client",
+  "package": "miragefairy2024.mixin.client",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "ExampleClientMixin"

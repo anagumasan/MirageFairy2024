@@ -1,4 +1,4 @@
-package dummy12345678
+package miragefairy2024
 
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
