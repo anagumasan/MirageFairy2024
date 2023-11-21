@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "dummy12345678",
+  "id": "miragefairy2024",
   "version": "${version}",
   "name": "DUMMY12345678",
   "description": "This is an example description! Tell everyone what your mod is about!",
@@ -12,7 +12,7 @@
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
   "license": "CC0-1.0",
-  "icon": "assets/dummy12345678/icon.png",
+  "icon": "assets/miragefairy2024/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -35,9 +35,9 @@
     ]
   },
   "mixins": [
-    "dummy12345678.mixins.json",
+    "miragefairy2024.mixins.json",
     {
-      "config": "dummy12345678.client.mixins.json",
+      "config": "miragefairy2024.client.mixins.json",
       "environment": "client"
     }
   ],

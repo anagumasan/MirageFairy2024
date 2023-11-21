@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "dummy12345678:item/fairy_plastic"
+    "layer0": "miragefairy2024:item/fairy_plastic"
   }
 }

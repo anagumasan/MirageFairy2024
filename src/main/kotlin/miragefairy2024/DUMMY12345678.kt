@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier
 import org.slf4j.LoggerFactory
 
 object DUMMY12345678 : ModInitializer {
-    private val logger = LoggerFactory.getLogger("dummy12345678")
+    private val logger = LoggerFactory.getLogger("miragefairy2024")
 
     val fairyPlasticItem = Item(Item.Settings())
 
@@ -19,7 +19,7 @@ object DUMMY12345678 : ModInitializer {
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
         logger.info("Hello Fabric world!")
-        Registry.register(Registries.ITEM, Identifier("dummy12345678", "fairy_plastic"), fairyPlasticItem)
+        Registry.register(Registries.ITEM, Identifier("miragefairy2024", "fairy_plastic"), fairyPlasticItem)
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register {
             it.add(fairyPlasticItem)
         }

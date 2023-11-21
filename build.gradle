@@ -23,7 +23,7 @@ loom {
     splitEnvironmentSourceSets()
 
 	mods {
-		"dummy12345678" {
+		"miragefairy2024" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
@@ -35,7 +35,7 @@ loom {
 			name "Data Generation"
 			vmArg "-Dfabric-api.datagen"
 			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
-			vmArg "-Dfabric-api.datagen.modid=dummy12345678"
+			vmArg "-Dfabric-api.datagen.modid=miragefairy2024"
  
 			runDir "build/datagen"
 		}
