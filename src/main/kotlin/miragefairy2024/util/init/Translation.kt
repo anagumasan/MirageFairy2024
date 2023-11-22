@@ -17,19 +17,8 @@ fun ja(getter: () -> Pair<String, String>) {
     }
 }
 
-fun Item.en(enName: String) {
-    MirageFairy2024DataGenerator.englishTranslations += {
-        it.add(this, enName)
-    }
-}
-
-fun Item.ja(jaName: String) {
-    MirageFairy2024DataGenerator.japaneseTranslations += {
-        it.add(this, jaName)
-    }
-}
 
 fun Item.enJa(enName: String, jaName: String) {
-    this.en(enName)
-    this.ja(jaName)
+    en { this.translationKey to enName }
+    ja { this.translationKey to jaName }
 }
