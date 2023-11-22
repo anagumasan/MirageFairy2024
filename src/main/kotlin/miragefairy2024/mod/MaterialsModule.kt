@@ -33,12 +33,13 @@ enum class MaterialCard(
     ),
     ;
 
+    val identifier = Identifier(MirageFairy2024.modId, path)
     val item = Item(Item.Settings())
 }
 
 fun initMaterialsModule() {
     MaterialCard.entries.forEach { card ->
-        card.item.registerItem(Identifier(MirageFairy2024.modId, card.path))
+        card.item.registerItem(card.identifier)
         card.item.registerItemGroup(ItemGroups.INGREDIENTS)
         card.item.registerGeneratedItemModelGeneration()
         card.item.enJa(card.enName, card.jaName)
