@@ -1,6 +1,7 @@
 package miragefairy2024.util.init
 
 import miragefairy2024.MirageFairy2024DataGenerator
+import net.minecraft.block.Block
 import net.minecraft.item.Item
 
 fun en(getter: () -> Pair<String, String>) {
@@ -17,6 +18,10 @@ fun ja(getter: () -> Pair<String, String>) {
     }
 }
 
+fun Block.enJa(enName: String, jaName: String) {
+    en { this.translationKey to enName }
+    ja { this.translationKey to jaName }
+}
 
 fun Item.enJa(enName: String, jaName: String) {
     en { this.translationKey to enName }
