@@ -10,7 +10,7 @@ import net.minecraft.item.ItemGroups
 import net.minecraft.util.Identifier
 
 enum class MaterialCard(
-    val path: String,
+    path: String,
     val enName: String,
     val jaName: String,
     val poemList: List<Poem>,
