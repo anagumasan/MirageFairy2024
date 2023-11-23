@@ -2,7 +2,7 @@ package miragefairy2024.util.init
 
 import miragefairy2024.MirageFairy2024DataGenerator
 import miragefairy2024.util.concat
-import miragefairy2024.util.identifier
+import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.with
 import net.minecraft.block.Block
 import net.minecraft.data.client.BlockStateModelGenerator
@@ -32,6 +32,6 @@ fun Model.registerModelGeneration(identifier: Identifier, vararg textureEntries:
 
 fun Block.registerSingletonBlockStateGeneration() {
     MirageFairy2024DataGenerator.blockStateModelGenerations += {
-        it.blockStateCollector.accept(BlockStateModelGenerator.createSingletonBlockState(this, "block/" concat this.identifier))
+        it.blockStateCollector.accept(BlockStateModelGenerator.createSingletonBlockState(this, "block/" concat this.getIdentifier()))
     }
 }
