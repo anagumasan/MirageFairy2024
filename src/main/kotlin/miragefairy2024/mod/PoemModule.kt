@@ -1,9 +1,9 @@
 package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.util.en
 import miragefairy2024.util.formatted
-import miragefairy2024.util.init.en
-import miragefairy2024.util.init.ja
+import miragefairy2024.util.ja
 import miragefairy2024.util.text
 import net.minecraft.item.Item
 import net.minecraft.util.Formatting

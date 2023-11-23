@@ -1,4 +1,4 @@
-package miragefairy2024.util.init
+package miragefairy2024.util
 
 import miragefairy2024.MirageFairy2024DataGenerator
 import net.minecraft.block.Block

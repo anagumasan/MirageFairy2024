@@ -1,4 +1,4 @@
-package miragefairy2024.util.init
+package miragefairy2024.util
 
 import mirrg.kotlin.hydrogen.unit
 import net.minecraft.block.Block

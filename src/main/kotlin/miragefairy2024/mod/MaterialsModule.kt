@@ -1,10 +1,10 @@
 package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.util.init.enJa
-import miragefairy2024.util.init.registerGeneratedItemModelGeneration
-import miragefairy2024.util.init.registerItem
-import miragefairy2024.util.init.registerItemGroup
+import miragefairy2024.util.enJa
+import miragefairy2024.util.registerGeneratedItemModelGeneration
+import miragefairy2024.util.registerItem
+import miragefairy2024.util.registerItemGroup
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroups
 import net.minecraft.util.Identifier
