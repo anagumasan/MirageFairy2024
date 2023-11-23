@@ -1,9 +1,11 @@
 package miragefairy2024.util
 
 import com.google.gson.JsonElement
+import net.minecraft.block.Blocks
 import net.minecraft.data.client.Model
 import net.minecraft.data.client.TextureKey
 import net.minecraft.data.client.TextureMap
+import net.minecraft.data.client.TexturedModel
 import net.minecraft.util.Identifier
 import java.util.Optional
 import java.util.function.BiConsumer
@@ -31,3 +33,6 @@ fun TextureMap(vararg entries: Pair<TextureKey, Identifier>, initializer: Textur
 }
 
 val TextureKey.string get() = this.toString()
+
+
+fun Model.with(vararg textureEntries: Pair<TextureKey, Identifier>): TexturedModel = TexturedModel.makeFactory({ TextureMap(*textureEntries) }, this).get(Blocks.AIR)
