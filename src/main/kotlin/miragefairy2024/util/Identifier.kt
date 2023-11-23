@@ -10,5 +10,8 @@ val Identifier.string get() = this.toString()
 infix fun String.concat(identifier: Identifier) = Identifier(identifier.namespace, this + identifier.path)
 infix fun Identifier.concat(string: String) = Identifier(this.namespace, this.path + string)
 
+/** レジストリに登録する前に呼び出すことはできません。 */
 fun Block.getIdentifier() = Registries.BLOCK.getId(this)
+
+/** レジストリに登録する前に呼び出すことはできません。 */
 fun Item.getIdentifier() = Registries.ITEM.getId(this)
