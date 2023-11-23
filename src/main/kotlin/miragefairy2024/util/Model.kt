@@ -51,6 +51,7 @@ fun Item.registerItemModelGeneration(model: Model) {
 
 fun Item.registerGeneratedItemModelGeneration() = this.registerItemModelGeneration(Models.GENERATED)
 
+
 fun TexturedModel.registerModelGeneration(identifier: Identifier) {
     MirageFairy2024DataGenerator.blockStateModelGenerations += {
         this.model.upload(identifier, this.textures, it.modelCollector)
