@@ -29,6 +29,12 @@ fun TexturedModel.registerModelGeneration(identifier: Identifier) {
 
 fun Model.registerModelGeneration(identifier: Identifier, vararg textureEntries: Pair<TextureKey, Identifier>) = this.with(*textureEntries).registerModelGeneration(identifier)
 
+fun Block.registerModelGeneration(texturedModel: TexturedModel) {
+    MirageFairy2024DataGenerator.blockStateModelGenerations += {
+        texturedModel.model.upload("block/" concat this.getIdentifier(), texturedModel.textures, it.modelCollector)
+    }
+}
+
 
 fun Block.registerSingletonBlockStateGeneration() {
     MirageFairy2024DataGenerator.blockStateModelGenerations += {

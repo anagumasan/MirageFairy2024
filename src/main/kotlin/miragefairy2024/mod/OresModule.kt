@@ -105,7 +105,7 @@ fun initOresModule() {
         card.item.registerItemGroup(ItemGroups.INGREDIENTS)
 
         card.block.registerSingletonBlockStateGeneration()
-        card.texturedModel.registerModelGeneration("block/" concat card.identifier)
+        card.block.registerModelGeneration(card.texturedModel)
         card.block.registerCutoutRenderLayer()
 
         card.block.enJa(card.enName, card.jaName)
