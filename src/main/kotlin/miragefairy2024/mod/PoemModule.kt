@@ -22,6 +22,8 @@ fun initPoemModule() {
 
 class Poem(val key: String, val en: String, val ja: String, val color: Formatting)
 
+fun Poem(key: String, en: String, ja: String) = Poem(key, en, ja, Formatting.DARK_AQUA)
+
 fun Poem(en: String, ja: String) = Poem("poem", en, ja, Formatting.DARK_AQUA)
 
 
