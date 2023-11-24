@@ -2,9 +2,14 @@ package miragefairy2024.util
 
 import com.google.gson.JsonElement
 import miragefairy2024.MirageFairy2024DataGenerator
+import mirrg.kotlin.gson.hydrogen.jsonElement
+import mirrg.kotlin.gson.hydrogen.jsonObject
+import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
+import mirrg.kotlin.hydrogen.join
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.data.client.BlockStateModelGenerator
+import net.minecraft.data.client.BlockStateSupplier
 import net.minecraft.data.client.Model
 import net.minecraft.data.client.Models
 import net.minecraft.data.client.TextureKey
@@ -66,6 +71,53 @@ fun Block.registerModelGeneration(texturedModel: TexturedModel) {
     }
 }
 
+
+enum class BlockStateVariantRotation(val degrees: Int) {
+    R0(0),
+    R90(90),
+    R180(180),
+    R270(270),
+}
+
+class BlockStateVariant(
+    val model: Identifier,
+    val x: BlockStateVariantRotation? = null,
+    val y: BlockStateVariantRotation? = null,
+    val uvlock: Boolean? = null,
+    val weight: Int? = null,
+) {
+    fun toJson(): JsonElement = jsonObjectNotNull(
+        "model" to model.string.jsonElement,
+        x?.let { "x" to x.degrees.jsonElement },
+        y?.let { "y" to y.degrees.jsonElement },
+        uvlock?.let { "uvlock" to uvlock.jsonElement },
+        weight?.let { "weight" to weight.jsonElement },
+    )
+}
+
+fun Block.registerVariantsBlockStateGeneration(entriesGetter: () -> List<Pair<List<Pair<String, String>>, BlockStateVariant>>) {
+    MirageFairy2024DataGenerator.blockStateModelGenerations += {
+        it.blockStateCollector.accept(object : BlockStateSupplier {
+            override fun get() = jsonObject(
+                "variants" to jsonObject(
+                    *entriesGetter()
+                        .map { (propertiesMap, modelId) ->
+                            val propertiesString = propertiesMap
+                                .sortedBy { (property, _) -> property }
+                                .map { (property, value) -> "$property=$value" }
+                                .join(",")
+                            propertiesString to modelId
+                        }
+                        .sortedBy { (propertiesString, _) -> propertiesString }
+                        .map { (propertiesString, value) -> propertiesString to value.toJson() }
+                        .toTypedArray()
+                )
+            )
+
+            override fun getBlock() = this@registerVariantsBlockStateGeneration
+        })
+    }
+}
 
 fun Block.registerSingletonBlockStateGeneration() {
     MirageFairy2024DataGenerator.blockStateModelGenerations += {
