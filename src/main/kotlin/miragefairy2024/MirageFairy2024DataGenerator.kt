@@ -3,6 +3,7 @@ package miragefairy2024
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider
@@ -20,6 +21,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
     val itemModelGenerations = mutableListOf<(ItemModelGenerator) -> Unit>()
     val blockTagGenerations = mutableListOf<((TagKey<Block>) -> FabricTagProvider<Block>.FabricTagBuilder) -> Unit>()
     val itemTagGenerations = mutableListOf<((TagKey<Item>) -> FabricTagProvider<Item>.FabricTagBuilder) -> Unit>()
+    val blockLootTableGenerations = mutableListOf<(FabricBlockLootTableProvider) -> Unit>()
     val englishTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
     val japaneseTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
 
@@ -54,6 +56,15 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
                 override fun configure(arg: RegistryWrapper.WrapperLookup) {
                     itemTagGenerations.forEach {
                         it { tag -> getOrCreateTagBuilder(tag) }
+                    }
+                }
+            }
+        }
+        pack.addProvider { output: FabricDataOutput ->
+            object : FabricBlockLootTableProvider(output) {
+                override fun generate() {
+                    blockLootTableGenerations.forEach {
+                        it(this)
                     }
                 }
             }
