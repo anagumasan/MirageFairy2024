@@ -4,9 +4,8 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.util.Model
 import miragefairy2024.util.concat
 import miragefairy2024.util.enJa
-import miragefairy2024.util.registerBlock
+import miragefairy2024.util.register
 import miragefairy2024.util.registerCutoutRenderLayer
-import miragefairy2024.util.registerItem
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerOreLootTableGeneration
@@ -102,8 +101,8 @@ object OreModelCard {
 fun initOresModule() {
     OreModelCard.parentModel.registerModelGeneration(OreModelCard.identifier)
     OreCard.entries.forEach { card ->
-        card.block.registerBlock(card.identifier)
-        card.item.registerItem(card.identifier)
+        card.block.register(card.identifier)
+        card.item.register(card.identifier)
 
         card.item.registerItemGroup(mirageFairy2024ItemGroup)
 

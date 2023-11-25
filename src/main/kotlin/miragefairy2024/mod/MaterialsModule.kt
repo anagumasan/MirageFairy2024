@@ -2,8 +2,8 @@ package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.util.enJa
+import miragefairy2024.util.register
 import miragefairy2024.util.registerGeneratedItemModelGeneration
-import miragefairy2024.util.registerItem
 import miragefairy2024.util.registerItemGroup
 import net.minecraft.item.Item
 import net.minecraft.util.Identifier
@@ -38,7 +38,7 @@ enum class MaterialCard(
 
 fun initMaterialsModule() {
     MaterialCard.entries.forEach { card ->
-        card.item.registerItem(card.identifier)
+        card.item.register(card.identifier)
         card.item.registerItemGroup(mirageFairy2024ItemGroup)
         card.item.registerGeneratedItemModelGeneration()
         card.item.enJa(card.enName, card.jaName)
