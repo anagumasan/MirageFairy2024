@@ -12,6 +12,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerGeneratedItemModelGeneration
+import miragefairy2024.util.registerGrassDrop
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerVariantsBlockStateGeneration
@@ -75,6 +76,7 @@ fun initMagicPlantModule() {
 
     MagicPlantCard.MIRAGE_FLOWER.let { card ->
         init(card)
+
         card.block.registerVariantsBlockStateGeneration {
             (0..MirageFlowerBlock.MAX_AGE).map { age ->
                 listOf("age" to "$age") to BlockStateVariant("block/" concat card.blockIdentifier concat "_age$age")
@@ -84,6 +86,8 @@ fun initMagicPlantModule() {
             val texturedModel = Models.CROSS.with(TextureKey.CROSS to ("block/" concat card.blockIdentifier concat "_age$age"))
             texturedModel.registerModelGeneration("block/" concat card.blockIdentifier concat "_age$age")
         }
+
+        card.item.registerGrassDrop(0.1F) // 種は雑草から得られる
     }
 
 }
