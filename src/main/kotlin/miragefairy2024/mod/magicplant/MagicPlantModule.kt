@@ -9,6 +9,7 @@ import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.concat
 import miragefairy2024.util.enJa
 import miragefairy2024.util.register
+import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerGeneratedItemModelGeneration
 import miragefairy2024.util.registerItemGroup
@@ -68,6 +69,8 @@ fun initMagicPlantModule() {
         card.item.enJa(card.itemEnName, card.itemJaName)
         card.item.registerPoem(card.seedPoemList)
         card.item.registerPoemGeneration(card.seedPoemList)
+
+        card.item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
     }
 
     MagicPlantCard.MIRAGE_FLOWER.let { card ->
