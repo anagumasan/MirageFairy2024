@@ -27,3 +27,11 @@ fun Item.enJa(enName: String, jaName: String) {
     en { this.translationKey to enName }
     ja { this.translationKey to jaName }
 }
+
+
+class Translation(val keyGetter: () -> String, val en: String, val ja: String)
+
+fun Translation.enJa() {
+    en { this.keyGetter() to en }
+    ja { this.keyGetter() to ja }
+}
