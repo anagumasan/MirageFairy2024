@@ -5,13 +5,21 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider
+import net.minecraft.block.Block
 import net.minecraft.data.client.BlockStateModelGenerator
 import net.minecraft.data.client.ItemModelGenerator
+import net.minecraft.item.Item
+import net.minecraft.registry.RegistryWrapper
+import net.minecraft.registry.tag.TagKey
+import java.util.concurrent.CompletableFuture
 
 object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
 
     val blockStateModelGenerations = mutableListOf<(BlockStateModelGenerator) -> Unit>()
     val itemModelGenerations = mutableListOf<(ItemModelGenerator) -> Unit>()
+    val blockTagGenerations = mutableListOf<((TagKey<Block>) -> FabricTagProvider<Block>.FabricTagBuilder) -> Unit>()
+    val itemTagGenerations = mutableListOf<((TagKey<Item>) -> FabricTagProvider<Item>.FabricTagBuilder) -> Unit>()
     val englishTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
     val japaneseTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
 
@@ -28,6 +36,24 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
                 override fun generateItemModels(itemModelGenerator: ItemModelGenerator) {
                     itemModelGenerations.forEach {
                         it(itemModelGenerator)
+                    }
+                }
+            }
+        }
+        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<RegistryWrapper.WrapperLookup> ->
+            object : FabricTagProvider.BlockTagProvider(output, registriesFuture) {
+                override fun configure(arg: RegistryWrapper.WrapperLookup) {
+                    blockTagGenerations.forEach {
+                        it { tag -> getOrCreateTagBuilder(tag) }
+                    }
+                }
+            }
+        }
+        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<RegistryWrapper.WrapperLookup> ->
+            object : FabricTagProvider.ItemTagProvider(output, registriesFuture) {
+                override fun configure(arg: RegistryWrapper.WrapperLookup) {
+                    itemTagGenerations.forEach {
+                        it { tag -> getOrCreateTagBuilder(tag) }
                     }
                 }
             }
