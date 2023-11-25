@@ -9,7 +9,9 @@ import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerItem
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerModelGeneration
+import miragefairy2024.util.registerOreLootTableGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
+import miragefairy2024.util.registerTagGeneration
 import miragefairy2024.util.string
 import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
@@ -22,6 +24,7 @@ import net.minecraft.block.enums.Instrument
 import net.minecraft.data.client.TextureKey
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
+import net.minecraft.registry.tag.BlockTags
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.intprovider.UniformIntProvider
 
@@ -30,12 +33,13 @@ enum class OreCard(
     val enName: String,
     val jaName: String,
     val poemList: List<Poem>,
+    val dropItem: Item,
     experience: Pair<Int, Int>,
 ) {
     MIRANAGITE_ORE(
         "miranagite_ore", "Miranagite Ore", "蒼天石鉱石",
         listOf(Poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？")),
-        2 to 5,
+        MaterialCard.MIRANAGITE.item, 2 to 5,
     )
     // 楽園が楽園であるための奇跡。
     ;
@@ -110,7 +114,10 @@ fun initOresModule() {
         card.block.enJa(card.enName, card.jaName)
         card.item.registerPoem(card.poemList)
         card.item.registerPoemGeneration(card.poemList)
-        // TODO drop
-        // TODO tag
+
+        card.block.registerOreLootTableGeneration(card.dropItem)
+
+        card.block.registerTagGeneration(BlockTags.PICKAXE_MINEABLE)
+        card.block.registerTagGeneration(BlockTags.NEEDS_STONE_TOOL)
     }
 }
