@@ -87,6 +87,8 @@ fun initMagicPlantModule() {
             texturedModel.registerModelGeneration("block/" concat card.blockIdentifier concat "_age$age")
         }
 
+        //card.block.registerTagGenerate(BlockTags.SMALL_FLOWERS) // これをやるとエンダーマンが勝手に引っこ抜いていく
+
         card.item.registerGrassDrop(0.1F) // 種は雑草から得られる
     }
 
