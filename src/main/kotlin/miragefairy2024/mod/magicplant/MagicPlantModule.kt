@@ -89,6 +89,8 @@ fun initMagicPlantModule() {
 
         //card.block.registerTagGenerate(BlockTags.SMALL_FLOWERS) // これをやるとエンダーマンが勝手に引っこ抜いていく
 
+        // TODO worldgen
+
         card.item.registerGrassDrop(0.1F) // 種は雑草から得られる
     }
 
