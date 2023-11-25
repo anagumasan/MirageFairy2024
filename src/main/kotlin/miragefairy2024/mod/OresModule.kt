@@ -22,7 +22,6 @@ import net.minecraft.block.enums.Instrument
 import net.minecraft.data.client.TextureKey
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
-import net.minecraft.item.ItemGroups
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.intprovider.UniformIntProvider
 
@@ -102,7 +101,7 @@ fun initOresModule() {
         card.block.registerBlock(card.identifier)
         card.item.registerItem(card.identifier)
 
-        card.item.registerItemGroup(ItemGroups.INGREDIENTS)
+        card.item.registerItemGroup(mirageFairy2024ItemGroup)
 
         card.block.registerSingletonBlockStateGeneration()
         card.block.registerModelGeneration(card.texturedModel)

@@ -1,5 +1,6 @@
 package miragefairy2024
 
+import miragefairy2024.mod.initCommonModule
 import miragefairy2024.mod.initMaterialsModule
 import miragefairy2024.mod.initOresModule
 import miragefairy2024.mod.initPoemModule
@@ -13,6 +14,7 @@ object MirageFairy2024 : ModInitializer {
     val onClientInit = mutableListOf<(ClientProxy) -> Unit>()
 
     override fun onInitialize() {
+        initCommonModule()
         initPoemModule()
         initMaterialsModule()
         initOresModule()
