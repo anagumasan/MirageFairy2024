@@ -12,7 +12,6 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerGeneratedItemModelGeneration
-import miragefairy2024.util.registerGrassDrop
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerVariantsBlockStateGeneration
@@ -99,8 +98,6 @@ fun initMagicPlantModule() {
         //card.block.registerTagGenerate(BlockTags.SMALL_FLOWERS) // これをやるとエンダーマンが勝手に引っこ抜いていく
 
         // TODO worldgen
-
-        card.item.registerGrassDrop(0.1F) // 種は雑草から得られる
     }
 
 }
