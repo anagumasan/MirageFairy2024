@@ -11,8 +11,14 @@ import net.minecraft.util.Identifier
 
 fun Block.register(identifier: Identifier) = unit { Registry.register(Registries.BLOCK, identifier, this) }
 
+/** レジストリに登録する前に呼び出すことはできません。 */
+fun Block.getIdentifier() = Registries.BLOCK.getId(this)
+
 fun BlockEntityType<*>.register(identifier: Identifier) = unit { Registry.register(Registries.BLOCK_ENTITY_TYPE, identifier, this) }
 
 fun Item.register(identifier: Identifier) = unit { Registry.register(Registries.ITEM, identifier, this) }
+
+/** レジストリに登録する前に呼び出すことはできません。 */
+fun Item.getIdentifier() = Registries.ITEM.getId(this)
 
 fun ItemGroup.register(identifier: Identifier) = unit { Registry.register(Registries.ITEM_GROUP, identifier, this) }
