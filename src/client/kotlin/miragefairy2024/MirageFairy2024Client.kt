@@ -10,18 +10,20 @@ import net.minecraft.text.Text
 
 object MirageFairy2024Client : ClientModInitializer {
     override fun onInitializeClient() {
-        MirageFairy2024.onClientInit.forEach {
-            it(object : ClientProxy {
-                override fun registerItemTooltipCallback(block: (stack: ItemStack, lines: MutableList<Text>) -> Unit) {
-                    ItemTooltipCallback.EVENT.register { stack, _, lines ->
-                        block(stack, lines)
-                    }
+        val clientProxy = object : ClientProxy {
+            override fun registerItemTooltipCallback(block: (stack: ItemStack, lines: MutableList<Text>) -> Unit) {
+                ItemTooltipCallback.EVENT.register { stack, _, lines ->
+                    block(stack, lines)
                 }
+            }
 
-                override fun registerCutoutRenderLayer(block: Block) {
-                    BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout())
-                }
-            })
+            override fun registerCutoutRenderLayer(block: Block) {
+                BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout())
+            }
+        }
+        MirageFairy2024.clientProxy = clientProxy
+        MirageFairy2024.onClientInit.forEach {
+            it(clientProxy)
         }
     }
 }

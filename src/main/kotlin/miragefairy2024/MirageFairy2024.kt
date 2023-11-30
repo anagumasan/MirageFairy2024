@@ -13,6 +13,7 @@ object MirageFairy2024 : ModInitializer {
     val logger = LoggerFactory.getLogger("miragefairy2024")
 
     val onClientInit = mutableListOf<(ClientProxy) -> Unit>()
+    var clientProxy: ClientProxy? = null
 
     override fun onInitialize() {
         initCommonModule()
