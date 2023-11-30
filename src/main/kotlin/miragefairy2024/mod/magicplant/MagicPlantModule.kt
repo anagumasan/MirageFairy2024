@@ -18,15 +18,19 @@ import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.minecraft.block.BlockState
 import net.minecraft.block.MapColor
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.data.client.Models
 import net.minecraft.data.client.TextureKey
 import net.minecraft.item.Item
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.BlockPos
 
-class MagicPlantCard<B : MagicPlantBlock>(
+class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
     blockPath: String,
     val blockEnName: String,
     val blockJaName: String,
@@ -35,6 +39,7 @@ class MagicPlantCard<B : MagicPlantBlock>(
     val itemJaName: String,
     val seedPoemList: List<Poem>,
     blockCreator: () -> B,
+    blockEntityCreator: (BlockPos, BlockState) -> BE,
 ) {
     companion object {
         val MIRAGE_FLOWER = MagicPlantCard(
@@ -44,7 +49,9 @@ class MagicPlantCard<B : MagicPlantBlock>(
                 Poem("Evolution to escape extermination", "可憐にして人畜無害たる魔物。"),
                 Poem("classification", "Order Miragales, family Miragaceae", "妖花目ミラージュ科"),
             ),
-        ) { MirageFlowerBlock(createCommonSettings().breakInstantly().mapColor(MapColor.DIAMOND_BLUE).sounds(BlockSoundGroup.GLASS)) }
+            { MirageFlowerBlock(createCommonSettings().breakInstantly().mapColor(MapColor.DIAMOND_BLUE).sounds(BlockSoundGroup.GLASS)) },
+            ::MirageFlowerBlockEntity,
+        )
 
         private fun createCommonSettings(): FabricBlockSettings = FabricBlockSettings.create().noCollision().ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)
     }
@@ -52,13 +59,15 @@ class MagicPlantCard<B : MagicPlantBlock>(
     val blockIdentifier = Identifier(MirageFairy2024.modId, blockPath)
     val itemIdentifier = Identifier(MirageFairy2024.modId, itemPath)
     val block = blockCreator()
+    val blockEntityType = BlockEntityType(blockEntityCreator, setOf(block), null)
     val item = MagicPlantSeedItem(block, Item.Settings())
 }
 
 fun initMagicPlantModule() {
 
-    fun init(card: MagicPlantCard<*>) {
+    fun init(card: MagicPlantCard<*, *>) {
         card.block.register(card.blockIdentifier)
+        card.blockEntityType.register(card.blockIdentifier)
         card.item.register(card.itemIdentifier)
 
         card.item.registerItemGroup(mirageFairy2024ItemGroup)
