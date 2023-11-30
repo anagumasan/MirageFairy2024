@@ -31,6 +31,8 @@ fun Item.enJa(enName: String, jaName: String) {
 
 class Translation(val keyGetter: () -> String, val en: String, val ja: String)
 
+operator fun Translation.invoke() = text { translate(this@invoke.keyGetter()) }
+
 fun Translation.enJa() {
     en { this.keyGetter() to en }
     ja { this.keyGetter() to ja }
