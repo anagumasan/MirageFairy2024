@@ -99,6 +99,7 @@ refactor: name
 | format   | ソースコードの整形           |
 | cleanup  | ソースコードの余分な部分の削除     |
 | comment  | ソースコー上のコメントの編集      |
+| fix      | 意図しない挙動や記述等の修正      |
 | ignore   | .gitignoreへの追加      |
 | use      | 依存ライブラリの追加          |
 
