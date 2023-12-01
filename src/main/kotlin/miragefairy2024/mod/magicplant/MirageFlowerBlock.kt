@@ -20,7 +20,6 @@ import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
 import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.nbt.NbtCompound
@@ -106,10 +105,10 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             }
 
             val fruitCount = world.random.randomInt(fruitGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (fruitCount > 0) drops += MaterialCard.FAIRY_PLASTIC.item.createItemStack(fruitCount) // TODO ミラージュの花粉・必要であれば圧縮
+            if (fruitCount > 0) drops += MaterialCard.MIRAGE_FLOUR.item.createItemStack(fruitCount) // TODO 必要であれば圧縮
 
             val leafCount = world.random.randomInt(leafGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (leafCount > 0) drops += Items.STICK.createItemStack(leafCount) // TODO ミラージュの葉固定
+            if (leafCount > 0) drops += MaterialCard.MIRAGE_LEAVES.item.createItemStack(leafCount)
 
             return drops
         }
