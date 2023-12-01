@@ -94,6 +94,11 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
         return createSeed(traitStacks)
     }
 
+
+    // Visual
+
+    // TODO パーティクル
+
 }
 
 class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(MagicPlantCard.MIRAGE_FLOWER.blockEntityType, pos, state) {
