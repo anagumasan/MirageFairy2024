@@ -92,6 +92,8 @@ class TraitStacks private constructor(val traitStackMap: SortedMap<Trait, Int>) 
             require(level >= 1)
         }
     }
+
+    val traitStackList by lazy { traitStackMap.entries.map { TraitStack(it.key, it.value) } }
 }
 
 fun NbtList.toTraitStacks(): TraitStacks {
