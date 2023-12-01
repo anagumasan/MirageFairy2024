@@ -107,6 +107,18 @@ class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(Ma
         markDirty()
     }
 
+    override fun setWorld(world: World) {
+        super.setWorld(world)
+        if (traitStacks == null) {
+            val block = world.getBlockState(pos).block
+            val traitStackList = mutableListOf<TraitStack>()
+            worldGenTraitGenerations.forEach {
+                traitStackList += it.spawn(world, pos, block)
+            }
+            setTraitStacks(TraitStacks.of(traitStackList))
+        }
+    }
+
     public override fun writeNbt(nbt: NbtCompound) {
         super.writeNbt(nbt)
         traitStacks?.let { nbt.put("TraitStacks", it.toNbt()) }
