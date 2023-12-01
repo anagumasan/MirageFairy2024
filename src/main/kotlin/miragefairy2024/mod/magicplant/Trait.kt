@@ -20,6 +20,12 @@ val traitRegistryKey: RegistryKey<Registry<Trait>> = RegistryKey.ofRegistry(Iden
 val traitRegistry: Registry<Trait> = FabricRegistryBuilder.createSimple(traitRegistryKey).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
 
+// TraitEffectKeyRegistry
+
+val traitEffectKeyRegistryKey: RegistryKey<Registry<TraitEffectKey>> = RegistryKey.ofRegistry(Identifier(MirageFairy2024.modId, "trait_effect_key"))
+val traitEffectKeyRegistry: Registry<TraitEffectKey> = FabricRegistryBuilder.createSimple(traitEffectKeyRegistryKey).attribute(RegistryAttribute.SYNCED).buildAndRegister()
+
+
 // Trait
 
 class Trait(private val sortKey: String) : Comparable<Trait> {
@@ -29,6 +35,11 @@ class Trait(private val sortKey: String) : Comparable<Trait> {
         return 0
     }
 }
+
+
+// TraitEffect
+
+class TraitEffectKey
 
 
 // TraitStack

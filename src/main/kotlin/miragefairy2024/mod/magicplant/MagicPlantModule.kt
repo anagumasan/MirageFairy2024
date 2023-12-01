@@ -101,6 +101,10 @@ fun initMagicPlantModule() {
     }
 
 
+    TraitEffectKeyCard.entries.forEach { card ->
+        card.traitEffectKey.register(card.identifier)
+    }
+
     TraitCard.entries.forEach { card ->
         card.trait.register(card.identifier)
     }

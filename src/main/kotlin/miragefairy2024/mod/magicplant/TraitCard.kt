@@ -45,3 +45,24 @@ enum class TraitCard(
     val identifier = Identifier(MirageFairy2024.modId, path)
     val trait = Trait(sortKey)
 }
+
+
+// TraitEffectKey
+
+enum class TraitEffectKeyCard(
+    path: String,
+) {
+    NUTRITION("nutrition"),
+    ENVIRONMENT("environment"),
+    GROWTH_BOOST("growth_boost"),
+    SEEDS_PRODUCTION("seeds_production"),
+    FRUITS_PRODUCTION("fruits_production"),
+    LEAVES_PRODUCTION("leaves_production"),
+    PRODUCTION_BOOST("production_boost"),
+    EXPERIENCE_PRODUCTION("experience_production"),
+    FORTUNE_FACTOR("fortune_factor"),
+    ;
+
+    val identifier = Identifier(MirageFairy2024.modId, path)
+    val traitEffectKey = TraitEffectKey()
+}
