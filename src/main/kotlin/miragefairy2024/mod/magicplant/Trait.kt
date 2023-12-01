@@ -42,6 +42,7 @@ class Trait(private val sortKey: String) : Comparable<Trait> {
 
 abstract class TraitEffectKey<T : Any> {
     abstract fun getDescription(value: T): Text
+    abstract fun getDefaultValue(): T
 }
 
 
