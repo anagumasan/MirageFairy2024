@@ -11,6 +11,8 @@ Author: Fairy Rubber
 
 著者：夜のかけら
 
+However, the copyright for images originating from Minecraft, contained in some layers of `*.pdn` files, belongs to the original author.
+
 ## Copyright
 
 Copyright 2023 Fairy Rubber
