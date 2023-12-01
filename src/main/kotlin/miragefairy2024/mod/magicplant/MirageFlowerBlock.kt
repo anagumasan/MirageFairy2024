@@ -8,6 +8,10 @@ import net.minecraft.block.Blocks
 import net.minecraft.block.ShapeContext
 import net.minecraft.block.SideShapeType
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.network.listener.ClientPlayPacketListener
+import net.minecraft.network.packet.Packet
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
@@ -57,4 +61,32 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
 }
 
-class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(MagicPlantCard.MIRAGE_FLOWER.blockEntityType, pos, state)
+class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(MagicPlantCard.MIRAGE_FLOWER.blockEntityType, pos, state) {
+
+    private var traitStacks: TraitStacks? = null
+
+    fun getTraitStacks() = traitStacks
+
+    fun setTraitStacks(traitStacks: TraitStacks) {
+        this.traitStacks = traitStacks
+        markDirty()
+    }
+
+    public override fun writeNbt(nbt: NbtCompound) {
+        super.writeNbt(nbt)
+        traitStacks?.let { nbt.put("TraitStacks", it.toNbt()) }
+    }
+
+    override fun readNbt(nbt: NbtCompound) {
+        super.readNbt(nbt)
+        traitStacks = TraitStacks.readFromNbt(nbt)
+    }
+
+    override fun toInitialChunkDataNbt(): NbtCompound {
+        val nbt = super.toInitialChunkDataNbt()
+        traitStacks?.let { nbt.put("TraitStacks", it.toNbt()) }
+        return nbt
+    }
+
+    override fun toUpdatePacket(): Packet<ClientPlayPacketListener>? = BlockEntityUpdateS2CPacket.create(this)
+}
