@@ -13,6 +13,7 @@ import net.minecraft.nbt.NbtList
 import net.minecraft.registry.Registry
 import net.minecraft.registry.RegistryKey
 import net.minecraft.text.Text
+import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -32,7 +33,7 @@ val traitEffectKeyRegistry: Registry<TraitEffectKey<*>> = FabricRegistryBuilder.
 
 // Trait
 
-abstract class Trait(private val sortKey: String) : Comparable<Trait> {
+abstract class Trait(val color: Formatting, private val sortKey: String) : Comparable<Trait> {
     /** 呼び出された時点でそこにブロックの実体が存在しない場合があります。 */
     abstract fun getTraitEffects(world: World, blockPos: BlockPos, level: Int): MutableTraitEffects?
     override fun compareTo(other: Trait): Int {
