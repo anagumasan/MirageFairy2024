@@ -8,6 +8,8 @@ import net.minecraft.block.Blocks
 import net.minecraft.block.ShapeContext
 import net.minecraft.block.SideShapeType
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.entity.LivingEntity
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.listener.ClientPlayPacketListener
 import net.minecraft.network.packet.Packet
@@ -19,6 +21,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
+import net.minecraft.world.World
 
 @Suppress("OVERRIDE_DEPRECATION")
 class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
@@ -58,6 +61,16 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     // Block Entity
 
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = MirageFlowerBlockEntity(pos, state)
+
+    override fun onPlaced(world: World, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
+        super.onPlaced(world, pos, state, placer, itemStack)
+        run {
+            if (world.isClient) return@run
+            val blockEntity = world.getBlockEntity(pos) as? MirageFlowerBlockEntity ?: return@run
+            val traitStacks = itemStack.getTraitStacks() ?: return@run
+            blockEntity.setTraitStacks(traitStacks)
+        }
+    }
 
 }
 
