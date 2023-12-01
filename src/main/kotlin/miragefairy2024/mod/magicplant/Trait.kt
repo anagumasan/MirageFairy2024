@@ -69,15 +69,6 @@ class MutableTraitEffects {
     }
 }
 
-operator fun MutableTraitEffects.plusAssign(other: MutableTraitEffects) {
-    other.keys.forEach { key ->
-        fun <T : Any> f(key: TraitEffectKey<T>) {
-            this[key] = key.plus(this[key], other[key])
-        }
-        f(key)
-    }
-}
-
 class TraitEffect<T : Any>(val key: TraitEffectKey<T>, val value: T)
 
 abstract class TraitEffectKey<T : Any> {

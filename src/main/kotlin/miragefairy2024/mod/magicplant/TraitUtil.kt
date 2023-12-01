@@ -26,6 +26,18 @@ fun Trait.enJa(enName: String, jaName: String) {
 }
 
 
+// TraitEffects
+
+operator fun MutableTraitEffects.plusAssign(other: MutableTraitEffects) {
+    other.keys.forEach { key ->
+        fun <T : Any> f(key: TraitEffectKey<T>) {
+            this[key] = key.plus(this[key], other[key])
+        }
+        f(key)
+    }
+}
+
+
 // TraitEffect
 
 fun <T : Any> TraitEffect<T>.getDescription() = this.key.getDescription(this.value)
