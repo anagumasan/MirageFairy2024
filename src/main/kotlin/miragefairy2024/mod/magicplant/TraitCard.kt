@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.MirageFairy2024
+import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 
 // TraitCard
@@ -55,16 +56,17 @@ enum class TraitEffectKeyCard(
     path: String,
     val enName: String,
     val jaName: String,
+    val color: Formatting,
 ) {
-    NUTRITION("nutrition", "NTR", "栄養値"),
-    ENVIRONMENT("environment", "ENV", "環境値"),
-    GROWTH_BOOST("growth_boost", "GRW", "成長速度"),
-    SEEDS_PRODUCTION("seeds_production", "SEED", "種子生成"),
-    FRUITS_PRODUCTION("fruits_production", "FRUIT", "果実生成"),
-    LEAVES_PRODUCTION("leaves_production", "LEAF", "葉面生成"),
-    PRODUCTION_BOOST("production_boost", "PRD", "生産能力"),
-    EXPERIENCE_PRODUCTION("experience_production", "XP", "経験値"),
-    FORTUNE_FACTOR("fortune_factor", "FTN", "幸運係数"),
+    NUTRITION("nutrition", "NTR", "栄養値", Formatting.AQUA),
+    ENVIRONMENT("environment", "ENV", "環境値", Formatting.GREEN),
+    GROWTH_BOOST("growth_boost", "GRW", "成長速度", Formatting.DARK_BLUE),
+    SEEDS_PRODUCTION("seeds_production", "SEED", "種子生成", Formatting.GOLD),
+    FRUITS_PRODUCTION("fruits_production", "FRUIT", "果実生成", Formatting.LIGHT_PURPLE),
+    LEAVES_PRODUCTION("leaves_production", "LEAF", "葉面生成", Formatting.DARK_GREEN),
+    PRODUCTION_BOOST("production_boost", "PRD", "生産能力", Formatting.DARK_RED),
+    EXPERIENCE_PRODUCTION("experience_production", "XP", "経験値", Formatting.YELLOW),
+    FORTUNE_FACTOR("fortune_factor", "FTN", "幸運係数", Formatting.DARK_PURPLE),
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
