@@ -21,9 +21,19 @@ class Trait
 
 // TraitStack
 
-class TraitStack(val trait: Trait, val level: Int)
+class TraitStack(val trait: Trait, val level: Int) {
+    init {
+        require(level >= 1)
+    }
+}
 
 
 // TraitStacks
 
-class TraitStacks private constructor(val traitStackMap: SortedMap<Trait, Int>)
+class TraitStacks private constructor(val traitStackMap: SortedMap<Trait, Int>) {
+    init {
+        traitStackMap.forEach { (_, level) ->
+            require(level >= 1)
+        }
+    }
+}
