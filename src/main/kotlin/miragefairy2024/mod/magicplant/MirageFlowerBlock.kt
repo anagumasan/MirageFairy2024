@@ -1,5 +1,7 @@
 package miragefairy2024.mod.magicplant
 
+import miragefairy2024.util.EMPTY_ITEM_STACK
+import miragefairy2024.util.createItemStack
 import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.atMost
 import net.minecraft.block.Block
@@ -34,6 +36,18 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             createCuboidShape(2.0, 0.0, 2.0, 14.0, 15.0, 14.0),
             createCuboidShape(2.0, 0.0, 2.0, 14.0, 16.0, 14.0),
         )
+
+        fun createSeed(traitStacks: TraitStacks): ItemStack {
+            val itemStack = MagicPlantCard.MIRAGE_FLOWER.item.createItemStack()
+            itemStack.getOrCreateNbt().put("TraitStacks", traitStacks.toNbt())
+            return itemStack
+        }
+
+        private fun getTraitStacks(world: BlockView, blockPos: BlockPos): TraitStacks? {
+            val blockEntity = world.getBlockEntity(blockPos) as? MirageFlowerBlockEntity ?: return null
+            return blockEntity.getTraitStacks()
+        }
+
     }
 
 
@@ -70,6 +84,14 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             val traitStacks = itemStack.getTraitStacks() ?: return@run
             blockEntity.setTraitStacks(traitStacks)
         }
+    }
+
+
+    // Drop
+
+    override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
+        val traitStacks = getTraitStacks(world, pos) ?: return EMPTY_ITEM_STACK
+        return createSeed(traitStacks)
     }
 
 }
