@@ -23,9 +23,11 @@ import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.random.Random
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
+import net.minecraft.world.WorldView
 
 @Suppress("OVERRIDE_DEPRECATION")
 class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
@@ -95,6 +97,33 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             blockEntity.setTraitStacks(traitStacks)
         }
     }
+
+
+    // Growth
+
+    private fun move(world: ServerWorld, pos: BlockPos, state: BlockState, speed: Double = 1.0) {
+        val traitStacks = getTraitStacks(world, pos) ?: return
+        val traitEffects = calculateTraitEffects(world, pos, traitStacks)
+
+        val nutrition = traitEffects[TraitEffectKeyCard.NUTRITION.traitEffectKey]
+        val environment = traitEffects[TraitEffectKeyCard.ENVIRONMENT.traitEffectKey]
+        val growthBoost = traitEffects[TraitEffectKeyCard.GROWTH_BOOST.traitEffectKey]
+
+        val actualGrowthAmount = world.random.randomInt(nutrition * environment * (1 + growthBoost) * speed)
+        val oldAge = getAge(state)
+        val newAge = oldAge + actualGrowthAmount atMost MAX_AGE
+        if (newAge != oldAge) {
+            world.setBlockState(pos, withAge(newAge), NOTIFY_LISTENERS)
+        }
+
+    }
+
+    override fun hasRandomTicks(state: BlockState) = !isMaxAge(state)
+    override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) = move(world, pos, state)
+
+    override fun isFertilizable(world: WorldView, pos: BlockPos, state: BlockState) = !isMaxAge(state)
+    override fun canGrow(world: World, random: Random, pos: BlockPos, state: BlockState) = true
+    override fun grow(world: ServerWorld, random: Random, pos: BlockPos, state: BlockState) = move(world, pos, state, speed = 10.0)
 
 
     // Drop

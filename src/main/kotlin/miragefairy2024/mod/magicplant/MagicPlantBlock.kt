@@ -12,6 +12,7 @@ import miragefairy2024.util.yellow
 import mirrg.kotlin.hydrogen.max
 import net.minecraft.block.Block
 import net.minecraft.block.BlockEntityProvider
+import net.minecraft.block.Fertilizable
 import net.minecraft.block.PlantBlock
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.AliasedBlockItem
@@ -21,7 +22,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.world.World
 
-abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider
+abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable
 
 class MagicPlantSeedItem(block: Block, settings: Settings) : AliasedBlockItem(block, settings) {
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
