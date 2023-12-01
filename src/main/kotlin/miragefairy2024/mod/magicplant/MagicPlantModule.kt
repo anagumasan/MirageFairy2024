@@ -6,6 +6,7 @@ import miragefairy2024.mod.mirageFairy2024ItemGroup
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.util.BlockStateVariant
+import miragefairy2024.util.Translation
 import miragefairy2024.util.concat
 import miragefairy2024.util.enJa
 import miragefairy2024.util.register
@@ -106,9 +107,17 @@ fun initMagicPlantModule() {
         card.traitEffectKey.enJa(card.enName, card.jaName)
     }
 
+    TRAIT_TRANSLATION.enJa()
+    CREATIVE_ONLY_TRANSLATION.enJa()
+    INVALID_TRANSLATION.enJa()
+
     TraitCard.entries.forEach { card ->
         card.trait.register(card.identifier)
         card.trait.enJa(card.enName, card.jaName)
     }
 
 }
+
+val TRAIT_TRANSLATION = Translation({ "item.magicplant.trait" }, "Trait", "特性")
+val CREATIVE_ONLY_TRANSLATION = Translation({ "item.magicplant.creativeOnly" }, "Creative Only", "クリエイティブ専用")
+val INVALID_TRANSLATION = Translation({ "item.magicplant.invalid" }, "Invalid", "無効")
