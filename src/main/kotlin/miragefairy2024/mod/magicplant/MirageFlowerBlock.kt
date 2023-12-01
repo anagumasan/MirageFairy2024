@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant
 
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.randomInt
 import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.atMost
 import net.minecraft.block.Block
@@ -16,6 +17,7 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.listener.ClientPlayPacketListener
 import net.minecraft.network.packet.Packet
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
@@ -48,6 +50,14 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             return blockEntity.getTraitStacks()
         }
 
+        private fun calculateTraitEffects(world: World, blockPos: BlockPos, traitStacks: TraitStacks): MutableTraitEffects {
+            val allTraitEffects = MutableTraitEffects()
+            traitStacks.traitStackMap.forEach { (trait, level) ->
+                val traitEffects = trait.getTraitEffects(world, blockPos, level)
+                if (traitEffects != null) allTraitEffects += traitEffects
+            }
+            return allTraitEffects
+        }
     }
 
 
@@ -92,6 +102,19 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
         val traitStacks = getTraitStacks(world, pos) ?: return EMPTY_ITEM_STACK
         return createSeed(traitStacks)
+    }
+
+    // 経験値のドロップを onStacksDropped で行うと BlockEntity が得られないためこちらで実装する
+    override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
+        if (!state.isOf(newState.block)) run {
+            if (world !is ServerWorld) return@run
+            val traitStacks = getTraitStacks(world, pos) ?: return@run
+            val traitEffects = calculateTraitEffects(world, pos, traitStacks)
+            val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
+            if (experience > 0) dropExperience(world, pos, experience)
+        }
+        @Suppress("DEPRECATION")
+        super.onStateReplaced(state, world, pos, newState, moved)
     }
 
 
