@@ -5,3 +5,6 @@ import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 
 fun Trait.register(identifier: Identifier) = unit { Registry.register(traitRegistry, identifier, this) }
+
+fun Trait.getIdentifier() = traitRegistry.getId(this)!!
+fun Identifier.toTrait() = traitRegistry.get(this)
