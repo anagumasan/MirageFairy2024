@@ -26,6 +26,11 @@ fun Trait.enJa(enName: String, jaName: String) {
 }
 
 
+// TraitEffect
+
+fun <T : Any> TraitEffect<T>.getDescription() = this.key.getDescription(this.value)
+
+
 // TraitEffectKey
 
 fun TraitEffectKey<*>.register(identifier: Identifier) = unit { Registry.register(traitEffectKeyRegistry, identifier, this) }
