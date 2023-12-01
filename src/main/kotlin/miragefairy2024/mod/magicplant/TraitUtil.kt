@@ -67,3 +67,8 @@ fun ItemStack.getTraitStacks(): TraitStacks? {
 }
 
 val TraitStacks.bitCount get() = this.traitStackList.sumOf { it.level.bitCount }
+
+infix fun TraitStacks.cross(other: TraitStacks): TraitStacks {
+    // TODO
+    return TraitStacks.of(this.traitStackList + other.traitStackList)
+}
