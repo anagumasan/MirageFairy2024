@@ -30,6 +30,14 @@ enum class MaterialCard(
         "fairy_rubber", "Fairy Rubber", "夜のかけら",
         listOf(Poem("Minimize the risk of losing belongings", "空は怯える夜精に一握りの温かい闇を与えた")),
     ),
+    MIRAGE_LEAVES(
+        "mirage_leaves", "Mirage Leaves", "ミラージュの葉",
+        listOf(Poem("Don't cut your fingers!", "刻まれる、記憶の破片。")),
+    ),
+    MIRAGE_FLOUR(
+        "mirage_flour", "Mirage Flour", "ミラージュの花粉",
+        listOf(Poem("Containing metallic organic matter", "叡智の根源、創発のファンタジア。")),
+    ),
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
