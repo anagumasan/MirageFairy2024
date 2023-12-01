@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.MirageFairy2024
+import mirrg.kotlin.hydrogen.cmp
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.registry.Registry
@@ -16,7 +17,13 @@ val traitRegistry: Registry<Trait> = FabricRegistryBuilder.createSimple(traitReg
 
 // Trait
 
-class Trait
+class Trait(private val sortKey: String) : Comparable<Trait> {
+    override fun compareTo(other: Trait): Int {
+        (this.sortKey cmp other.sortKey).let { if (it != 0) return it }
+        (this.getIdentifier() cmp other.getIdentifier()).let { if (it != 0) return it }
+        return 0
+    }
+}
 
 
 // TraitStack
