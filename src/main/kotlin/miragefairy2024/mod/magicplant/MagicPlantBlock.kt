@@ -15,8 +15,10 @@ import net.minecraft.block.BlockEntityProvider
 import net.minecraft.block.PlantBlock
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.AliasedBlockItem
+import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
+import net.minecraft.util.ActionResult
 import net.minecraft.world.World
 
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider
@@ -89,5 +91,15 @@ class MagicPlantSeedItem(block: Block, settings: Settings) : AliasedBlockItem(bl
                 }
             }
 
+    }
+
+    override fun place(context: ItemPlacementContext): ActionResult {
+        if (context.stack.getTraitStacks() != null) {
+            return super.place(context)
+        } else {
+            val player = context.player ?: return ActionResult.FAIL
+            if (!player.isCreative) return ActionResult.FAIL
+            return super.place(context)
+        }
     }
 }
