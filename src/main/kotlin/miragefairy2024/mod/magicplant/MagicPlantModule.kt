@@ -103,10 +103,12 @@ fun initMagicPlantModule() {
 
     TraitEffectKeyCard.entries.forEach { card ->
         card.traitEffectKey.register(card.identifier)
+        card.traitEffectKey.enJa(card.enName, card.jaName)
     }
 
     TraitCard.entries.forEach { card ->
         card.trait.register(card.identifier)
+        card.trait.enJa(card.enName, card.jaName)
     }
 
 }

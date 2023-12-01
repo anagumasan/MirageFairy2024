@@ -1,9 +1,13 @@
 package miragefairy2024.mod.magicplant
 
+import miragefairy2024.util.en
+import miragefairy2024.util.ja
+import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.unit
 import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
+import net.minecraft.util.Util
 
 // Trait
 
@@ -12,6 +16,14 @@ fun Trait.register(identifier: Identifier) = unit { Registry.register(traitRegis
 fun Trait.getIdentifier() = traitRegistry.getId(this)!!
 fun Identifier.toTrait() = traitRegistry.get(this)
 
+fun Trait.getTranslationKey(): String = Util.createTranslationKey("mirageFairy2024.trait", this.getIdentifier())
+fun Trait.getName() = run { text { translate(this@run.getTranslationKey()) } }
+
+fun Trait.enJa(enName: String, jaName: String) {
+    en { this.getTranslationKey() to enName }
+    ja { this.getTranslationKey() to jaName }
+}
+
 
 // TraitEffectKey
 
@@ -19,6 +31,14 @@ fun TraitEffectKey.register(identifier: Identifier) = unit { Registry.register(t
 
 fun TraitEffectKey.getIdentifier() = traitEffectKeyRegistry.getId(this)!!
 fun Identifier.toTraitEffectKey() = traitEffectKeyRegistry.get(this)
+
+fun TraitEffectKey.getTranslationKey(): String = Util.createTranslationKey("mirageFairy2024.traitEffect", this.getIdentifier())
+fun TraitEffectKey.getName() = run { text { translate(this@run.getTranslationKey()) } }
+
+fun TraitEffectKey.enJa(enName: String, jaName: String) {
+    en { this.getTranslationKey() to enName }
+    ja { this.getTranslationKey() to jaName }
+}
 
 
 // TraitStacks
