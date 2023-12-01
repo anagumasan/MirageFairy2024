@@ -100,4 +100,9 @@ fun initMagicPlantModule() {
         // TODO worldgen
     }
 
+
+    TraitCard.entries.forEach { card ->
+        card.trait.register(card.identifier)
+    }
+
 }
