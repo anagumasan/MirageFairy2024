@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.util.string
 import miragefairy2024.util.toIdentifier
 import mirrg.kotlin.hydrogen.cmp
+import mirrg.kotlin.hydrogen.or
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.nbt.NbtCompound
@@ -13,6 +14,8 @@ import net.minecraft.registry.Registry
 import net.minecraft.registry.RegistryKey
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 import java.util.SortedMap
 
 // TraitRegistry
@@ -29,7 +32,9 @@ val traitEffectKeyRegistry: Registry<TraitEffectKey<*>> = FabricRegistryBuilder.
 
 // Trait
 
-class Trait(private val sortKey: String) : Comparable<Trait> {
+abstract class Trait(private val sortKey: String) : Comparable<Trait> {
+    /** 呼び出された時点でそこにブロックの実体が存在しない場合があります。 */
+    abstract fun getTraitEffects(world: World, blockPos: BlockPos, level: Int): MutableTraitEffects?
     override fun compareTo(other: Trait): Int {
         (this.sortKey cmp other.sortKey).let { if (it != 0) return it }
         (this.getIdentifier() cmp other.getIdentifier()).let { if (it != 0) return it }
@@ -39,6 +44,31 @@ class Trait(private val sortKey: String) : Comparable<Trait> {
 
 
 // TraitEffect
+
+class MutableTraitEffects {
+    private val map = mutableMapOf<TraitEffectKey<*>, Any>()
+
+    val keys get() = map.keys
+
+    val effects
+        get() = map.entries.map { (key, value) ->
+            @Suppress("UNCHECKED_CAST")
+            fun <T : Any> a(key: TraitEffectKey<T>, value: Any): TraitEffect<*> = TraitEffect(key, value as T)
+            a(key, value)
+        }
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T : Any> get(key: TraitEffectKey<T>) = map[key].or { return key.getDefaultValue() } as T
+    operator fun <T : Any> set(key: TraitEffectKey<T>, value: T?) {
+        if (value == null) {
+            map.remove(key)
+        } else {
+            map[key] = value
+        }
+    }
+}
+
+class TraitEffect<T : Any>(val key: TraitEffectKey<T>, val value: T)
 
 abstract class TraitEffectKey<T : Any> {
     abstract fun getDescription(value: T): Text

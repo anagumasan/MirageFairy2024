@@ -5,6 +5,8 @@ import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 
 // TraitCard
 
@@ -48,7 +50,9 @@ enum class TraitCard(
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
-    val trait = Trait(sortKey)
+    val trait = object : Trait(sortKey) {
+        override fun getTraitEffects(world: World, blockPos: BlockPos, level: Int) = null // TODO
+    }
 }
 
 
