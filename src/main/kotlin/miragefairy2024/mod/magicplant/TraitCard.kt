@@ -82,6 +82,7 @@ enum class TraitEffectKeyCard(
 
     val identifier = Identifier(MirageFairy2024.modId, path)
     val traitEffectKey = object : TraitEffectKey<Double>() {
+        override fun getValue(level: Int) = 0.1 * level
         override fun getDescription(value: Double) = text { getName() + (value * 100 formatAs "%+.0f%%")() }
         override fun plus(a: Double, b: Double) = a + b
         override fun getDefaultValue() = 0.0

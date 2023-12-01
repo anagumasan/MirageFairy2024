@@ -81,6 +81,7 @@ operator fun MutableTraitEffects.plusAssign(other: MutableTraitEffects) {
 class TraitEffect<T : Any>(val key: TraitEffectKey<T>, val value: T)
 
 abstract class TraitEffectKey<T : Any> {
+    abstract fun getValue(level: Int): T
     abstract fun plus(a: T, b: T): T
     abstract fun getDescription(value: T): Text
     abstract fun getDefaultValue(): T

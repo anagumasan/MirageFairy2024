@@ -8,7 +8,7 @@ class CompoundTrait(sortKey: String, private val factor: TraitFactor, private va
         val factor = factor.getFactor(world, blockPos)
         return if (factor != 0.0) {
             val traitEffects = MutableTraitEffects()
-            traitEffects[traitEffectKeyCard.traitEffectKey] = 0.1 * level * factor
+            traitEffects[traitEffectKeyCard.traitEffectKey] = traitEffectKeyCard.traitEffectKey.getValue(level) * factor
             traitEffects
         } else {
             null
