@@ -1,6 +1,8 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.util.text
+import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 
@@ -70,5 +72,7 @@ enum class TraitEffectKeyCard(
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
-    val traitEffectKey = TraitEffectKey()
+    val traitEffectKey = object : TraitEffectKey<Double>() {
+        override fun getDescription(value: Double) = text { getName() + (value * 100 formatAs "%+.0f%%")() }
+    }
 }

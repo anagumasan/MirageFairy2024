@@ -11,6 +11,7 @@ import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
 import net.minecraft.registry.Registry
 import net.minecraft.registry.RegistryKey
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import java.util.SortedMap
 
@@ -22,8 +23,8 @@ val traitRegistry: Registry<Trait> = FabricRegistryBuilder.createSimple(traitReg
 
 // TraitEffectKeyRegistry
 
-val traitEffectKeyRegistryKey: RegistryKey<Registry<TraitEffectKey>> = RegistryKey.ofRegistry(Identifier(MirageFairy2024.modId, "trait_effect_key"))
-val traitEffectKeyRegistry: Registry<TraitEffectKey> = FabricRegistryBuilder.createSimple(traitEffectKeyRegistryKey).attribute(RegistryAttribute.SYNCED).buildAndRegister()
+val traitEffectKeyRegistryKey: RegistryKey<Registry<TraitEffectKey<*>>> = RegistryKey.ofRegistry(Identifier(MirageFairy2024.modId, "trait_effect_key"))
+val traitEffectKeyRegistry: Registry<TraitEffectKey<*>> = FabricRegistryBuilder.createSimple(traitEffectKeyRegistryKey).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
 
 // Trait
@@ -39,7 +40,9 @@ class Trait(private val sortKey: String) : Comparable<Trait> {
 
 // TraitEffect
 
-class TraitEffectKey
+abstract class TraitEffectKey<T : Any> {
+    abstract fun getDescription(value: T): Text
+}
 
 
 // TraitStack

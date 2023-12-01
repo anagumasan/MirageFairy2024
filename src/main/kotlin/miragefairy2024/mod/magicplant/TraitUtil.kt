@@ -28,15 +28,15 @@ fun Trait.enJa(enName: String, jaName: String) {
 
 // TraitEffectKey
 
-fun TraitEffectKey.register(identifier: Identifier) = unit { Registry.register(traitEffectKeyRegistry, identifier, this) }
+fun TraitEffectKey<*>.register(identifier: Identifier) = unit { Registry.register(traitEffectKeyRegistry, identifier, this) }
 
-fun TraitEffectKey.getIdentifier() = traitEffectKeyRegistry.getId(this)!!
+fun TraitEffectKey<*>.getIdentifier() = traitEffectKeyRegistry.getId(this)!!
 fun Identifier.toTraitEffectKey() = traitEffectKeyRegistry.get(this)
 
-fun TraitEffectKey.getTranslationKey(): String = Util.createTranslationKey("mirageFairy2024.traitEffect", this.getIdentifier())
-fun TraitEffectKey.getName() = run { text { translate(this@run.getTranslationKey()) } }
+fun TraitEffectKey<*>.getTranslationKey(): String = Util.createTranslationKey("mirageFairy2024.traitEffect", this.getIdentifier())
+fun TraitEffectKey<*>.getName() = run { text { translate(this@run.getTranslationKey()) } }
 
-fun TraitEffectKey.enJa(enName: String, jaName: String) {
+fun TraitEffectKey<*>.enJa(enName: String, jaName: String) {
     en { this.getTranslationKey() to enName }
     ja { this.getTranslationKey() to jaName }
 }
