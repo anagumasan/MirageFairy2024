@@ -1,5 +1,6 @@
 package miragefairy2024.mod.magicplant
 
+import miragefairy2024.util.bitCount
 import miragefairy2024.util.en
 import miragefairy2024.util.ja
 import miragefairy2024.util.text
@@ -47,3 +48,5 @@ fun ItemStack.getTraitStacks(): TraitStacks? {
     val nbt = this.nbt ?: return null
     return TraitStacks.readFromNbt(nbt)
 }
+
+val TraitStacks.bitCount get() = this.traitStackList.sumOf { it.level.bitCount }
