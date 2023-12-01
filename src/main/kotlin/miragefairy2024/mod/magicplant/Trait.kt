@@ -155,3 +155,8 @@ fun TraitStacks.toNbt(): NbtList {
     }
     return nbt
 }
+
+infix fun TraitStacks.cross(other: TraitStacks): TraitStacks {
+    // TODO
+    return TraitStacks.of(this.traitStackList + other.traitStackList)
+}

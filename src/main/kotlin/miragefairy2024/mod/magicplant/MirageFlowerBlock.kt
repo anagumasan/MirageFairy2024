@@ -1,26 +1,40 @@
 package miragefairy2024.mod.magicplant
 
+import miragefairy2024.mod.MaterialCard
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.randomInt
+import miragefairy2024.util.toBlockPos
 import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.hydrogen.or
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.block.ShapeContext
 import net.minecraft.block.SideShapeType
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.enchantment.EnchantmentHelper
+import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.attribute.EntityAttributes
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
+import net.minecraft.loot.context.LootContextParameterSet
+import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.listener.ClientPlayPacketListener
 import net.minecraft.network.packet.Packet
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.sound.SoundCategory
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
+import net.minecraft.util.ActionResult
+import net.minecraft.util.Hand
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.random.Random
@@ -50,6 +64,54 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
         private fun getTraitStacks(world: BlockView, blockPos: BlockPos): TraitStacks? {
             val blockEntity = world.getBlockEntity(blockPos) as? MirageFlowerBlockEntity ?: return null
             return blockEntity.getTraitStacks()
+        }
+
+        private fun calculateCrossedSeed(world: World, blockPos: BlockPos, block: Block, traitStacks: TraitStacks): ItemStack {
+
+            val targetTraitStacksList = mutableListOf<TraitStacks>()
+            fun check(targetBlockPos: BlockPos) {
+                val targetBlockState = world.getBlockState(targetBlockPos)
+                val targetBlock = targetBlockState.block as? MirageFlowerBlock ?: return
+                if (targetBlock != block) return
+                if (!targetBlock.isMaxAge(targetBlockState)) return
+                val targetTraitStacks = getTraitStacks(world, targetBlockPos) ?: return
+                targetTraitStacksList += targetTraitStacks
+            }
+            check(blockPos.north())
+            check(blockPos.south())
+            check(blockPos.west())
+            check(blockPos.east())
+
+            if (targetTraitStacksList.isEmpty()) return createSeed(traitStacks)
+            val targetTraitStacks = targetTraitStacksList[world.random.nextInt(targetTraitStacksList.size)]
+
+            return createSeed(traitStacks cross targetTraitStacks)
+        }
+
+        private fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack> {
+            val drops = mutableListOf<ItemStack>()
+
+            val fortune = if (tool != null) EnchantmentHelper.getLevel(Enchantments.FORTUNE, tool).toDouble() else 0.0
+            val luck = player?.getAttributeValue(EntityAttributes.GENERIC_LUCK) ?: 0.0
+
+            val seedGeneration = traitEffects[TraitEffectKeyCard.SEEDS_PRODUCTION.traitEffectKey]
+            val fruitGeneration = traitEffects[TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey]
+            val leafGeneration = traitEffects[TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey]
+            val generationBoost = traitEffects[TraitEffectKeyCard.PRODUCTION_BOOST.traitEffectKey]
+            val fortuneFactor = traitEffects[TraitEffectKeyCard.FORTUNE_FACTOR.traitEffectKey]
+
+            val seedCount = world.random.randomInt(seedGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            repeat(seedCount) {
+                drops += calculateCrossedSeed(world, blockPos, block, traitStacks)
+            }
+
+            val fruitCount = world.random.randomInt(fruitGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (fruitCount > 0) drops += MaterialCard.FAIRY_PLASTIC.item.createItemStack(fruitCount) // TODO ミラージュの花粉・必要であれば圧縮
+
+            val leafCount = world.random.randomInt(leafGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (leafCount > 0) drops += Items.STICK.createItemStack(leafCount) // TODO ミラージュの葉固定
+
+            return drops
         }
 
         private fun calculateTraitEffects(world: World, blockPos: BlockPos, traitStacks: TraitStacks): MutableTraitEffects {
@@ -131,6 +193,58 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
         val traitStacks = getTraitStacks(world, pos) ?: return EMPTY_ITEM_STACK
         return createSeed(traitStacks)
+    }
+
+    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+        if (!isMaxAge(state)) return ActionResult.PASS
+        if (world.isClient) return ActionResult.SUCCESS
+
+        // 前提条件を計算
+        world as ServerWorld
+        val tool = player.mainHandStack
+
+        // ドロップアイテムを計算
+        val block = world.getBlockState(pos).block
+        val traitStacks = getTraitStacks(world, pos) ?: return ActionResult.CONSUME
+        val traitEffects = calculateTraitEffects(world, pos, traitStacks)
+        val drops = getAdditionalDrops(world, pos, block, traitStacks, traitEffects, player, tool)
+        val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
+
+        // アイテムを生成
+        drops.forEach { itemStack ->
+            dropStack(world, pos, itemStack)
+        }
+        if (experience > 0) dropExperience(world, pos, experience)
+
+        // 成長段階を消費
+        world.setBlockState(pos, withAge(0), NOTIFY_LISTENERS)
+
+        // エフェクト
+        world.playSound(null, pos, soundGroup.breakSound, SoundCategory.BLOCKS, (soundGroup.volume + 1.0F) / 2.0F * 0.5F, soundGroup.pitch * 0.8F)
+
+        return ActionResult.CONSUME
+    }
+
+    // 本来 LootTable を使ってすべて行う想定だが、他にドロップを自由に制御できる場所がないため苦肉の策でここでプログラムで生成する
+    override fun getDroppedStacks(state: BlockState, builder: LootContextParameterSet.Builder): MutableList<ItemStack> {
+        val itemStacks = mutableListOf<ItemStack>()
+        @Suppress("DEPRECATION")
+        itemStacks += super.getDroppedStacks(state, builder)
+        run {
+            val world = builder.world ?: return@run
+            val blockPos = builder.getOptional(LootContextParameters.ORIGIN).or { return@run }.toBlockPos()
+            val blockState = builder.getOptional(LootContextParameters.BLOCK_STATE) ?: return@run
+            val block = blockState.block
+            val blockEntity = builder.getOptional(LootContextParameters.BLOCK_ENTITY) as? MirageFlowerBlockEntity ?: return@run
+            val traitStacks = blockEntity.getTraitStacks() ?: return@run
+            val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
+            val player = builder.getOptional(LootContextParameters.THIS_ENTITY) as? PlayerEntity
+            val tool = builder.getOptional(LootContextParameters.TOOL)
+
+            itemStacks += createSeed(traitStacks)
+            if (isMaxAge(state)) itemStacks += getAdditionalDrops(world, blockPos, block, traitStacks, traitEffects, player, tool)
+        }
+        return itemStacks
     }
 
     // 経験値のドロップを onStacksDropped で行うと BlockEntity が得られないためこちらで実装する
