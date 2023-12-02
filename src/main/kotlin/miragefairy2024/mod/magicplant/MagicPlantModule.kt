@@ -177,6 +177,7 @@ fun initMagicPlantModule() {
             registerBiome(TraitCard.WATERLOGGING_TOLERANCE, ConventionalBiomeTags.SWAMP)
             registerBiome(TraitCard.ADVERSITY_FLOWER, ConventionalBiomeTags.MOUNTAIN)
             registerBiome(TraitCard.FLESHY_LEAVES, ConventionalBiomeTags.SAVANNA)
+            registerBiome(TraitCard.NATURAL_ABSCISSION, ConventionalBiomeTags.TAIGA)
         }
         if (block == MagicPlantCard.MIRAGE_FLOWER.block) {
             // 栄養系
