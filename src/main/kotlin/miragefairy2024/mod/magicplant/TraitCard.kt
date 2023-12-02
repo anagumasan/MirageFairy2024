@@ -115,7 +115,7 @@ object TraitFactors {
     val ALWAYS = TraitFactor { _, _ -> 1.0 }
     val FLOOR_MOISTURE = TraitFactor { world, blockPos -> world.getMoisture(blockPos.down()) }
     val FLOOR_CRYSTAL_ERG = TraitFactor { world, blockPos -> world.getCrystalErg(blockPos.down()) }
-    val CONCRETE_FLOOR = TraitCondition { world, blockPos -> world.getBlockState(blockPos).isIn(BlockTagCard.CONCRETE.tag) }
+    val CONCRETE_FLOOR = TraitCondition { world, blockPos -> world.getBlockState(blockPos.down()).isIn(BlockTagCard.CONCRETE.tag) }
     val LIGHT = TraitFactor { world, blockPos -> (world.getLightLevel(blockPos) - 8 atLeast 0) / 7.0 }
     val DARKNESS = TraitFactor { world, blockPos -> ((15 - world.getLightLevel(blockPos)) - 8 atLeast 0) / 7.0 }
     val LOW_TEMPERATURE = TraitCondition { world, blockPos -> world.getBiome(blockPos).temperatureCategory == TemperatureCategory.LOW }
