@@ -176,6 +176,7 @@ fun initMagicPlantModule() {
             registerBiome(TraitCard.HEATING_MECHANISM, ConventionalBiomeTags.SNOWY)
             registerBiome(TraitCard.WATERLOGGING_TOLERANCE, ConventionalBiomeTags.SWAMP)
             registerBiome(TraitCard.ADVERSITY_FLOWER, ConventionalBiomeTags.MOUNTAIN)
+            registerBiome(TraitCard.FLESHY_LEAVES, ConventionalBiomeTags.SAVANNA)
         }
         if (block == MagicPlantCard.MIRAGE_FLOWER.block) {
             // 栄養系
