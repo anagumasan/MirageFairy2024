@@ -5,14 +5,14 @@ import net.minecraft.block.Block
 import net.minecraft.item.Item
 
 fun en(getter: () -> Pair<String, String>) {
-    MirageFairy2024DataGenerator.englishTranslations += {
+    MirageFairy2024DataGenerator.englishTranslationGenerators += {
         val pair = getter()
         it.add(pair.first, pair.second)
     }
 }
 
 fun ja(getter: () -> Pair<String, String>) {
-    MirageFairy2024DataGenerator.japaneseTranslations += {
+    MirageFairy2024DataGenerator.japaneseTranslationGenerators += {
         val pair = getter()
         it.add(pair.first, pair.second)
     }

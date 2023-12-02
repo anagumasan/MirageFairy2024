@@ -19,27 +19,27 @@ import java.util.concurrent.CompletableFuture
 
 object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
 
-    val blockStateModelGenerations = mutableListOf<(BlockStateModelGenerator) -> Unit>()
-    val itemModelGenerations = mutableListOf<(ItemModelGenerator) -> Unit>()
-    val blockTagGenerations = mutableListOf<((TagKey<Block>) -> FabricTagProvider<Block>.FabricTagBuilder) -> Unit>()
-    val itemTagGenerations = mutableListOf<((TagKey<Item>) -> FabricTagProvider<Item>.FabricTagBuilder) -> Unit>()
-    val blockLootTableGenerations = mutableListOf<(FabricBlockLootTableProvider) -> Unit>()
-    val recipeGenerations = mutableListOf<(RecipeExporter) -> Unit>()
-    val englishTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
-    val japaneseTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
+    val blockStateModelGenerators = mutableListOf<(BlockStateModelGenerator) -> Unit>()
+    val itemModelGenerators = mutableListOf<(ItemModelGenerator) -> Unit>()
+    val blockTagGenerators = mutableListOf<((TagKey<Block>) -> FabricTagProvider<Block>.FabricTagBuilder) -> Unit>()
+    val itemTagGenerators = mutableListOf<((TagKey<Item>) -> FabricTagProvider<Item>.FabricTagBuilder) -> Unit>()
+    val blockLootTableGenerators = mutableListOf<(FabricBlockLootTableProvider) -> Unit>()
+    val recipeGenerators = mutableListOf<(RecipeExporter) -> Unit>()
+    val englishTranslationGenerators = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
+    val japaneseTranslationGenerators = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
 
     override fun onInitializeDataGenerator(fabricDataGenerator: FabricDataGenerator) {
         val pack = fabricDataGenerator.createPack()
         pack.addProvider { output: FabricDataOutput ->
             object : FabricModelProvider(output) {
                 override fun generateBlockStateModels(blockStateModelGenerator: BlockStateModelGenerator) {
-                    blockStateModelGenerations.forEach {
+                    blockStateModelGenerators.forEach {
                         it(blockStateModelGenerator)
                     }
                 }
 
                 override fun generateItemModels(itemModelGenerator: ItemModelGenerator) {
-                    itemModelGenerations.forEach {
+                    itemModelGenerators.forEach {
                         it(itemModelGenerator)
                     }
                 }
@@ -48,7 +48,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<RegistryWrapper.WrapperLookup> ->
             object : FabricTagProvider.BlockTagProvider(output, registriesFuture) {
                 override fun configure(arg: RegistryWrapper.WrapperLookup) {
-                    blockTagGenerations.forEach {
+                    blockTagGenerators.forEach {
                         it { tag -> getOrCreateTagBuilder(tag) }
                     }
                 }
@@ -57,7 +57,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<RegistryWrapper.WrapperLookup> ->
             object : FabricTagProvider.ItemTagProvider(output, registriesFuture) {
                 override fun configure(arg: RegistryWrapper.WrapperLookup) {
-                    itemTagGenerations.forEach {
+                    itemTagGenerators.forEach {
                         it { tag -> getOrCreateTagBuilder(tag) }
                     }
                 }
@@ -66,7 +66,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput ->
             object : FabricBlockLootTableProvider(output) {
                 override fun generate() {
-                    blockLootTableGenerations.forEach {
+                    blockLootTableGenerators.forEach {
                         it(this)
                     }
                 }
@@ -75,7 +75,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput ->
             object : FabricRecipeProvider(output) {
                 override fun generate(exporter: RecipeExporter) {
-                    recipeGenerations.forEach {
+                    recipeGenerators.forEach {
                         it(exporter)
                     }
                 }
@@ -84,7 +84,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput ->
             object : FabricLanguageProvider(output, "en_us") {
                 override fun generateTranslations(translationBuilder: TranslationBuilder) {
-                    englishTranslations.forEach {
+                    englishTranslationGenerators.forEach {
                         it(translationBuilder)
                     }
                 }
@@ -93,7 +93,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput ->
             object : FabricLanguageProvider(output, "ja_jp") {
                 override fun generateTranslations(translationBuilder: TranslationBuilder) {
-                    japaneseTranslations.forEach {
+                    japaneseTranslationGenerators.forEach {
                         it(translationBuilder)
                     }
                 }
