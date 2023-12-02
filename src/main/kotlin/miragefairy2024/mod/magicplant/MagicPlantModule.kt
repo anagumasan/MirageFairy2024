@@ -206,7 +206,8 @@ fun initMagicPlantModule() {
             // 生産系
             N("0010", TraitCard.SEEDS_PRODUCTION)
             R("0001", TraitCard.SEEDS_PRODUCTION)
-            N("1010", TraitCard.FRUITS_PRODUCTION)
+            N("1000", TraitCard.FRUITS_PRODUCTION)
+            N("0010", TraitCard.FRUITS_PRODUCTION)
             R("0001", TraitCard.FRUITS_PRODUCTION)
             N("0010", TraitCard.LEAVES_PRODUCTION)
             R("0001", TraitCard.LEAVES_PRODUCTION)
