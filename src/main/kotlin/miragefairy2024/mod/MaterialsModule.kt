@@ -94,7 +94,7 @@ fun initMaterialsModule() {
     }
 
     fun registerCompressionRecipeGeneration(low: MaterialCard, high: MaterialCard) {
-        MirageFairy2024DataGenerator.recipeGenerators += {
+        MirageFairy2024DataGenerator.recipeGenerators {
             ShapedRecipeJsonBuilder
                 .create(RecipeCategory.MISC, high.item, 1)
                 .group(high.item)

@@ -72,7 +72,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
 class DataGeneratorRegistry<T> {
     val list = mutableListOf<(T) -> Unit>()
 
-    operator fun plusAssign(listener: (T) -> Unit) {
+    operator fun invoke(listener: (T) -> Unit) {
         this.list += listener
     }
 

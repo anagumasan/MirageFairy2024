@@ -49,7 +49,7 @@ fun Model.with(vararg textureEntries: Pair<TextureKey, Identifier>): TexturedMod
 
 
 fun Item.registerItemModelGeneration(model: Model) {
-    MirageFairy2024DataGenerator.itemModelGenerators += {
+    MirageFairy2024DataGenerator.itemModelGenerators {
         it.register(this, model)
     }
 }
@@ -58,7 +58,7 @@ fun Item.registerGeneratedItemModelGeneration() = this.registerItemModelGenerati
 
 
 fun TexturedModel.registerModelGeneration(identifier: Identifier) {
-    MirageFairy2024DataGenerator.blockStateModelGenerators += {
+    MirageFairy2024DataGenerator.blockStateModelGenerators {
         this.model.upload(identifier, this.textures, it.modelCollector)
     }
 }
@@ -66,7 +66,7 @@ fun TexturedModel.registerModelGeneration(identifier: Identifier) {
 fun Model.registerModelGeneration(identifier: Identifier, vararg textureEntries: Pair<TextureKey, Identifier>) = this.with(*textureEntries).registerModelGeneration(identifier)
 
 fun Block.registerModelGeneration(texturedModel: TexturedModel) {
-    MirageFairy2024DataGenerator.blockStateModelGenerators += {
+    MirageFairy2024DataGenerator.blockStateModelGenerators {
         texturedModel.model.upload("block/" concat this.getIdentifier(), texturedModel.textures, it.modelCollector)
     }
 }
@@ -96,7 +96,7 @@ class BlockStateVariant(
 }
 
 fun Block.registerVariantsBlockStateGeneration(entriesGetter: () -> List<Pair<List<Pair<String, String>>, BlockStateVariant>>) {
-    MirageFairy2024DataGenerator.blockStateModelGenerators += {
+    MirageFairy2024DataGenerator.blockStateModelGenerators {
         it.blockStateCollector.accept(object : BlockStateSupplier {
             override fun get() = jsonObject(
                 "variants" to jsonObject(
@@ -120,7 +120,7 @@ fun Block.registerVariantsBlockStateGeneration(entriesGetter: () -> List<Pair<Li
 }
 
 fun Block.registerSingletonBlockStateGeneration() {
-    MirageFairy2024DataGenerator.blockStateModelGenerators += {
+    MirageFairy2024DataGenerator.blockStateModelGenerators {
         it.blockStateCollector.accept(BlockStateModelGenerator.createSingletonBlockState(this, "block/" concat this.getIdentifier()))
     }
 }
