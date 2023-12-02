@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:super_rare_mirage_flour",
+  "key": {
+    "#": {
+      "item": "miragefairy2024:ultra_rare_mirage_flour"
+    }
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "item": "miragefairy2024:super_rare_mirage_flour"
+  },
+  "show_notification": true
+}

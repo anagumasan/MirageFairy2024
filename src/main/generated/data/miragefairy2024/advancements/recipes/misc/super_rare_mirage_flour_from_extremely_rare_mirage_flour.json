@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_extremely_rare_mirage_flour": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "miragefairy2024:extremely_rare_mirage_flour"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:super_rare_mirage_flour_from_extremely_rare_mirage_flour"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_extremely_rare_mirage_flour"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:super_rare_mirage_flour_from_extremely_rare_mirage_flour"
+    ]
+  },
+  "sends_telemetry_event": false
+}
