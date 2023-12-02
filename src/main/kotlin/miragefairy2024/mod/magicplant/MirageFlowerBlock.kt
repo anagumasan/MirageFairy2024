@@ -86,7 +86,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             if (targetTraitStacksList.isEmpty()) return createSeed(traitStacks)
             val targetTraitStacks = targetTraitStacksList[world.random.nextInt(targetTraitStacksList.size)]
 
-            return createSeed(traitStacks cross targetTraitStacks)
+            return createSeed(crossTraitStacks(world.random, traitStacks, targetTraitStacks))
         }
 
         private fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack> {
