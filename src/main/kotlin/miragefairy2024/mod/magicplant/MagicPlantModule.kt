@@ -303,23 +303,25 @@ fun initMagicPlantModule() {
             S("0001", TraitCard.CRYSTAL_ABSORPTION)
 
             // 環境系
-            N("1000", TraitCard.AIR_ADAPTATION)
+            N("1000", TraitCard.AIR_ADAPTATION) { !biome(ConventionalBiomeTags.IN_THE_END) }
+            N("0100", TraitCard.AIR_ADAPTATION) { biome(ConventionalBiomeTags.IN_THE_END) }
             R("0010", TraitCard.AIR_ADAPTATION)
             S("0001", TraitCard.AIR_ADAPTATION)
 
             // 生産系
-            N("0010", TraitCard.SEEDS_PRODUCTION)
+            N("0100", TraitCard.SEEDS_PRODUCTION) { biome(ConventionalBiomeTags.IN_THE_END) }
+            N("0010", TraitCard.SEEDS_PRODUCTION) { !biome(ConventionalBiomeTags.IN_THE_END) }
             R("0001", TraitCard.SEEDS_PRODUCTION)
-            N("1000", TraitCard.FRUITS_PRODUCTION)
-            N("0010", TraitCard.FRUITS_PRODUCTION)
+            N("1000", TraitCard.FRUITS_PRODUCTION) { !biome(ConventionalBiomeTags.IN_NETHER) }
+            N("0010", TraitCard.FRUITS_PRODUCTION) { !biome(ConventionalBiomeTags.IN_NETHER) }
             R("0001", TraitCard.FRUITS_PRODUCTION)
-            N("0010", TraitCard.LEAVES_PRODUCTION)
+            N("0010", TraitCard.LEAVES_PRODUCTION) { !biome(ConventionalBiomeTags.IN_NETHER) }
             R("0001", TraitCard.LEAVES_PRODUCTION)
             R("0010", TraitCard.EXPERIENCE_PRODUCTION)
             S("0001", TraitCard.EXPERIENCE_PRODUCTION)
 
             // 妖精の祝福
-            N("0010", TraitCard.FAIRY_BLESSING)
+            N("0010", TraitCard.FAIRY_BLESSING) { !biome(ConventionalBiomeTags.IN_NETHER) }
             R("0001", TraitCard.FAIRY_BLESSING)
         }
 
