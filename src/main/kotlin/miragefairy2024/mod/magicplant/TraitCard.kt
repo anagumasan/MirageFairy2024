@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.BlockTagCard
 import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.getCrystalErg
@@ -12,6 +13,7 @@ import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
+import net.minecraft.world.Heightmap
 import kotlin.math.pow
 
 // TraitCard
@@ -54,8 +56,12 @@ enum class TraitCard(
     HEATING_MECHANISM("heating_mechanism", "6part", "Heating Mechanism", "発熱機構", TraitFactors.LOW_TEMPERATURE, TraitEffectKeyCard.ENVIRONMENT),
     WATERLOGGING_TOLERANCE("waterlogging_tolerance", "6part", "Waterlogging Tolerance", "浸水耐性", TraitFactors.HIGH_HUMIDITY, TraitEffectKeyCard.ENVIRONMENT),
     ADVERSITY_FLOWER("adversity_flower", "6part", "Adversity Flower", "高嶺の花", TraitFactors.ALWAYS, TraitEffectKeyCard.FRUITS_PRODUCTION),
-    FLESHY_LEAVES("fleshy_leaves", "6part", "Fleshy Leaves", "肉厚の葉", TraitFactors.LOW_HUMIDITY, TraitEffectKeyCard.ENVIRONMENT),
+    FLESHY_LEAVES("fleshy_leaves", "6part", "Fleshy Leaves", "肉厚の葉", TraitFactors.LOW_HUMIDITY, TraitEffectKeyCard.LEAVES_PRODUCTION),
     NATURAL_ABSCISSION("natural_abscission", "6part", "Natural Abscission", "自然落果", TraitFactors.ALWAYS, TraitEffectKeyCard.NATURAL_ABSCISSION),
+    CARNIVOROUS_PLANT("carnivorous_plant", "6part", "Carnivorous Plant", "食虫植物", TraitFactors.OUTDOOR, TraitEffectKeyCard.NUTRITION),
+    ETHER_PREDATION("ether_predation", "6part", "Ether Predation", "エーテル捕食", TraitFactors.ALWAYS, TraitEffectKeyCard.NUTRITION),
+    PAVEMENT_FLOWERS("pavement_flowers", "6part", "Pavement Flowers", "アスファルトに咲く花", TraitFactors.FLOOR_CONCRETE, TraitEffectKeyCard.GROWTH_BOOST),
+    PROSPERITY_OF_SPECIES("prosperity_of_species", "6part", "Prosperity of Species", "種の繁栄", TraitFactors.ALWAYS, TraitEffectKeyCard.SEEDS_PRODUCTION),
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
@@ -109,6 +115,7 @@ object TraitFactors {
     val ALWAYS = TraitFactor { _, _ -> 1.0 }
     val FLOOR_MOISTURE = TraitFactor { world, blockPos -> world.getMoisture(blockPos.down()) }
     val FLOOR_CRYSTAL_ERG = TraitFactor { world, blockPos -> world.getCrystalErg(blockPos.down()) }
+    val FLOOR_CONCRETE = TraitCondition { world, blockPos -> world.getBlockState(blockPos).isIn(BlockTagCard.CONCRETE.tag) }
     val LIGHT = TraitFactor { world, blockPos -> (world.getLightLevel(blockPos) - 8 atLeast 0) / 7.0 }
     val DARKNESS = TraitFactor { world, blockPos -> ((15 - world.getLightLevel(blockPos)) - 8 atLeast 0) / 7.0 }
     val LOW_TEMPERATURE = TraitCondition { world, blockPos -> world.getBiome(blockPos).temperatureCategory == TemperatureCategory.LOW }
@@ -117,4 +124,5 @@ object TraitFactors {
     val LOW_HUMIDITY = TraitCondition { world, blockPos -> world.getBiome(blockPos).humidityCategory == HumidityCategory.LOW }
     val MEDIUM_HUMIDITY = TraitCondition { world, blockPos -> world.getBiome(blockPos).humidityCategory == HumidityCategory.MEDIUM }
     val HIGH_HUMIDITY = TraitCondition { world, blockPos -> world.getBiome(blockPos).humidityCategory == HumidityCategory.HIGH }
+    val OUTDOOR = TraitCondition { world, blockPos -> blockPos.y >= world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, blockPos).y }
 }

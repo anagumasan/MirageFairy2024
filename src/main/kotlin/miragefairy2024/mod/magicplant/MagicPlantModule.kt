@@ -175,10 +175,14 @@ fun initMagicPlantModule() {
             registerBiome(TraitCard.SPINY_LEAVES, ConventionalBiomeTags.MESA)
             registerBiome(TraitCard.DESERT_GEM, ConventionalBiomeTags.DESERT)
             registerBiome(TraitCard.HEATING_MECHANISM, ConventionalBiomeTags.SNOWY)
-            registerBiome(TraitCard.WATERLOGGING_TOLERANCE, ConventionalBiomeTags.SWAMP)
+            registerBiome(TraitCard.WATERLOGGING_TOLERANCE, ConventionalBiomeTags.RIVER)
             registerBiome(TraitCard.ADVERSITY_FLOWER, ConventionalBiomeTags.MOUNTAIN)
             registerBiome(TraitCard.FLESHY_LEAVES, ConventionalBiomeTags.SAVANNA)
             registerBiome(TraitCard.NATURAL_ABSCISSION, ConventionalBiomeTags.TAIGA)
+            registerBiome(TraitCard.CARNIVOROUS_PLANT, ConventionalBiomeTags.SWAMP)
+            registerBiome(TraitCard.ETHER_PREDATION, ConventionalBiomeTags.IN_THE_END)
+            registerBiome(TraitCard.PAVEMENT_FLOWERS, ConventionalBiomeTags.IN_NETHER)
+            registerBiome(TraitCard.PROSPERITY_OF_SPECIES, ConventionalBiomeTags.PLAINS)
         }
         if (block == MagicPlantCard.MIRAGE_FLOWER.block) {
             // 栄養系
