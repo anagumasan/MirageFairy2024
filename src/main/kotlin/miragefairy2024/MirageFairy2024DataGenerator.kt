@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider
@@ -13,6 +14,9 @@ import net.minecraft.data.client.BlockStateModelGenerator
 import net.minecraft.data.client.ItemModelGenerator
 import net.minecraft.data.server.recipe.RecipeExporter
 import net.minecraft.item.Item
+import net.minecraft.registry.Registry
+import net.minecraft.registry.RegistryBuilder
+import net.minecraft.registry.RegistryKey
 import net.minecraft.registry.RegistryWrapper
 import net.minecraft.registry.tag.TagKey
 import java.util.concurrent.CompletableFuture
@@ -25,8 +29,11 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
     val itemTagGenerators = DataGeneratorRegistry<(TagKey<Item>) -> FabricTagProvider<Item>.FabricTagBuilder>()
     val blockLootTableGenerators = DataGeneratorRegistry<FabricBlockLootTableProvider>()
     val recipeGenerators = DataGeneratorRegistry<RecipeExporter>()
+    val dynamicGeneratingRegistries = mutableSetOf<RegistryKey<out Registry<*>>>()
     val englishTranslationGenerators = DataGeneratorRegistry<FabricLanguageProvider.TranslationBuilder>()
     val japaneseTranslationGenerators = DataGeneratorRegistry<FabricLanguageProvider.TranslationBuilder>()
+
+    val onBuildRegistry = mutableListOf<(RegistryBuilder) -> Unit>()
 
     override fun onInitializeDataGenerator(fabricDataGenerator: FabricDataGenerator) {
         val pack = fabricDataGenerator.createPack()
@@ -56,6 +63,16 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
                 override fun generate(exporter: RecipeExporter) = recipeGenerators.fire { it(exporter) }
             }
         }
+        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<RegistryWrapper.WrapperLookup> ->
+            object : FabricDynamicRegistryProvider(output, registriesFuture) {
+                override fun getName() = "World Gen"
+                override fun configure(registries: RegistryWrapper.WrapperLookup, entries: Entries) {
+                    dynamicGeneratingRegistries.forEach {
+                        entries.addAll(registries.getWrapperOrThrow(it))
+                    }
+                }
+            }
+        }
         pack.addProvider { output: FabricDataOutput ->
             object : FabricLanguageProvider(output, "en_us") {
                 override fun generateTranslations(translationBuilder: TranslationBuilder) = englishTranslationGenerators.fire { it(translationBuilder) }
@@ -65,6 +82,12 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
             object : FabricLanguageProvider(output, "ja_jp") {
                 override fun generateTranslations(translationBuilder: TranslationBuilder) = japaneseTranslationGenerators.fire { it(translationBuilder) }
             }
+        }
+    }
+
+    override fun buildRegistry(registryBuilder: RegistryBuilder) {
+        onBuildRegistry.forEach {
+            it(registryBuilder)
         }
     }
 }
