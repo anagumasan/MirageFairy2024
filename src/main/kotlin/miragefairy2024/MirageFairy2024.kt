@@ -4,6 +4,7 @@ import miragefairy2024.mod.initCommonModule
 import miragefairy2024.mod.initMaterialsModule
 import miragefairy2024.mod.initOresModule
 import miragefairy2024.mod.initPoemModule
+import miragefairy2024.mod.initVanillaModule
 import miragefairy2024.mod.magicplant.initMagicPlantModule
 import net.fabricmc.api.ModInitializer
 import org.slf4j.LoggerFactory
@@ -17,6 +18,7 @@ object MirageFairy2024 : ModInitializer {
 
     override fun onInitialize() {
         initCommonModule()
+        initVanillaModule()
         initPoemModule()
         initMaterialsModule()
         initOresModule()
