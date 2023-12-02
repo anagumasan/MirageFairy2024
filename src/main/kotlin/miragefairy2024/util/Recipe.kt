@@ -3,6 +3,8 @@ package miragefairy2024.util
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents
 import net.minecraft.block.Blocks
 import net.minecraft.block.ComposterBlock
+import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder
+import net.minecraft.data.server.recipe.RecipeProvider
 import net.minecraft.enchantment.Enchantments
 import net.minecraft.item.Item
 import net.minecraft.item.Items
@@ -14,7 +16,15 @@ import net.minecraft.loot.function.ExplosionDecayLootFunction
 import net.minecraft.predicate.entity.LocationPredicate
 import net.minecraft.predicate.item.ItemPredicate
 import net.minecraft.registry.RegistryKey
+import net.minecraft.registry.tag.TagKey
 import net.minecraft.world.biome.Biome
+
+fun <T : CraftingRecipeJsonBuilder> T.criterion(item: Item) = this.also { it.criterion("has_${item.getIdentifier().path}", RecipeProvider.conditionsFromItem(item)) }
+fun <T : CraftingRecipeJsonBuilder> T.criterion(tagKey: TagKey<Item>) = this.also { it.criterion("has_${tagKey.id.path}", RecipeProvider.conditionsFromTag(tagKey)) }
+fun <T : CraftingRecipeJsonBuilder> T.group(item: Item) = this.also { it.group("${item.getIdentifier()}") }
+
+
+// Init
 
 fun Item.registerGrassDrop(amount: Float = 1.0F, biome: (() -> RegistryKey<Biome>)? = null) {
     LootTableEvents.MODIFY.register { _, _, id, tableBuilder, source ->
