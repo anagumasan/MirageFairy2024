@@ -6,10 +6,12 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider
 import net.minecraft.block.Block
 import net.minecraft.data.client.BlockStateModelGenerator
 import net.minecraft.data.client.ItemModelGenerator
+import net.minecraft.data.server.recipe.RecipeExporter
 import net.minecraft.item.Item
 import net.minecraft.registry.RegistryWrapper
 import net.minecraft.registry.tag.TagKey
@@ -22,6 +24,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
     val blockTagGenerations = mutableListOf<((TagKey<Block>) -> FabricTagProvider<Block>.FabricTagBuilder) -> Unit>()
     val itemTagGenerations = mutableListOf<((TagKey<Item>) -> FabricTagProvider<Item>.FabricTagBuilder) -> Unit>()
     val blockLootTableGenerations = mutableListOf<(FabricBlockLootTableProvider) -> Unit>()
+    val recipeGenerations = mutableListOf<(RecipeExporter) -> Unit>()
     val englishTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
     val japaneseTranslations = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
 
@@ -65,6 +68,15 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
                 override fun generate() {
                     blockLootTableGenerations.forEach {
                         it(this)
+                    }
+                }
+            }
+        }
+        pack.addProvider { output: FabricDataOutput ->
+            object : FabricRecipeProvider(output) {
+                override fun generate(exporter: RecipeExporter) {
+                    recipeGenerations.forEach {
+                        it(exporter)
                     }
                 }
             }
