@@ -19,14 +19,14 @@ import java.util.concurrent.CompletableFuture
 
 object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
 
-    val blockStateModelGenerators = mutableListOf<(BlockStateModelGenerator) -> Unit>()
-    val itemModelGenerators = mutableListOf<(ItemModelGenerator) -> Unit>()
-    val blockTagGenerators = mutableListOf<((TagKey<Block>) -> FabricTagProvider<Block>.FabricTagBuilder) -> Unit>()
-    val itemTagGenerators = mutableListOf<((TagKey<Item>) -> FabricTagProvider<Item>.FabricTagBuilder) -> Unit>()
-    val blockLootTableGenerators = mutableListOf<(FabricBlockLootTableProvider) -> Unit>()
-    val recipeGenerators = mutableListOf<(RecipeExporter) -> Unit>()
-    val englishTranslationGenerators = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
-    val japaneseTranslationGenerators = mutableListOf<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
+    val blockStateModelGenerators = DataGeneratorRegistry<BlockStateModelGenerator>()
+    val itemModelGenerators = DataGeneratorRegistry<ItemModelGenerator>()
+    val blockTagGenerators = DataGeneratorRegistry<(TagKey<Block>) -> FabricTagProvider<Block>.FabricTagBuilder>()
+    val itemTagGenerators = DataGeneratorRegistry<(TagKey<Item>) -> FabricTagProvider<Item>.FabricTagBuilder>()
+    val blockLootTableGenerators = DataGeneratorRegistry<FabricBlockLootTableProvider>()
+    val recipeGenerators = DataGeneratorRegistry<RecipeExporter>()
+    val englishTranslationGenerators = DataGeneratorRegistry<FabricLanguageProvider.TranslationBuilder>()
+    val japaneseTranslationGenerators = DataGeneratorRegistry<FabricLanguageProvider.TranslationBuilder>()
 
     override fun onInitializeDataGenerator(fabricDataGenerator: FabricDataGenerator) {
         val pack = fabricDataGenerator.createPack()
@@ -98,6 +98,20 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
                     }
                 }
             }
+        }
+    }
+}
+
+class DataGeneratorRegistry<T> {
+    val list = mutableListOf<(T) -> Unit>()
+
+    operator fun plusAssign(listener: (T) -> Unit) {
+        this.list += listener
+    }
+
+    fun forEach(processor: ((T) -> Unit) -> Unit) {
+        this.list.forEach {
+            processor(it)
         }
     }
 }
