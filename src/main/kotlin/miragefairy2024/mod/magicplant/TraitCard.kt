@@ -12,6 +12,7 @@ import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
+import kotlin.math.pow
 
 // TraitCard
 
@@ -68,24 +69,34 @@ enum class TraitEffectKeyCard(
     val enName: String,
     val jaName: String,
     val color: Formatting,
+    isLogScale: Boolean,
 ) {
-    NUTRITION("nutrition", "NTR", "栄養値", Formatting.AQUA),
-    ENVIRONMENT("environment", "ENV", "環境値", Formatting.GREEN),
-    GROWTH_BOOST("growth_boost", "GRW", "成長速度", Formatting.DARK_BLUE),
-    SEEDS_PRODUCTION("seeds_production", "SEED", "種子生成", Formatting.GOLD),
-    FRUITS_PRODUCTION("fruits_production", "FRUIT", "果実生成", Formatting.LIGHT_PURPLE),
-    LEAVES_PRODUCTION("leaves_production", "LEAF", "葉面生成", Formatting.DARK_GREEN),
-    PRODUCTION_BOOST("production_boost", "PRD", "生産能力", Formatting.DARK_RED),
-    EXPERIENCE_PRODUCTION("experience_production", "XP", "経験値", Formatting.YELLOW),
-    FORTUNE_FACTOR("fortune_factor", "FTN", "幸運係数", Formatting.DARK_PURPLE),
+    NUTRITION("nutrition", "NTR", "栄養値", Formatting.AQUA, false),
+    ENVIRONMENT("environment", "ENV", "環境値", Formatting.GREEN, false),
+    GROWTH_BOOST("growth_boost", "GRW", "成長速度", Formatting.DARK_BLUE, false),
+    SEEDS_PRODUCTION("seeds_production", "SEED", "種子生成", Formatting.GOLD, false),
+    FRUITS_PRODUCTION("fruits_production", "FRUIT", "果実生成", Formatting.LIGHT_PURPLE, false),
+    LEAVES_PRODUCTION("leaves_production", "LEAF", "葉面生成", Formatting.DARK_GREEN, false),
+    PRODUCTION_BOOST("production_boost", "PRD", "生産能力", Formatting.DARK_RED, false),
+    EXPERIENCE_PRODUCTION("experience_production", "XP", "経験値", Formatting.YELLOW, false),
+    FORTUNE_FACTOR("fortune_factor", "FTN", "幸運係数", Formatting.DARK_PURPLE, false),
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
-    val traitEffectKey = object : TraitEffectKey<Double>() {
-        override fun getValue(level: Int) = 0.1 * level
-        override fun getDescription(value: Double) = text { getName() + (value * 100 formatAs "%+.0f%%")() }
-        override fun plus(a: Double, b: Double) = a + b
-        override fun getDefaultValue() = 0.0
+    val traitEffectKey = if (isLogScale) {
+        object : TraitEffectKey<Double>() {
+            override fun getValue(level: Int) = 1 - 0.95.pow(level.toDouble())
+            override fun getDescription(value: Double) = text { getName() + (value * 100 formatAs "%+.0f%%")() }
+            override fun plus(a: Double, b: Double) = 1.0 - (1.0 - a) * (1.0 - b)
+            override fun getDefaultValue() = 0.0
+        }
+    } else {
+        object : TraitEffectKey<Double>() {
+            override fun getValue(level: Int) = 0.1 * level
+            override fun getDescription(value: Double) = text { getName() + (value * 100 formatAs "%+.0f%%")() }
+            override fun plus(a: Double, b: Double) = a + b
+            override fun getDefaultValue() = 0.0
+        }
     }
 }
 
