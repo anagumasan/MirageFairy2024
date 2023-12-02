@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.MirageFairy2024DataGenerator
 import miragefairy2024.mod.Poem
 import miragefairy2024.mod.mirageFairy2024ItemGroup
 import miragefairy2024.mod.registerPoem
@@ -24,6 +25,8 @@ import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.temperatureCategory
 import miragefairy2024.util.weightedRandom
 import miragefairy2024.util.with
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags
 import net.minecraft.block.BlockState
@@ -34,11 +37,25 @@ import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.data.client.Models
 import net.minecraft.data.client.TextureKey
 import net.minecraft.item.Item
+import net.minecraft.registry.RegistryKey
+import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.biome.Biome
+import net.minecraft.world.biome.BiomeKeys
+import net.minecraft.world.gen.GenerationStep
+import net.minecraft.world.gen.feature.Feature
+import net.minecraft.world.gen.feature.PlacedFeature
+import net.minecraft.world.gen.feature.PlacedFeatures
+import net.minecraft.world.gen.feature.RandomPatchFeatureConfig
+import net.minecraft.world.gen.feature.SimpleBlockFeatureConfig
+import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier
+import net.minecraft.world.gen.placementmodifier.RarityFilterPlacementModifier
+import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier
+import net.minecraft.world.gen.stateprovider.BlockStateProvider
+
 
 class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
     blockPath: String,
@@ -108,7 +125,94 @@ fun initMagicPlantModule() {
 
         //card.block.registerTagGenerate(BlockTags.SMALL_FLOWERS) // これをやるとエンダーマンが勝手に引っこ抜いていく
 
-        // TODO worldgen
+        // ミラージュの小さな塊の地形生成
+        run {
+            val identifier = Identifier(MirageFairy2024.modId, "mirage_cluster")
+            val configuredKey = RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, identifier)
+            val placedKey = RegistryKey.of(RegistryKeys.PLACED_FEATURE, identifier)
+            MirageFairy2024DataGenerator.onBuildRegistry += {
+                it.addRegistry(RegistryKeys.CONFIGURED_FEATURE) { context ->
+                    val blockStateProvider = BlockStateProvider.of(card.block.withAge(MirageFlowerBlock.MAX_AGE))
+                    val configuredFeature = Feature.FLOWER with RandomPatchFeatureConfig(6, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, SimpleBlockFeatureConfig(blockStateProvider)))
+                    context.register(configuredKey, configuredFeature)
+                }
+            }
+            MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.CONFIGURED_FEATURE
+            MirageFairy2024DataGenerator.onBuildRegistry += {
+                it.addRegistry(RegistryKeys.PLACED_FEATURE) { context ->
+                    val placementModifiers = listOf(
+                        RarityFilterPlacementModifier.of(16),
+                        SquarePlacementModifier.of(),
+                        PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP,
+                        BiomePlacementModifier.of(),
+                    )
+                    val placedFeature = PlacedFeature(context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(configuredKey), placementModifiers)
+                    context.register(placedKey, placedFeature)
+                }
+            }
+            MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
+            BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.VEGETAL_DECORATION, placedKey)
+            BiomeModifications.addFeature(BiomeSelectors.foundInTheEnd().and(BiomeSelectors.excludeByKey(BiomeKeys.THE_END)), GenerationStep.Feature.VEGETAL_DECORATION, placedKey)
+        }
+
+        // ネザー用ミラージュの塊の地形生成
+        run {
+            val identifier = Identifier(MirageFairy2024.modId, "nether_mirage_cluster")
+            val configuredKey = RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, identifier)
+            val placedKey = RegistryKey.of(RegistryKeys.PLACED_FEATURE, identifier)
+            MirageFairy2024DataGenerator.onBuildRegistry += {
+                it.addRegistry(RegistryKeys.CONFIGURED_FEATURE) { context ->
+                    val blockStateProvider = BlockStateProvider.of(card.block.withAge(MirageFlowerBlock.MAX_AGE))
+                    val configuredFeature = Feature.FLOWER with RandomPatchFeatureConfig(40, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, SimpleBlockFeatureConfig(blockStateProvider)))
+                    context.register(configuredKey, configuredFeature)
+                }
+            }
+            MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.CONFIGURED_FEATURE
+            MirageFairy2024DataGenerator.onBuildRegistry += {
+                it.addRegistry(RegistryKeys.PLACED_FEATURE) { context ->
+                    val placementModifiers = listOf(
+                        RarityFilterPlacementModifier.of(2),
+                        SquarePlacementModifier.of(),
+                        PlacedFeatures.BOTTOM_TO_TOP_RANGE,
+                        BiomePlacementModifier.of(),
+                    )
+                    val placedFeature = PlacedFeature(context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(configuredKey), placementModifiers)
+                    context.register(placedKey, placedFeature)
+                }
+            }
+            MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
+            BiomeModifications.addFeature(BiomeSelectors.foundInTheNether(), GenerationStep.Feature.VEGETAL_DECORATION, placedKey)
+        }
+
+        // ミラージュの大きな塊の地形生成
+        run {
+            val identifier = Identifier(MirageFairy2024.modId, "large_mirage_cluster")
+            val configuredKey = RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, identifier)
+            val placedKey = RegistryKey.of(RegistryKeys.PLACED_FEATURE, identifier)
+            MirageFairy2024DataGenerator.onBuildRegistry += {
+                it.addRegistry(RegistryKeys.CONFIGURED_FEATURE) { context ->
+                    val blockStateProvider = BlockStateProvider.of(card.block.withAge(MirageFlowerBlock.MAX_AGE))
+                    val configuredFeature = Feature.FLOWER with RandomPatchFeatureConfig(100, 8, 3, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, SimpleBlockFeatureConfig(blockStateProvider)))
+                    context.register(configuredKey, configuredFeature)
+                }
+            }
+            MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.CONFIGURED_FEATURE
+            MirageFairy2024DataGenerator.onBuildRegistry += {
+                it.addRegistry(RegistryKeys.PLACED_FEATURE) { context ->
+                    val placementModifiers = listOf(
+                        RarityFilterPlacementModifier.of(600),
+                        SquarePlacementModifier.of(),
+                        PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP,
+                        BiomePlacementModifier.of(),
+                    )
+                    val placedFeature = PlacedFeature(context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(configuredKey), placementModifiers)
+                    context.register(placedKey, placedFeature)
+                }
+            }
+            MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
+            BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.VEGETAL_DECORATION, placedKey)
+        }
+
     }
 
 
