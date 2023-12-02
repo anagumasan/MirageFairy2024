@@ -40,6 +40,7 @@
   "mirageFairy2024.trait.miragefairy2024.humid_adaptation": "Humid Adaptation",
   "mirageFairy2024.trait.miragefairy2024.leaves_production": "Leaves Production",
   "mirageFairy2024.trait.miragefairy2024.mesic_adaptation": "Mesic Adaptation",
+  "mirageFairy2024.trait.miragefairy2024.natural_abscission": "Natural Abscission",
   "mirageFairy2024.trait.miragefairy2024.noded_stem": "Noded Stem",
   "mirageFairy2024.trait.miragefairy2024.osmotic_absorption": "Osmotic Absorption",
   "mirageFairy2024.trait.miragefairy2024.phaeosynthesis": "Phaeosynthesis",
@@ -54,6 +55,7 @@
   "mirageFairy2024.traitEffect.miragefairy2024.fruits_production": "FRUIT",
   "mirageFairy2024.traitEffect.miragefairy2024.growth_boost": "GRW",
   "mirageFairy2024.traitEffect.miragefairy2024.leaves_production": "LEAF",
+  "mirageFairy2024.traitEffect.miragefairy2024.natural_abscission": "Natural Abscission",
   "mirageFairy2024.traitEffect.miragefairy2024.nutrition": "NTR",
   "mirageFairy2024.traitEffect.miragefairy2024.production_boost": "PRD",
   "mirageFairy2024.traitEffect.miragefairy2024.seeds_production": "SEED"

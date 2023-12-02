@@ -55,6 +55,7 @@ enum class TraitCard(
     WATERLOGGING_TOLERANCE("waterlogging_tolerance", "6part", "Waterlogging Tolerance", "浸水耐性", TraitFactors.HIGH_HUMIDITY, TraitEffectKeyCard.ENVIRONMENT),
     ADVERSITY_FLOWER("adversity_flower", "6part", "Adversity Flower", "高嶺の花", TraitFactors.ALWAYS, TraitEffectKeyCard.FRUITS_PRODUCTION),
     FLESHY_LEAVES("fleshy_leaves", "6part", "Fleshy Leaves", "肉厚の葉", TraitFactors.LOW_HUMIDITY, TraitEffectKeyCard.ENVIRONMENT),
+    NATURAL_ABSCISSION("natural_abscission", "6part", "Natural Abscission", "自然落果", TraitFactors.ALWAYS, TraitEffectKeyCard.NATURAL_ABSCISSION),
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
@@ -80,6 +81,7 @@ enum class TraitEffectKeyCard(
     PRODUCTION_BOOST("production_boost", "PRD", "生産能力", Formatting.DARK_RED, false),
     EXPERIENCE_PRODUCTION("experience_production", "XP", "経験値", Formatting.YELLOW, false),
     FORTUNE_FACTOR("fortune_factor", "FTN", "幸運係数", Formatting.DARK_PURPLE, false),
+    NATURAL_ABSCISSION("natural_abscission", "Natural Abscission", "自然落果", Formatting.RED, true),
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)

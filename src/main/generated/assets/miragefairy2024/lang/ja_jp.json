@@ -40,6 +40,7 @@
   "mirageFairy2024.trait.miragefairy2024.humid_adaptation": "湿潤適応",
   "mirageFairy2024.trait.miragefairy2024.leaves_production": "葉面生成",
   "mirageFairy2024.trait.miragefairy2024.mesic_adaptation": "中湿適応",
+  "mirageFairy2024.trait.miragefairy2024.natural_abscission": "自然落果",
   "mirageFairy2024.trait.miragefairy2024.noded_stem": "節状の茎",
   "mirageFairy2024.trait.miragefairy2024.osmotic_absorption": "浸透吸収",
   "mirageFairy2024.trait.miragefairy2024.phaeosynthesis": "闇合成",
@@ -54,6 +55,7 @@
   "mirageFairy2024.traitEffect.miragefairy2024.fruits_production": "果実生成",
   "mirageFairy2024.traitEffect.miragefairy2024.growth_boost": "成長速度",
   "mirageFairy2024.traitEffect.miragefairy2024.leaves_production": "葉面生成",
+  "mirageFairy2024.traitEffect.miragefairy2024.natural_abscission": "自然落果",
   "mirageFairy2024.traitEffect.miragefairy2024.nutrition": "栄養値",
   "mirageFairy2024.traitEffect.miragefairy2024.production_boost": "生産能力",
   "mirageFairy2024.traitEffect.miragefairy2024.seeds_production": "種子生成"
