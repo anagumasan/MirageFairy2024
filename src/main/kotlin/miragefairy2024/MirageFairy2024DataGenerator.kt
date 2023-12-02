@@ -32,71 +32,38 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
         val pack = fabricDataGenerator.createPack()
         pack.addProvider { output: FabricDataOutput ->
             object : FabricModelProvider(output) {
-                override fun generateBlockStateModels(blockStateModelGenerator: BlockStateModelGenerator) {
-                    blockStateModelGenerators.fire {
-                        it(blockStateModelGenerator)
-                    }
-                }
-
-                override fun generateItemModels(itemModelGenerator: ItemModelGenerator) {
-                    itemModelGenerators.fire {
-                        it(itemModelGenerator)
-                    }
-                }
+                override fun generateBlockStateModels(blockStateModelGenerator: BlockStateModelGenerator) = blockStateModelGenerators.fire { it(blockStateModelGenerator) }
+                override fun generateItemModels(itemModelGenerator: ItemModelGenerator) = itemModelGenerators.fire { it(itemModelGenerator) }
             }
         }
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<RegistryWrapper.WrapperLookup> ->
             object : FabricTagProvider.BlockTagProvider(output, registriesFuture) {
-                override fun configure(arg: RegistryWrapper.WrapperLookup) {
-                    blockTagGenerators.fire {
-                        it { tag -> getOrCreateTagBuilder(tag) }
-                    }
-                }
+                override fun configure(arg: RegistryWrapper.WrapperLookup) = blockTagGenerators.fire { it { tag -> getOrCreateTagBuilder(tag) } }
             }
         }
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<RegistryWrapper.WrapperLookup> ->
             object : FabricTagProvider.ItemTagProvider(output, registriesFuture) {
-                override fun configure(arg: RegistryWrapper.WrapperLookup) {
-                    itemTagGenerators.fire {
-                        it { tag -> getOrCreateTagBuilder(tag) }
-                    }
-                }
+                override fun configure(arg: RegistryWrapper.WrapperLookup) = itemTagGenerators.fire { it { tag -> getOrCreateTagBuilder(tag) } }
             }
         }
         pack.addProvider { output: FabricDataOutput ->
             object : FabricBlockLootTableProvider(output) {
-                override fun generate() {
-                    blockLootTableGenerators.fire {
-                        it(this)
-                    }
-                }
+                override fun generate() = blockLootTableGenerators.fire { it(this) }
             }
         }
         pack.addProvider { output: FabricDataOutput ->
             object : FabricRecipeProvider(output) {
-                override fun generate(exporter: RecipeExporter) {
-                    recipeGenerators.fire {
-                        it(exporter)
-                    }
-                }
+                override fun generate(exporter: RecipeExporter) = recipeGenerators.fire { it(exporter) }
             }
         }
         pack.addProvider { output: FabricDataOutput ->
             object : FabricLanguageProvider(output, "en_us") {
-                override fun generateTranslations(translationBuilder: TranslationBuilder) {
-                    englishTranslationGenerators.fire {
-                        it(translationBuilder)
-                    }
-                }
+                override fun generateTranslations(translationBuilder: TranslationBuilder) = englishTranslationGenerators.fire { it(translationBuilder) }
             }
         }
         pack.addProvider { output: FabricDataOutput ->
             object : FabricLanguageProvider(output, "ja_jp") {
-                override fun generateTranslations(translationBuilder: TranslationBuilder) {
-                    japaneseTranslationGenerators.fire {
-                        it(translationBuilder)
-                    }
-                }
+                override fun generateTranslations(translationBuilder: TranslationBuilder) = japaneseTranslationGenerators.fire { it(translationBuilder) }
             }
         }
     }
