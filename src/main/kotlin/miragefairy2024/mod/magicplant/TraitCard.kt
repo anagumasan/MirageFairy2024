@@ -60,7 +60,7 @@ enum class TraitCard(
     NATURAL_ABSCISSION("natural_abscission", "6part", "Natural Abscission", "自然落果", TraitFactors.ALWAYS, TraitEffectKeyCard.NATURAL_ABSCISSION),
     CARNIVOROUS_PLANT("carnivorous_plant", "6part", "Carnivorous Plant", "食虫植物", TraitFactors.OUTDOOR, TraitEffectKeyCard.NUTRITION),
     ETHER_PREDATION("ether_predation", "6part", "Ether Predation", "エーテル捕食", TraitFactors.ALWAYS, TraitEffectKeyCard.NUTRITION),
-    PAVEMENT_FLOWERS("pavement_flowers", "6part", "Pavement Flowers", "アスファルトに咲く花", TraitFactors.FLOOR_CONCRETE, TraitEffectKeyCard.GROWTH_BOOST),
+    PAVEMENT_FLOWERS("pavement_flowers", "6part", "Pavement Flowers", "アスファルトに咲く花", TraitFactors.CONCRETE_FLOOR, TraitEffectKeyCard.GROWTH_BOOST),
     PROSPERITY_OF_SPECIES("prosperity_of_species", "6part", "Prosperity of Species", "種の繁栄", TraitFactors.ALWAYS, TraitEffectKeyCard.SEEDS_PRODUCTION),
     ;
 
@@ -115,7 +115,7 @@ object TraitFactors {
     val ALWAYS = TraitFactor { _, _ -> 1.0 }
     val FLOOR_MOISTURE = TraitFactor { world, blockPos -> world.getMoisture(blockPos.down()) }
     val FLOOR_CRYSTAL_ERG = TraitFactor { world, blockPos -> world.getCrystalErg(blockPos.down()) }
-    val FLOOR_CONCRETE = TraitCondition { world, blockPos -> world.getBlockState(blockPos).isIn(BlockTagCard.CONCRETE.tag) }
+    val CONCRETE_FLOOR = TraitCondition { world, blockPos -> world.getBlockState(blockPos).isIn(BlockTagCard.CONCRETE.tag) }
     val LIGHT = TraitFactor { world, blockPos -> (world.getLightLevel(blockPos) - 8 atLeast 0) / 7.0 }
     val DARKNESS = TraitFactor { world, blockPos -> ((15 - world.getLightLevel(blockPos)) - 8 atLeast 0) / 7.0 }
     val LOW_TEMPERATURE = TraitCondition { world, blockPos -> world.getBiome(blockPos).temperatureCategory == TemperatureCategory.LOW }
