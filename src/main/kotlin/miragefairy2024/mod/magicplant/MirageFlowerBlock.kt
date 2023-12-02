@@ -5,6 +5,7 @@ import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.toBlockPos
+import miragefairy2024.util.toBox
 import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.atMost
 import mirrg.kotlin.hydrogen.or
@@ -16,6 +17,7 @@ import net.minecraft.block.SideShapeType
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.enchantment.Enchantments
+import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
@@ -162,7 +164,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
     // Growth
 
-    private fun move(world: ServerWorld, pos: BlockPos, state: BlockState, speed: Double = 1.0) {
+    private fun move(world: ServerWorld, pos: BlockPos, state: BlockState, speed: Double = 1.0, autoPick: Boolean = false) {
         val traitStacks = getTraitStacks(world, pos) ?: return
         val traitEffects = calculateTraitEffects(world, pos, traitStacks)
 
@@ -177,10 +179,20 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             world.setBlockState(pos, withAge(newAge), NOTIFY_LISTENERS)
         }
 
+        run {
+            if (!autoPick) return@run // 自動収穫が無効の場合は中止
+            if (newAge < MAX_AGE) return@run // 最大成長時でない場合は中止
+            if (world.getEntitiesByType(EntityType.ITEM, pos.toBox()) { true }.isNotEmpty()) return@run // アイテムがそこに存在する場合は中止
+            if (world.getEntitiesByType(EntityType.EXPERIENCE_ORB, pos.toBox()) { true }.isNotEmpty()) return@run // 経験値がそこに存在する場合は中止
+            val naturalAbscission = traitEffects[TraitEffectKeyCard.NATURAL_ABSCISSION.traitEffectKey]
+            if (!(world.random.nextDouble() < naturalAbscission)) return@run // 確率で失敗
+            pick(world, pos, null, null)
+        }
+
     }
 
-    override fun hasRandomTicks(state: BlockState) = !isMaxAge(state)
-    override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) = move(world, pos, state)
+    override fun hasRandomTicks(state: BlockState) = true
+    override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) = move(world, pos, state, autoPick = true)
 
     override fun isFertilizable(world: WorldView, pos: BlockPos, state: BlockState) = !isMaxAge(state)
     override fun canGrow(world: World, random: Random, pos: BlockPos, state: BlockState) = true
@@ -197,31 +209,31 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         if (!isMaxAge(state)) return ActionResult.PASS
         if (world.isClient) return ActionResult.SUCCESS
+        pick(world as ServerWorld, pos, player, player.mainHandStack)
+        return ActionResult.CONSUME
+    }
 
-        // 前提条件を計算
-        world as ServerWorld
-        val tool = player.mainHandStack
+    private fun pick(world: ServerWorld, blockPos: BlockPos, player: PlayerEntity?, tool: ItemStack?) {
 
         // ドロップアイテムを計算
-        val block = world.getBlockState(pos).block
-        val traitStacks = getTraitStacks(world, pos) ?: return ActionResult.CONSUME
-        val traitEffects = calculateTraitEffects(world, pos, traitStacks)
-        val drops = getAdditionalDrops(world, pos, block, traitStacks, traitEffects, player, tool)
+        val block = world.getBlockState(blockPos).block
+        val traitStacks = getTraitStacks(world, blockPos) ?: return
+        val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
+        val drops = getAdditionalDrops(world, blockPos, block, traitStacks, traitEffects, player, tool)
         val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
 
         // アイテムを生成
         drops.forEach { itemStack ->
-            dropStack(world, pos, itemStack)
+            dropStack(world, blockPos, itemStack)
         }
-        if (experience > 0) dropExperience(world, pos, experience)
+        if (experience > 0) dropExperience(world, blockPos, experience)
 
         // 成長段階を消費
-        world.setBlockState(pos, withAge(0), NOTIFY_LISTENERS)
+        world.setBlockState(blockPos, withAge(0), NOTIFY_LISTENERS)
 
         // エフェクト
-        world.playSound(null, pos, soundGroup.breakSound, SoundCategory.BLOCKS, (soundGroup.volume + 1.0F) / 2.0F * 0.5F, soundGroup.pitch * 0.8F)
+        world.playSound(null, blockPos, soundGroup.breakSound, SoundCategory.BLOCKS, (soundGroup.volume + 1.0F) / 2.0F * 0.5F, soundGroup.pitch * 0.8F)
 
-        return ActionResult.CONSUME
     }
 
     // 本来 LootTable を使ってすべて行う想定だが、他にドロップを自由に制御できる場所がないため苦肉の策でここでプログラムで生成する
