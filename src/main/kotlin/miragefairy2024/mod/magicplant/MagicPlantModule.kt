@@ -166,6 +166,7 @@ fun initMagicPlantModule() {
             fun registerBiome(traitCard: TraitCard, biomeTag: TagKey<Biome>) {
                 N("0100", traitCard) { biome(biomeTag) }
                 R("0010", traitCard) { biome(biomeTag) }
+                S("0001", traitCard) { biome(biomeTag) }
             }
             registerBiome(TraitCard.FOUR_LEAFED, ConventionalBiomeTags.FLORAL)
             registerBiome(TraitCard.NODED_STEM, ConventionalBiomeTags.BEACH)
@@ -200,9 +201,13 @@ fun initMagicPlantModule() {
 
             // 生産系
             N("0010", TraitCard.SEEDS_PRODUCTION)
+            R("0001", TraitCard.SEEDS_PRODUCTION)
             N("1010", TraitCard.FRUITS_PRODUCTION)
+            R("0001", TraitCard.FRUITS_PRODUCTION)
             N("0010", TraitCard.LEAVES_PRODUCTION)
+            R("0001", TraitCard.LEAVES_PRODUCTION)
             R("0010", TraitCard.EXPERIENCE_PRODUCTION)
+            S("0001", TraitCard.EXPERIENCE_PRODUCTION)
 
             // 妖精の祝福
             N("0010", TraitCard.FAIRY_BLESSING)
