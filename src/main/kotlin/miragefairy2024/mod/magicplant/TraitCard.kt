@@ -1,7 +1,6 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.mod.BlockTagCard
 import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.getCrystalErg
@@ -10,7 +9,9 @@ import miragefairy2024.util.humidityCategory
 import miragefairy2024.util.temperatureCategory
 import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.atLeast
+import mirrg.kotlin.hydrogen.atMost
 import mirrg.kotlin.hydrogen.formatAs
+import net.minecraft.registry.tag.BlockTags
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.world.Heightmap
@@ -60,7 +61,7 @@ enum class TraitCard(
     NATURAL_ABSCISSION("natural_abscission", "6part", "Natural Abscission", "自然落果", TraitFactors.ALWAYS, TraitEffectKeyCard.NATURAL_ABSCISSION),
     CARNIVOROUS_PLANT("carnivorous_plant", "6part", "Carnivorous Plant", "食虫植物", TraitFactors.OUTDOOR, TraitEffectKeyCard.NUTRITION),
     ETHER_PREDATION("ether_predation", "6part", "Ether Predation", "エーテル捕食", TraitFactors.ALWAYS, TraitEffectKeyCard.NUTRITION),
-    PAVEMENT_FLOWERS("pavement_flowers", "6part", "Pavement Flowers", "アスファルトに咲く花", TraitFactors.CONCRETE_FLOOR, TraitEffectKeyCard.GROWTH_BOOST),
+    PAVEMENT_FLOWERS("pavement_flowers", "6part", "Pavement Flowers", "アスファルトに咲く花", TraitFactors.FLOOR_HARDNESS, TraitEffectKeyCard.GROWTH_BOOST),
     PROSPERITY_OF_SPECIES("prosperity_of_species", "6part", "Prosperity of Species", "種の繁栄", TraitFactors.ALWAYS, TraitEffectKeyCard.SEEDS_PRODUCTION),
     ;
 
@@ -115,7 +116,13 @@ object TraitFactors {
     val ALWAYS = TraitFactor { _, _ -> 1.0 }
     val FLOOR_MOISTURE = TraitFactor { world, blockPos -> world.getMoisture(blockPos.down()) }
     val FLOOR_CRYSTAL_ERG = TraitFactor { world, blockPos -> world.getCrystalErg(blockPos.down()) }
-    val CONCRETE_FLOOR = TraitCondition { world, blockPos -> world.getBlockState(blockPos.down()).isIn(BlockTagCard.CONCRETE.tag) }
+    val FLOOR_HARDNESS = TraitFactor { world, blockPos ->
+        val blockState = world.getBlockState(blockPos.down())
+        if (!blockState.isIn(BlockTags.PICKAXE_MINEABLE)) return@TraitFactor 0.0
+        val hardness = blockState.getHardness(world, blockPos.down())
+        if (hardness < 0) return@TraitFactor 0.0
+        hardness / 2.0 atMost 2.0
+    }
     val LIGHT = TraitFactor { world, blockPos -> (world.getLightLevel(blockPos) - 8 atLeast 0) / 7.0 }
     val DARKNESS = TraitFactor { world, blockPos -> ((15 - world.getLightLevel(blockPos)) - 8 atLeast 0) / 7.0 }
     val LOW_TEMPERATURE = TraitCondition { world, blockPos -> world.getBiome(blockPos).temperatureCategory == TemperatureCategory.LOW }
