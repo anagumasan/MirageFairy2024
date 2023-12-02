@@ -93,24 +93,22 @@ fun initMaterialsModule() {
         card.item.registerPoemGeneration(card.poemList)
     }
 
-    fun registerCompressionRecipeGeneration(low: MaterialCard, high: MaterialCard) {
-        MirageFairy2024DataGenerator.recipeGenerators {
-            ShapedRecipeJsonBuilder
-                .create(RecipeCategory.MISC, high.item, 1)
-                .group(high.item)
-                .input('#', low.item)
-                .pattern("###")
-                .pattern("###")
-                .pattern("###")
-                .criterion(low.item)
-                .offerTo(it, Identifier.of(MirageFairy2024.modId, "${high.item.getIdentifier().path}_from_${low.item.getIdentifier().path}"))
-            ShapelessRecipeJsonBuilder
-                .create(RecipeCategory.MISC, low.item, 9)
-                .group(low.item)
-                .input(high.item)
-                .criterion(high.item)
-                .offerTo(it, Identifier.of(MirageFairy2024.modId, "${low.item.getIdentifier().path}_from_${high.item.getIdentifier().path}"))
-        }
+    fun registerCompressionRecipeGeneration(low: MaterialCard, high: MaterialCard) = MirageFairy2024DataGenerator.recipeGenerators {
+        ShapedRecipeJsonBuilder
+            .create(RecipeCategory.MISC, high.item, 1)
+            .group(high.item)
+            .input('#', low.item)
+            .pattern("###")
+            .pattern("###")
+            .pattern("###")
+            .criterion(low.item)
+            .offerTo(it, Identifier.of(MirageFairy2024.modId, "${high.item.getIdentifier().path}_from_${low.item.getIdentifier().path}"))
+        ShapelessRecipeJsonBuilder
+            .create(RecipeCategory.MISC, low.item, 9)
+            .group(low.item)
+            .input(high.item)
+            .criterion(high.item)
+            .offerTo(it, Identifier.of(MirageFairy2024.modId, "${low.item.getIdentifier().path}_from_${high.item.getIdentifier().path}"))
     }
     registerCompressionRecipeGeneration(MaterialCard.TINY_MIRAGE_FLOUR, MaterialCard.MIRAGE_FLOUR)
     registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR, MaterialCard.RARE_MIRAGE_FLOUR)

@@ -66,16 +66,12 @@ fun SequenceLootPoolEntry(vararg children: LootPoolEntry.Builder<*>, initializer
 }
 
 
-fun Block.registerLootTableGeneration(initializer: () -> LootTable.Builder) {
-    MirageFairy2024DataGenerator.blockLootTableGenerators {
-        it.addDrop(this, initializer())
-    }
+fun Block.registerLootTableGeneration(initializer: () -> LootTable.Builder) = MirageFairy2024DataGenerator.blockLootTableGenerators {
+    it.addDrop(this, initializer())
 }
 
-fun Block.registerDefaultLootTableGeneration() {
-    MirageFairy2024DataGenerator.blockLootTableGenerators {
-        it.addDrop(this)
-    }
+fun Block.registerDefaultLootTableGeneration() = MirageFairy2024DataGenerator.blockLootTableGenerators {
+    it.addDrop(this)
 }
 
 enum class FortuneEffect {
@@ -84,16 +80,14 @@ enum class FortuneEffect {
     UNIFORM,
 }
 
-fun Block.registerOreLootTableGeneration(drop: Item, additionalCount: ClosedFloatingPointRange<Float>? = null, fortuneEffect: FortuneEffect = ORE) {
-    MirageFairy2024DataGenerator.blockLootTableGenerators {
-        val lootTable = BlockLootTableGenerator.dropsWithSilkTouch(this, it.applyExplosionDecay(this, ItemLootPoolEntry(drop) {
-            if (additionalCount != null) apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(additionalCount.start, additionalCount.endInclusive)))
-            when (fortuneEffect) {
-                IGNORE -> Unit
-                ORE -> apply(ApplyBonusLootFunction.oreDrops(Enchantments.FORTUNE))
-                UNIFORM -> apply(ApplyBonusLootFunction.uniformBonusCount(Enchantments.FORTUNE))
-            }
-        }))
-        it.addDrop(this, lootTable)
-    }
+fun Block.registerOreLootTableGeneration(drop: Item, additionalCount: ClosedFloatingPointRange<Float>? = null, fortuneEffect: FortuneEffect = ORE) = MirageFairy2024DataGenerator.blockLootTableGenerators {
+    val lootTable = BlockLootTableGenerator.dropsWithSilkTouch(this, it.applyExplosionDecay(this, ItemLootPoolEntry(drop) {
+        if (additionalCount != null) apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(additionalCount.start, additionalCount.endInclusive)))
+        when (fortuneEffect) {
+            IGNORE -> Unit
+            ORE -> apply(ApplyBonusLootFunction.oreDrops(Enchantments.FORTUNE))
+            UNIFORM -> apply(ApplyBonusLootFunction.uniformBonusCount(Enchantments.FORTUNE))
+        }
+    }))
+    it.addDrop(this, lootTable)
 }
