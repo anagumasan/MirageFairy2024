@@ -56,7 +56,6 @@ import net.minecraft.world.gen.placementmodifier.RarityFilterPlacementModifier
 import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier
 import net.minecraft.world.gen.stateprovider.BlockStateProvider
 
-
 class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
     blockPath: String,
     val blockEnName: String,
