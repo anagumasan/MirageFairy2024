@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.darkRed
@@ -63,6 +64,11 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     }
 
     abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
+
+    final override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
+        val traitStacks = world.getTraitStacks(pos) ?: return EMPTY_ITEM_STACK
+        return createSeed(traitStacks)
+    }
 
 }
 

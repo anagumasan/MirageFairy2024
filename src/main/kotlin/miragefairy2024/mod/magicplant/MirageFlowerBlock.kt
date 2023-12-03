@@ -1,7 +1,6 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.mod.MaterialCard
-import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.toBlockPos
@@ -166,11 +165,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
         if (leafCount > 0) drops += MaterialCard.MIRAGE_LEAVES.item.createItemStack(leafCount)
 
         return drops
-    }
-
-    override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
-        val traitStacks = world.getTraitStacks(pos) ?: return EMPTY_ITEM_STACK
-        return createSeed(traitStacks)
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
