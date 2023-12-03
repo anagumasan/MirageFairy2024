@@ -23,18 +23,22 @@ enum class MaterialCard(
 ) {
 
     FAIRY_PLASTIC(
+        // TODO add purpose
         "fairy_plastic", "Fairy Plastic", "妖精のプラスチック",
         listOf(Poem("Thermoplastic organic polymer", "凍てつく記憶の宿る石。")),
     ),
     XARPITE(
+        // TODO add purpose
         "xarpite", "Xarpite", "紅天石",
         listOf(Poem("Binds astral flux with magnetic force", "黒鉄の鎖は繋がれる。血腥い魂の檻へ。")),
     ),
     MIRANAGITE(
+        // TODO add purpose
         "miranagite", "Miranagite", "蒼天石",
         listOf(Poem("Astral body crystallized by anti-entropy", "秩序の叛乱、天地創造の逆光。")),
     ),
     FAIRY_RUBBER(
+        // TODO add purpose
         "fairy_rubber", "Fairy Rubber", "夜のかけら",
         listOf(Poem("Minimize the risk of losing belongings", "空は怯える夜精に一握りの温かい闇を与えた")),
     ),
