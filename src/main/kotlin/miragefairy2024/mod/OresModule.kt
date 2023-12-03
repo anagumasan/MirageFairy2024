@@ -39,7 +39,7 @@ enum class OreCard(
         "miranagite_ore", "Miranagite Ore", "蒼天石鉱石",
         listOf(Poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？")),
         MaterialCard.MIRANAGITE.item, 2 to 5,
-    )
+    ),
     // 楽園が楽園であるための奇跡。
     ;
 
