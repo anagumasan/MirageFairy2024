@@ -15,6 +15,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.block.ShapeContext
 import net.minecraft.block.SideShapeType
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.EntityType
@@ -278,7 +279,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
 }
 
-class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(MagicPlantCard.MIRAGE_FLOWER.blockEntityType, pos, state) {
+abstract class MagicPlantBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state) {
 
     private var traitStacks: TraitStacks? = null
 
@@ -318,4 +319,7 @@ class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(Ma
     }
 
     override fun toUpdatePacket(): Packet<ClientPlayPacketListener>? = BlockEntityUpdateS2CPacket.create(this)
+
 }
+
+class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : MagicPlantBlockEntity(MagicPlantCard.MIRAGE_FLOWER.blockEntityType, pos, state)
