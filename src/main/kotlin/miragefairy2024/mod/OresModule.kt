@@ -1,6 +1,8 @@
 package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.BaseStoneType.DEEPSLATE
+import miragefairy2024.mod.BaseStoneType.STONE
 import miragefairy2024.util.Model
 import miragefairy2024.util.concat
 import miragefairy2024.util.enJa
@@ -24,39 +26,62 @@ import net.minecraft.data.client.TextureKey
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.registry.tag.BlockTags
+import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.intprovider.UniformIntProvider
+
+enum class BaseStoneType {
+    STONE,
+    DEEPSLATE,
+}
 
 enum class OreCard(
     path: String,
     val enName: String,
     val jaName: String,
     val poemList: List<Poem>,
+    val baseStoneType: BaseStoneType,
+    texturePath: String,
     val dropItem: Item,
     experience: Pair<Int, Int>,
 ) {
     MIRANAGITE_ORE(
         "miranagite_ore", "Miranagite Ore", "蒼天石鉱石",
         listOf(Poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？")),
-        MaterialCard.MIRANAGITE.item, 2 to 5,
+        STONE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
     ),
     // 楽園が楽園であるための奇跡。
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
     val block = run {
-        val settings = FabricBlockSettings.create()
-            .mapColor(MapColor.STONE_GRAY)
-            .instrument(Instrument.BASEDRUM)
-            .requiresTool()
-            .strength(3.0F, 3.0F)
+        val settings = when (baseStoneType) {
+            STONE -> FabricBlockSettings.create()
+                .mapColor(MapColor.STONE_GRAY)
+                .instrument(Instrument.BASEDRUM)
+                .requiresTool()
+                .strength(3.0F, 3.0F)
+
+            DEEPSLATE -> FabricBlockSettings.create()
+                .mapColor(MapColor.DEEPSLATE_GRAY)
+                .instrument(Instrument.BASEDRUM)
+                .requiresTool()
+                .strength(4.5F, 3.0F)
+                .sounds(BlockSoundGroup.DEEPSLATE)
+        }
         ExperienceDroppingBlock(settings, UniformIntProvider.create(experience.first, experience.second))
     }
     val item = BlockItem(block, Item.Settings())
-    val texturedModel = OreModelCard.model.with(
-        TextureKey.BACK to Identifier("minecraft", "block/stone"),
-        TextureKey.FRONT to ("block/" concat identifier),
-    )
+    val texturedModel = run {
+        val baseStoneTexture = when (baseStoneType) {
+            STONE -> Identifier("minecraft", "block/stone")
+            DEEPSLATE -> Identifier("minecraft", "block/deepslate")
+        }
+        OreModelCard.model.with(
+            TextureKey.BACK to baseStoneTexture,
+            TextureKey.FRONT to ("block/" concat Identifier(MirageFairy2024.modId, texturePath)),
+        )
+    }
 }
 
 object OreModelCard {
