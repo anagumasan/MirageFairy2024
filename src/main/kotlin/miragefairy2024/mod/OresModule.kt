@@ -1,6 +1,7 @@
 package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.MirageFairy2024DataGenerator
 import miragefairy2024.mod.BaseStoneType.DEEPSLATE
 import miragefairy2024.mod.BaseStoneType.STONE
 import miragefairy2024.util.Model
@@ -18,6 +19,8 @@ import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.ExperienceDroppingBlock
 import net.minecraft.block.MapColor
@@ -25,10 +28,22 @@ import net.minecraft.block.enums.Instrument
 import net.minecraft.data.client.TextureKey
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
+import net.minecraft.registry.RegistryKey
+import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.tag.BlockTags
 import net.minecraft.sound.BlockSoundGroup
+import net.minecraft.structure.rule.TagMatchRuleTest
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.intprovider.UniformIntProvider
+import net.minecraft.world.gen.GenerationStep
+import net.minecraft.world.gen.YOffset
+import net.minecraft.world.gen.feature.Feature
+import net.minecraft.world.gen.feature.OreFeatureConfig
+import net.minecraft.world.gen.feature.PlacedFeature
+import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier
+import net.minecraft.world.gen.placementmodifier.CountPlacementModifier
+import net.minecraft.world.gen.placementmodifier.HeightRangePlacementModifier
+import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier
 
 enum class BaseStoneType {
     STONE,
@@ -128,7 +143,9 @@ object OreModelCard {
 }
 
 fun initOresModule() {
+
     OreModelCard.parentModel.registerModelGeneration(OreModelCard.identifier)
+
     OreCard.entries.forEach { card ->
         card.block.register(card.identifier)
         card.item.register(card.identifier)
@@ -148,6 +165,39 @@ fun initOresModule() {
         card.block.registerTagGeneration(BlockTags.PICKAXE_MINEABLE)
         card.block.registerTagGeneration(BlockTags.NEEDS_STONE_TOOL)
 
-        // TODO worldgen
     }
+
+    fun worldGen(card: OreCard) {
+        val identifier = card.identifier
+        val configuredKey = RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, identifier)
+        val placedKey = RegistryKey.of(RegistryKeys.PLACED_FEATURE, identifier)
+        MirageFairy2024DataGenerator.onBuildRegistry += {
+            it.addRegistry(RegistryKeys.CONFIGURED_FEATURE) { context ->
+                val targets = when (card.baseStoneType) {
+                    STONE -> listOf(OreFeatureConfig.createTarget(TagMatchRuleTest(BlockTags.STONE_ORE_REPLACEABLES), card.block.defaultState))
+                    DEEPSLATE -> listOf(OreFeatureConfig.createTarget(TagMatchRuleTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), card.block.defaultState))
+                }
+                val configuredFeature = Feature.ORE with OreFeatureConfig(targets, 12)
+                context.register(configuredKey, configuredFeature)
+            }
+        }
+        MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.CONFIGURED_FEATURE
+        MirageFairy2024DataGenerator.onBuildRegistry += {
+            it.addRegistry(RegistryKeys.PLACED_FEATURE) { context ->
+                val placementModifiers = listOf(
+                    CountPlacementModifier.of(8),
+                    SquarePlacementModifier.of(),
+                    HeightRangePlacementModifier.uniform(YOffset.fixed(-64), YOffset.fixed(128)),
+                    BiomePlacementModifier.of(),
+                )
+                val placedFeature = PlacedFeature(context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(configuredKey), placementModifiers)
+                context.register(placedKey, placedFeature)
+            }
+        }
+        MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, placedKey)
+    }
+    worldGen(OreCard.MIRANAGITE_ORE)
+    worldGen(OreCard.DEEPSLATE_MIRANAGITE_ORE)
+
 }
