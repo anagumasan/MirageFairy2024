@@ -68,6 +68,10 @@ fun ItemStack.getTraitStacks(): TraitStacks? {
     return TraitStacks.readFromNbt(nbt)
 }
 
+fun setTraitStacks(itemStack: ItemStack, traitStacks: TraitStacks) {
+    itemStack.getOrCreateNbt().put("TraitStacks", traitStacks.toNbt())
+}
+
 val TraitStacks.bitCount get() = this.traitStackList.sumOf { it.level.bitCount }
 
 const val MAX_TRAIT_COUNT = 15

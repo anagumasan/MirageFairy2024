@@ -53,7 +53,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
         fun createSeed(traitStacks: TraitStacks): ItemStack {
             val itemStack = MagicPlantCard.MIRAGE_FLOWER.item.createItemStack()
-            addTraitStacks(itemStack, traitStacks)
+            setTraitStacks(itemStack, traitStacks)
             return itemStack
         }
 

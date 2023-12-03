@@ -30,13 +30,7 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable {
-    companion object {
-        fun addTraitStacks(itemStack: ItemStack, traitStacks: TraitStacks) {
-            itemStack.getOrCreateNbt().put("TraitStacks", traitStacks.toNbt())
-        }
-    }
-}
+abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable
 
 abstract class MagicPlantBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state) {
 
