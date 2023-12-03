@@ -98,6 +98,11 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     }
 
 
+    // Cross
+
+    override fun canCross(world: World, blockPos: BlockPos, blockState: BlockState) = isMaxAge(blockState)
+
+
     // Growth
 
     private fun move(world: ServerWorld, pos: BlockPos, state: BlockState, speed: Double = 1.0, autoPick: Boolean = false) {
@@ -137,28 +142,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
     // Drop
 
-    private fun calculateCrossedSeed(world: World, blockPos: BlockPos, block: Block, traitStacks: TraitStacks): ItemStack {
-
-        val targetTraitStacksList = mutableListOf<TraitStacks>()
-        fun check(targetBlockPos: BlockPos) {
-            val targetBlockState = world.getBlockState(targetBlockPos)
-            val targetBlock = targetBlockState.block as? MirageFlowerBlock ?: return
-            if (targetBlock != block) return
-            if (!targetBlock.isMaxAge(targetBlockState)) return
-            val targetTraitStacks = world.getTraitStacks(targetBlockPos) ?: return
-            targetTraitStacksList += targetTraitStacks
-        }
-        check(blockPos.north())
-        check(blockPos.south())
-        check(blockPos.west())
-        check(blockPos.east())
-
-        if (targetTraitStacksList.isEmpty()) return createSeed(traitStacks)
-        val targetTraitStacks = targetTraitStacksList[world.random.nextInt(targetTraitStacksList.size)]
-
-        return createSeed(crossTraitStacks(world.random, traitStacks, targetTraitStacks))
-    }
-
     private fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack> {
         val drops = mutableListOf<ItemStack>()
 
@@ -173,7 +156,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
         val seedCount = world.random.randomInt(seedGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
         repeat(seedCount) {
-            drops += calculateCrossedSeed(world, blockPos, block, traitStacks)
+            drops += calculateCrossedSeed(world, blockPos, traitStacks)
         }
 
         val fruitCount = world.random.randomInt(fruitGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))

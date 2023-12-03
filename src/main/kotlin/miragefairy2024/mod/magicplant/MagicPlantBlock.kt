@@ -40,6 +40,30 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         return itemStack
     }
 
+    protected fun calculateCrossedSeed(world: World, blockPos: BlockPos, traitStacks: TraitStacks): ItemStack {
+
+        val targetTraitStacksList = mutableListOf<TraitStacks>()
+        fun check(targetBlockPos: BlockPos) {
+            val targetBlockState = world.getBlockState(targetBlockPos)
+            val targetBlock = targetBlockState.block as? MagicPlantBlock ?: return
+            if (targetBlock != this) return
+            if (!targetBlock.canCross(world, blockPos, targetBlockState)) return
+            val targetTraitStacks = world.getTraitStacks(targetBlockPos) ?: return
+            targetTraitStacksList += targetTraitStacks
+        }
+        check(blockPos.north())
+        check(blockPos.south())
+        check(blockPos.west())
+        check(blockPos.east())
+
+        if (targetTraitStacksList.isEmpty()) return createSeed(traitStacks)
+        val targetTraitStacks = targetTraitStacksList[world.random.nextInt(targetTraitStacksList.size)]
+
+        return createSeed(crossTraitStacks(world.random, traitStacks, targetTraitStacks))
+    }
+
+    abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
+
 }
 
 abstract class MagicPlantBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state) {
