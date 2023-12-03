@@ -50,7 +50,11 @@ enum class OreCard(
         listOf(Poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？")),
         STONE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
     ),
-    // 楽園が楽園であるための奇跡。
+    DEEPSLATE_MIRANAGITE_ORE(
+        "deepslate_miranagite_ore", "Deepslate Miranagite Ore", "深層蒼天石鉱石",
+        listOf(Poem("Singularities built by the Creator", "楽園が楽園であるための奇跡。")),
+        DEEPSLATE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
+    ),
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
