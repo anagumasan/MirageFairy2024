@@ -14,8 +14,6 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.block.ShapeContext
 import net.minecraft.block.SideShapeType
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.EntityType
@@ -25,10 +23,6 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.loot.context.LootContextParameters
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.network.listener.ClientPlayPacketListener
-import net.minecraft.network.packet.Packet
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.state.StateManager
@@ -276,49 +270,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     // Visual
 
     // TODO パーティクル
-
-}
-
-abstract class MagicPlantBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state) {
-
-    private var traitStacks: TraitStacks? = null
-
-    fun getTraitStacks() = traitStacks
-
-    fun setTraitStacks(traitStacks: TraitStacks) {
-        this.traitStacks = traitStacks
-        markDirty()
-    }
-
-    override fun setWorld(world: World) {
-        super.setWorld(world)
-        if (traitStacks == null) {
-            val block = world.getBlockState(pos).block
-            val traitStackList = mutableListOf<TraitStack>()
-            worldGenTraitGenerations.forEach {
-                traitStackList += it.spawn(world, pos, block)
-            }
-            setTraitStacks(TraitStacks.of(traitStackList))
-        }
-    }
-
-    public override fun writeNbt(nbt: NbtCompound) {
-        super.writeNbt(nbt)
-        traitStacks?.let { nbt.put("TraitStacks", it.toNbt()) }
-    }
-
-    override fun readNbt(nbt: NbtCompound) {
-        super.readNbt(nbt)
-        traitStacks = TraitStacks.readFromNbt(nbt)
-    }
-
-    override fun toInitialChunkDataNbt(): NbtCompound {
-        val nbt = super.toInitialChunkDataNbt()
-        traitStacks?.let { nbt.put("TraitStacks", it.toNbt()) }
-        return nbt
-    }
-
-    override fun toUpdatePacket(): Packet<ClientPlayPacketListener>? = BlockEntityUpdateS2CPacket.create(this)
 
 }
 

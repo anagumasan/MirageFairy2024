@@ -12,17 +12,68 @@ import miragefairy2024.util.yellow
 import mirrg.kotlin.hydrogen.max
 import net.minecraft.block.Block
 import net.minecraft.block.BlockEntityProvider
+import net.minecraft.block.BlockState
 import net.minecraft.block.Fertilizable
 import net.minecraft.block.PlantBlock
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.AliasedBlockItem
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.network.listener.ClientPlayPacketListener
+import net.minecraft.network.packet.Packet
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable
+
+abstract class MagicPlantBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state) {
+
+    private var traitStacks: TraitStacks? = null
+
+    fun getTraitStacks() = traitStacks
+
+    fun setTraitStacks(traitStacks: TraitStacks) {
+        this.traitStacks = traitStacks
+        markDirty()
+    }
+
+    override fun setWorld(world: World) {
+        super.setWorld(world)
+        if (traitStacks == null) {
+            val block = world.getBlockState(pos).block
+            val traitStackList = mutableListOf<TraitStack>()
+            worldGenTraitGenerations.forEach {
+                traitStackList += it.spawn(world, pos, block)
+            }
+            setTraitStacks(TraitStacks.of(traitStackList))
+        }
+    }
+
+    public override fun writeNbt(nbt: NbtCompound) {
+        super.writeNbt(nbt)
+        traitStacks?.let { nbt.put("TraitStacks", it.toNbt()) }
+    }
+
+    override fun readNbt(nbt: NbtCompound) {
+        super.readNbt(nbt)
+        traitStacks = TraitStacks.readFromNbt(nbt)
+    }
+
+    override fun toInitialChunkDataNbt(): NbtCompound {
+        val nbt = super.toInitialChunkDataNbt()
+        traitStacks?.let { nbt.put("TraitStacks", it.toNbt()) }
+        return nbt
+    }
+
+    override fun toUpdatePacket(): Packet<ClientPlayPacketListener>? = BlockEntityUpdateS2CPacket.create(this)
+
+}
 
 class MagicPlantSeedItem(block: Block, settings: Settings) : AliasedBlockItem(block, settings) {
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
