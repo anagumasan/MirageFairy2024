@@ -57,11 +57,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             return itemStack
         }
 
-        private fun getTraitStacks(world: BlockView, blockPos: BlockPos): TraitStacks? {
-            val blockEntity = world.getBlockEntity(blockPos) as? MirageFlowerBlockEntity ?: return null
-            return blockEntity.getTraitStacks()
-        }
-
         private fun calculateCrossedSeed(world: World, blockPos: BlockPos, block: Block, traitStacks: TraitStacks): ItemStack {
 
             val targetTraitStacksList = mutableListOf<TraitStacks>()
@@ -70,7 +65,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
                 val targetBlock = targetBlockState.block as? MirageFlowerBlock ?: return
                 if (targetBlock != block) return
                 if (!targetBlock.isMaxAge(targetBlockState)) return
-                val targetTraitStacks = getTraitStacks(world, targetBlockPos) ?: return
+                val targetTraitStacks = world.getTraitStacks(targetBlockPos) ?: return
                 targetTraitStacksList += targetTraitStacks
             }
             check(blockPos.north())
@@ -160,7 +155,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     // Growth
 
     private fun move(world: ServerWorld, pos: BlockPos, state: BlockState, speed: Double = 1.0, autoPick: Boolean = false) {
-        val traitStacks = getTraitStacks(world, pos) ?: return
+        val traitStacks = world.getTraitStacks(pos) ?: return
         val traitEffects = calculateTraitEffects(world, pos, traitStacks)
 
         val nutrition = traitEffects[TraitEffectKeyCard.NUTRITION.traitEffectKey]
@@ -197,7 +192,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     // Drop
 
     override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
-        val traitStacks = getTraitStacks(world, pos) ?: return EMPTY_ITEM_STACK
+        val traitStacks = world.getTraitStacks(pos) ?: return EMPTY_ITEM_STACK
         return createSeed(traitStacks)
     }
 
@@ -212,7 +207,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
         // ドロップアイテムを計算
         val block = world.getBlockState(blockPos).block
-        val traitStacks = getTraitStacks(world, blockPos) ?: return
+        val traitStacks = world.getTraitStacks(blockPos) ?: return
         val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
         val drops = getAdditionalDrops(world, blockPos, block, traitStacks, traitEffects, player, tool)
         val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
@@ -257,7 +252,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (!state.isOf(newState.block)) run {
             if (world !is ServerWorld) return@run
-            val traitStacks = getTraitStacks(world, pos) ?: return@run
+            val traitStacks = world.getTraitStacks(pos) ?: return@run
             val traitEffects = calculateTraitEffects(world, pos, traitStacks)
             val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
             if (experience > 0) dropExperience(world, pos, experience)

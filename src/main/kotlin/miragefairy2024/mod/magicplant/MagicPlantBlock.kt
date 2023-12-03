@@ -28,6 +28,7 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable
@@ -73,6 +74,11 @@ abstract class MagicPlantBlockEntity(type: BlockEntityType<*>, pos: BlockPos, st
 
     override fun toUpdatePacket(): Packet<ClientPlayPacketListener>? = BlockEntityUpdateS2CPacket.create(this)
 
+}
+
+fun BlockView.getTraitStacks(blockPos: BlockPos): TraitStacks? {
+    val blockEntity = this.getBlockEntity(blockPos) as? MagicPlantBlockEntity ?: return null
+    return blockEntity.getTraitStacks()
 }
 
 class MagicPlantSeedItem(block: Block, settings: Settings) : AliasedBlockItem(block, settings) {
