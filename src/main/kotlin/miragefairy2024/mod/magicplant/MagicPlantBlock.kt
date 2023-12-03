@@ -155,3 +155,12 @@ class MagicPlantSeedItem(block: Block, settings: Settings) : AliasedBlockItem(bl
         }
     }
 }
+
+fun ItemStack.getTraitStacks(): TraitStacks? {
+    val nbt = this.nbt ?: return null
+    return TraitStacks.readFromNbt(nbt)
+}
+
+fun setTraitStacks(itemStack: ItemStack, traitStacks: TraitStacks) {
+    itemStack.getOrCreateNbt().put("TraitStacks", traitStacks.toNbt())
+}

@@ -6,7 +6,6 @@ import miragefairy2024.util.ja
 import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.max
 import mirrg.kotlin.hydrogen.unit
-import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import net.minecraft.util.Util
@@ -62,15 +61,6 @@ fun TraitEffectKey<*>.enJa(enName: String, jaName: String) {
 
 
 // TraitStacks
-
-fun ItemStack.getTraitStacks(): TraitStacks? {
-    val nbt = this.nbt ?: return null
-    return TraitStacks.readFromNbt(nbt)
-}
-
-fun setTraitStacks(itemStack: ItemStack, traitStacks: TraitStacks) {
-    itemStack.getOrCreateNbt().put("TraitStacks", traitStacks.toNbt())
-}
 
 val TraitStacks.bitCount get() = this.traitStackList.sumOf { it.level.bitCount }
 
