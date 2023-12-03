@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.darkRed
 import miragefairy2024.util.formatted
@@ -31,7 +32,15 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable
+abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable {
+
+    protected fun createSeed(traitStacks: TraitStacks): ItemStack {
+        val itemStack = this.asItem().createItemStack()
+        setTraitStacks(itemStack, traitStacks)
+        return itemStack
+    }
+
+}
 
 abstract class MagicPlantBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state) {
 

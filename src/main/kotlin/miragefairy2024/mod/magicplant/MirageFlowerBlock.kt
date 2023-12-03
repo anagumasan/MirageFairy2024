@@ -137,12 +137,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
     // Drop
 
-    private fun createSeed(traitStacks: TraitStacks): ItemStack {
-        val itemStack = MagicPlantCard.MIRAGE_FLOWER.item.createItemStack()
-        setTraitStacks(itemStack, traitStacks)
-        return itemStack
-    }
-
     private fun calculateCrossedSeed(world: World, blockPos: BlockPos, block: Block, traitStacks: TraitStacks): ItemStack {
 
         val targetTraitStacksList = mutableListOf<TraitStacks>()
