@@ -210,19 +210,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
         return itemStacks
     }
 
-    // 経験値のドロップを onStacksDropped で行うと BlockEntity が得られないためこちらで実装する
-    override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
-        if (!state.isOf(newState.block)) run {
-            if (world !is ServerWorld) return@run
-            val traitStacks = world.getTraitStacks(pos) ?: return@run
-            val traitEffects = calculateTraitEffects(world, pos, traitStacks)
-            val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
-            if (experience > 0) dropExperience(world, pos, experience)
-        }
-        @Suppress("DEPRECATION")
-        super.onStateReplaced(state, world, pos, newState, moved)
-    }
-
 }
 
 class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : MagicPlantBlockEntity(MagicPlantCard.MIRAGE_FLOWER.blockEntityType, pos, state)

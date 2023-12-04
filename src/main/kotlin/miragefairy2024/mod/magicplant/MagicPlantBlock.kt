@@ -9,6 +9,7 @@ import miragefairy2024.util.formatted
 import miragefairy2024.util.green
 import miragefairy2024.util.invoke
 import miragefairy2024.util.join
+import miragefairy2024.util.randomInt
 import miragefairy2024.util.text
 import miragefairy2024.util.yellow
 import mirrg.kotlin.hydrogen.max
@@ -27,12 +28,14 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.listener.ClientPlayPacketListener
 import net.minecraft.network.packet.Packet
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
+@Suppress("OVERRIDE_DEPRECATION")
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable {
 
     // Trait
@@ -82,6 +85,19 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     final override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
         val traitStacks = world.getTraitStacks(pos) ?: return EMPTY_ITEM_STACK
         return createSeed(traitStacks)
+    }
+
+    // 経験値のドロップを onStacksDropped で行うと BlockEntity が得られないためこちらで実装する
+    final override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
+        if (!state.isOf(newState.block)) run {
+            if (world !is ServerWorld) return@run
+            val traitStacks = world.getTraitStacks(pos) ?: return@run
+            val traitEffects = calculateTraitEffects(world, pos, traitStacks)
+            val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
+            if (experience > 0) dropExperience(world, pos, experience)
+        }
+        @Suppress("DEPRECATION")
+        super.onStateReplaced(state, world, pos, newState, moved)
     }
 
 
