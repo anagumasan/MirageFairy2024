@@ -12,7 +12,6 @@ import net.minecraft.block.ShapeContext
 import net.minecraft.block.SideShapeType
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.enchantment.Enchantments
-import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
@@ -63,16 +62,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     // Block Entity
 
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = MirageFlowerBlockEntity(pos, state)
-
-    override fun onPlaced(world: World, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
-        super.onPlaced(world, pos, state, placer, itemStack)
-        run {
-            if (world.isClient) return@run
-            val blockEntity = world.getBlockEntity(pos) as? MirageFlowerBlockEntity ?: return@run
-            val traitStacks = itemStack.getTraitStacks() ?: return@run
-            blockEntity.setTraitStacks(traitStacks)
-        }
-    }
 
 
     // Cross

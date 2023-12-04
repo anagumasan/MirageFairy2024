@@ -25,6 +25,7 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.EntityType
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.AliasedBlockItem
 import net.minecraft.item.ItemPlacementContext
@@ -49,6 +50,19 @@ import net.minecraft.world.WorldView
 
 @Suppress("OVERRIDE_DEPRECATION")
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable {
+
+    // Block Entity
+
+    override fun onPlaced(world: World, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
+        super.onPlaced(world, pos, state, placer, itemStack)
+        run {
+            if (world.isClient) return@run
+            val blockEntity = world.getBlockEntity(pos) as? MagicPlantBlockEntity ?: return@run
+            val traitStacks = itemStack.getTraitStacks() ?: return@run
+            blockEntity.setTraitStacks(traitStacks)
+        }
+    }
+
 
     // Trait
 
