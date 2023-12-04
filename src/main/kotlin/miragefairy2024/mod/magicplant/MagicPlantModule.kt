@@ -4,7 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.MirageFairy2024DataGenerator
 import miragefairy2024.mod.Poem
 import miragefairy2024.mod.magicplant.magicplants.MirageFlowerBlock
-import miragefairy2024.mod.magicplant.magicplants.MirageFlowerBlockEntity
+import miragefairy2024.mod.magicplant.magicplants.MirageFlowerCard
 import miragefairy2024.mod.magicplant.magicplants.initMirageFlower
 import miragefairy2024.mod.mirageFairy2024ItemGroup
 import miragefairy2024.mod.registerPoem
@@ -33,7 +33,6 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags
 import net.minecraft.block.BlockState
-import net.minecraft.block.MapColor
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.block.piston.PistonBehavior
@@ -43,7 +42,6 @@ import net.minecraft.item.Item
 import net.minecraft.registry.RegistryKey
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.tag.TagKey
-import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.biome.Biome
@@ -59,7 +57,7 @@ import net.minecraft.world.gen.placementmodifier.RarityFilterPlacementModifier
 import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier
 import net.minecraft.world.gen.stateprovider.BlockStateProvider
 
-class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
+abstract class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
     blockPath: String,
     val blockEnName: String,
     val blockJaName: String,
@@ -71,18 +69,7 @@ class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
     blockEntityCreator: (BlockPos, BlockState) -> BE,
 ) {
     companion object {
-        val MIRAGE_FLOWER = MagicPlantCard(
-            "mirage_flower", "Mirage Flower", "ミラージュの花",
-            "mirage_bulb", "Mirage Bulb", "ミラージュの球根",
-            listOf(
-                Poem("Evolution to escape extermination", "可憐にして人畜無害たる魔物。"),
-                Poem("classification", "Order Miragales, family Miragaceae", "妖花目ミラージュ科"),
-            ),
-            { MirageFlowerBlock(createCommonSettings().breakInstantly().mapColor(MapColor.DIAMOND_BLUE).sounds(BlockSoundGroup.GLASS)) },
-            ::MirageFlowerBlockEntity,
-        )
-
-        private fun createCommonSettings(): FabricBlockSettings = FabricBlockSettings.create().noCollision().ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)
+        fun createCommonSettings(): FabricBlockSettings = FabricBlockSettings.create().noCollision().ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)
     }
 
     val blockIdentifier = Identifier(MirageFairy2024.modId, blockPath)
@@ -112,7 +99,7 @@ fun initMagicPlantModule() {
         card.item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
     }
 
-    MagicPlantCard.MIRAGE_FLOWER.let { card ->
+    MirageFlowerCard.let { card ->
         init(card)
 
         card.block.registerVariantsBlockStateGeneration {
@@ -290,7 +277,7 @@ fun initMagicPlantModule() {
             registerBiome(TraitCard.PAVEMENT_FLOWERS, ConventionalBiomeTags.IN_NETHER)
             registerBiome(TraitCard.PROSPERITY_OF_SPECIES, ConventionalBiomeTags.PLAINS)
         }
-        if (block == MagicPlantCard.MIRAGE_FLOWER.block) {
+        if (block == MirageFlowerCard.block) {
             // 栄養系
             N("1000", TraitCard.ETHER_RESPIRATION) { !biome(ConventionalBiomeTags.IN_THE_END) }
             N("0100", TraitCard.ETHER_RESPIRATION) { biome(ConventionalBiomeTags.IN_THE_END) }

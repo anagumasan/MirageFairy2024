@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant.magicplants
 
 import miragefairy2024.mod.MaterialCard
+import miragefairy2024.mod.Poem
 import miragefairy2024.mod.magicplant.MagicPlantBlock
 import miragefairy2024.mod.magicplant.MagicPlantBlockEntity
 import miragefairy2024.mod.magicplant.MagicPlantCard
@@ -14,6 +15,7 @@ import mirrg.kotlin.hydrogen.atMost
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
+import net.minecraft.block.MapColor
 import net.minecraft.block.ShapeContext
 import net.minecraft.block.SideShapeType
 import net.minecraft.enchantment.EnchantmentHelper
@@ -21,6 +23,7 @@ import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
+import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
@@ -29,6 +32,17 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
+
+object MirageFlowerCard : MagicPlantCard<MirageFlowerBlock, MirageFlowerBlockEntity>(
+    "mirage_flower", "Mirage Flower", "ミラージュの花",
+    "mirage_bulb", "Mirage Bulb", "ミラージュの球根",
+    listOf(
+        Poem("Evolution to escape extermination", "可憐にして人畜無害たる魔物。"),
+        Poem("classification", "Order Miragales, family Miragaceae", "妖花目ミラージュ科"),
+    ),
+    { MirageFlowerBlock(createCommonSettings().breakInstantly().mapColor(MapColor.DIAMOND_BLUE).sounds(BlockSoundGroup.GLASS)) },
+    ::MirageFlowerBlockEntity,
+)
 
 fun initMirageFlower() {
 
@@ -116,4 +130,4 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
 }
 
-class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : MagicPlantBlockEntity(MagicPlantCard.MIRAGE_FLOWER.blockEntityType, pos, state)
+class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : MagicPlantBlockEntity(MirageFlowerCard.blockEntityType, pos, state)
