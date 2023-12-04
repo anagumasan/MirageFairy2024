@@ -49,15 +49,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             createCuboidShape(2.0, 0.0, 2.0, 14.0, 15.0, 14.0),
             createCuboidShape(2.0, 0.0, 2.0, 14.0, 16.0, 14.0),
         )
-
-        private fun calculateTraitEffects(world: World, blockPos: BlockPos, traitStacks: TraitStacks): MutableTraitEffects {
-            val allTraitEffects = MutableTraitEffects()
-            traitStacks.traitStackMap.forEach { (trait, level) ->
-                val traitEffects = trait.getTraitEffects(world, blockPos, level)
-                if (traitEffects != null) allTraitEffects += traitEffects
-            }
-            return allTraitEffects
-        }
     }
 
 

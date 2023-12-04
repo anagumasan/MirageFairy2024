@@ -35,6 +35,18 @@ import net.minecraft.world.World
 
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable {
 
+    // Trait
+
+    protected fun calculateTraitEffects(world: World, blockPos: BlockPos, traitStacks: TraitStacks): MutableTraitEffects {
+        val allTraitEffects = MutableTraitEffects()
+        traitStacks.traitStackMap.forEach { (trait, level) ->
+            val traitEffects = trait.getTraitEffects(world, blockPos, level)
+            if (traitEffects != null) allTraitEffects += traitEffects
+        }
+        return allTraitEffects
+    }
+
+
     // Drop
 
     protected fun createSeed(traitStacks: TraitStacks): ItemStack {
