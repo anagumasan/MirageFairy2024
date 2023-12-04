@@ -21,6 +21,7 @@ import net.minecraft.block.PlantBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.item.TooltipContext
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.AliasedBlockItem
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.ItemStack
@@ -85,6 +86,8 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
 
     /** 隣接する同種の植物が交配種子を生産するときに参加できるか否か */
     protected abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
+
+    protected abstract fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack>
 
     /** 中央クリックをするとこの植物の本来の種子を返す。 */
     final override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
