@@ -51,7 +51,20 @@ import net.minecraft.world.WorldView
 @Suppress("OVERRIDE_DEPRECATION")
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable {
 
-    // Block Entity
+    // Trait
+
+    /** 隣接する同種の植物が交配種子を生産するときに参加できるか否か */
+    protected abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
+
+    /** あるワールド上の地点における特性の効果を計算する。 */
+    protected fun calculateTraitEffects(world: World, blockPos: BlockPos, traitStacks: TraitStacks): MutableTraitEffects {
+        val allTraitEffects = MutableTraitEffects()
+        traitStacks.traitStackMap.forEach { (trait, level) ->
+            val traitEffects = trait.getTraitEffects(world, blockPos, level)
+            if (traitEffects != null) allTraitEffects += traitEffects
+        }
+        return allTraitEffects
+    }
 
     override fun onPlaced(world: World, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
         super.onPlaced(world, pos, state, placer, itemStack)
@@ -64,20 +77,11 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     }
 
 
-    // Trait
-
-    /** あるワールド上の地点における特性の効果を計算する。 */
-    protected fun calculateTraitEffects(world: World, blockPos: BlockPos, traitStacks: TraitStacks): MutableTraitEffects {
-        val allTraitEffects = MutableTraitEffects()
-        traitStacks.traitStackMap.forEach { (trait, level) ->
-            val traitEffects = trait.getTraitEffects(world, blockPos, level)
-            if (traitEffects != null) allTraitEffects += traitEffects
-        }
-        return allTraitEffects
-    }
-
-
     // Growth
+
+    protected abstract fun canGrow(blockState: BlockState): Boolean
+
+    protected abstract fun getBlockStateAfterGrowth(blockState: BlockState, amount: Int): BlockState
 
     protected fun move(world: ServerWorld, blockPos: BlockPos, blockState: BlockState, speed: Double = 1.0, autoPick: Boolean = false) {
         val traitStacks = world.getTraitStacks(blockPos) ?: return
@@ -112,14 +116,19 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     final override fun canGrow(world: World, random: Random, pos: BlockPos, state: BlockState) = true
     final override fun grow(world: ServerWorld, random: Random, pos: BlockPos, state: BlockState) = move(world, pos, state, speed = 10.0)
 
-    protected abstract fun canGrow(blockState: BlockState): Boolean
+
+    // Drop
+
+    /** このサイズは収穫が可能か。 */
+    abstract fun canPick(blockState: BlockState): Boolean
 
     protected open fun canAutoPick(blockState: BlockState) = canPick(blockState)
 
-    protected abstract fun getBlockStateAfterGrowth(blockState: BlockState, amount: Int): BlockState
+    /** このサイズで収穫されたあとのサイズ。 */
+    abstract fun getBlockStateAfterPicking(blockState: BlockState): BlockState
 
-
-    // Drop
+    /** 確定で戻って来る本来の種子以外の追加種子及び生産物を計算する。 */
+    protected abstract fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack>
 
     /** この植物本来の種子を返す。 */
     protected fun createSeed(traitStacks: TraitStacks): ItemStack {
@@ -150,12 +159,6 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
 
         return createSeed(crossTraitStacks(world.random, traitStacks, targetTraitStacks))
     }
-
-    /** 隣接する同種の植物が交配種子を生産するときに参加できるか否か */
-    protected abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
-
-    /** 確定で戻って来る本来の種子以外の追加種子及び生産物を計算する。 */
-    protected abstract fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack>
 
     /** 成長段階を消費して収穫物を得てエフェクトを出す収穫処理。 */
     protected fun pick(world: ServerWorld, blockPos: BlockPos, player: PlayerEntity?, tool: ItemStack?) {
@@ -189,12 +192,6 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         pick(world as ServerWorld, pos, player, player.mainHandStack)
         return ActionResult.CONSUME
     }
-
-    /** このサイズは収穫が可能か。 */
-    abstract fun canPick(blockState: BlockState): Boolean
-
-    /** このサイズで収穫されたあとのサイズ。 */
-    abstract fun getBlockStateAfterPicking(blockState: BlockState): BlockState
 
     /** 中央クリックをした際は、この植物の本来の種子を返す。 */
     final override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
