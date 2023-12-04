@@ -59,14 +59,17 @@ fun initMagicPlantModule() {
         val rareTraitStacks = mutableListOf<Chance<TraitStack>>()
         val sRareTraitStacks = mutableListOf<Chance<TraitStack>>()
 
+        @Suppress("FunctionName")
         fun N(binary: String, vararg alternativeCards: TraitCard, condition: () -> Boolean = { true }) {
             if (condition()) traitStackList += TraitStack(alternativeCards[world.random.nextInt(alternativeCards.size)].trait, binary.toInt(2))
         }
 
+        @Suppress("FunctionName")
         fun R(binary: String, vararg alternativeCards: TraitCard, condition: () -> Boolean = { true }) {
             if (condition()) rareTraitStacks += 0.1 chanceTo TraitStack(alternativeCards[world.random.nextInt(alternativeCards.size)].trait, binary.toInt(2))
         }
 
+        @Suppress("FunctionName")
         fun S(binary: String, vararg alternativeCards: TraitCard, condition: () -> Boolean = { true }) {
             if (condition()) sRareTraitStacks += 0.01 chanceTo TraitStack(alternativeCards[world.random.nextInt(alternativeCards.size)].trait, binary.toInt(2))
         }
