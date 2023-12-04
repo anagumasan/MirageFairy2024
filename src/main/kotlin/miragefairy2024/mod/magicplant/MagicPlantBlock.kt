@@ -84,7 +84,7 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     }
 
     /** 隣接する同種の植物が交配種子を生産するときに参加できるか否か */
-    abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
+    protected abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
 
     /** 中央クリックをするとこの植物の本来の種子を返す。 */
     final override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
