@@ -30,6 +30,10 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
+fun initMirageFlower() {
+
+}
+
 @Suppress("OVERRIDE_DEPRECATION")
 class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     companion object {
