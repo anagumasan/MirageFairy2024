@@ -3,11 +3,9 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.mod.MaterialCard
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.randomInt
-import miragefairy2024.util.toBlockPos
 import miragefairy2024.util.toBox
 import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.atMost
-import mirrg.kotlin.hydrogen.or
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -20,8 +18,6 @@ import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContextParameterSet
-import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
@@ -163,28 +159,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     override fun canPick(blockState: BlockState) = isMaxAge(blockState)
 
     override fun getPickedBlockState(blockState: BlockState) = withAge(0)
-
-    // 本来 LootTable を使ってすべて行う想定だが、他にドロップを自由に制御できる場所がないため苦肉の策でここでプログラムで生成する
-    override fun getDroppedStacks(state: BlockState, builder: LootContextParameterSet.Builder): MutableList<ItemStack> {
-        val itemStacks = mutableListOf<ItemStack>()
-        @Suppress("DEPRECATION")
-        itemStacks += super.getDroppedStacks(state, builder)
-        run {
-            val world = builder.world ?: return@run
-            val blockPos = builder.getOptional(LootContextParameters.ORIGIN).or { return@run }.toBlockPos()
-            val blockState = builder.getOptional(LootContextParameters.BLOCK_STATE) ?: return@run
-            val block = blockState.block
-            val blockEntity = builder.getOptional(LootContextParameters.BLOCK_ENTITY) as? MirageFlowerBlockEntity ?: return@run
-            val traitStacks = blockEntity.getTraitStacks() ?: return@run
-            val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
-            val player = builder.getOptional(LootContextParameters.THIS_ENTITY) as? PlayerEntity
-            val tool = builder.getOptional(LootContextParameters.TOOL)
-
-            itemStacks += createSeed(traitStacks)
-            itemStacks += getAdditionalDrops(world, blockPos, block, blockState, traitStacks, traitEffects, player, tool)
-        }
-        return itemStacks
-    }
 
 }
 
