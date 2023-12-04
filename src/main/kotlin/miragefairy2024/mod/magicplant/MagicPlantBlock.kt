@@ -94,8 +94,10 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     /** 隣接する同種の植物が交配種子を生産するときに参加できるか否か */
     protected abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
 
+    /** 確定で戻って来る本来の種子以外の追加種子及び生産物を計算する。 */
     protected abstract fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack>
 
+    /** 成長段階を消費して収穫物を得てエフェクトを出す収穫処理。 */
     protected fun pick(world: ServerWorld, blockPos: BlockPos, player: PlayerEntity?, tool: ItemStack?) {
 
         // ドロップアイテムを計算
@@ -120,6 +122,7 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
 
     }
 
+    /** 右クリック時、収穫が可能であれば収穫する。 */
     final override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         if (!canPick(state)) return ActionResult.PASS
         if (world.isClient) return ActionResult.SUCCESS
@@ -127,16 +130,19 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         return ActionResult.CONSUME
     }
 
+    /** このサイズは収穫が可能か。 */
     abstract fun canPick(blockState: BlockState): Boolean
 
+    /** このサイズで収穫されたあとのサイズ。 */
     abstract fun getPickedBlockState(blockState: BlockState): BlockState
 
-    /** 中央クリックをするとこの植物の本来の種子を返す。 */
+    /** 中央クリックをした際は、この植物の本来の種子を返す。 */
     final override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
         val traitStacks = world.getTraitStacks(pos) ?: return EMPTY_ITEM_STACK
         return createSeed(traitStacks)
     }
 
+    /** 破損時、LootTableと同じところで収穫物を追加する。 */
     // 本来 LootTable を使ってすべて行う想定だが、他にドロップを自由に制御できる場所がないため苦肉の策でここでプログラムで生成する
     final override fun getDroppedStacks(state: BlockState, builder: LootContextParameterSet.Builder): MutableList<ItemStack> {
         val itemStacks = mutableListOf<ItemStack>()
