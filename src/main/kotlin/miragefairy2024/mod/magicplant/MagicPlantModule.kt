@@ -44,14 +44,14 @@ fun initMagicPlantModule() {
         card.traitEffectKey.enJa(card.enName, card.jaName)
     }
 
-    TRAIT_TRANSLATION.enJa()
-    CREATIVE_ONLY_TRANSLATION.enJa()
-    INVALID_TRANSLATION.enJa()
-
     TraitCard.entries.forEach { card ->
         card.trait.register(card.identifier)
         card.trait.enJa(card.enName, card.jaName)
     }
+
+    TRAIT_TRANSLATION.enJa()
+    CREATIVE_ONLY_TRANSLATION.enJa()
+    INVALID_TRANSLATION.enJa()
 
     worldGenTraitGenerations += WorldGenTraitGeneration { world, blockPos, block ->
         val traitStackList = mutableListOf<TraitStack>()
