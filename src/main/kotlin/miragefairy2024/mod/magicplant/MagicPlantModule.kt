@@ -33,9 +33,9 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.biome.Biome
 
-val TRAIT_TRANSLATION = Translation({ "item.magicplant.trait" }, "Trait", "特性")
-val CREATIVE_ONLY_TRANSLATION = Translation({ "item.magicplant.creativeOnly" }, "Creative Only", "クリエイティブ専用")
-val INVALID_TRANSLATION = Translation({ "item.magicplant.invalid" }, "Invalid", "無効")
+val TRAIT_TRANSLATION = Translation({ "item.miragefairy2024.magicplant.trait" }, "Trait", "特性")
+val CREATIVE_ONLY_TRANSLATION = Translation({ "item.miragefairy2024.magicplant.creativeOnly" }, "Creative Only", "クリエイティブ専用")
+val INVALID_TRANSLATION = Translation({ "item.miragefairy2024.magicplant.invalid" }, "Invalid", "無効")
 
 fun initMagicPlantModule() {
 
