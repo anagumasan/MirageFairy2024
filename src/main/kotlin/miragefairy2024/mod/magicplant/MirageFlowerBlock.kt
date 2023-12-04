@@ -132,7 +132,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
     // Drop
 
-    private fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack> {
+    private fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack> {
         val drops = mutableListOf<ItemStack>()
 
         val fortune = if (tool != null) EnchantmentHelper.getLevel(Enchantments.FORTUNE, tool).toDouble() else 0.0
@@ -144,16 +144,22 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
         val generationBoost = traitEffects[TraitEffectKeyCard.PRODUCTION_BOOST.traitEffectKey]
         val fortuneFactor = traitEffects[TraitEffectKeyCard.FORTUNE_FACTOR.traitEffectKey]
 
-        val seedCount = world.random.randomInt(seedGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-        repeat(seedCount) {
-            drops += calculateCrossedSeed(world, blockPos, traitStacks)
+        if (isMaxAge(blockState)) {
+            val seedCount = world.random.randomInt(seedGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            repeat(seedCount) {
+                drops += calculateCrossedSeed(world, blockPos, traitStacks)
+            }
         }
 
-        val fruitCount = world.random.randomInt(fruitGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-        if (fruitCount > 0) drops += MaterialCard.MIRAGE_FLOUR.item.createItemStack(fruitCount) // TODO 必要であれば圧縮
+        if (isMaxAge(blockState)) {
+            val fruitCount = world.random.randomInt(fruitGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (fruitCount > 0) drops += MaterialCard.MIRAGE_FLOUR.item.createItemStack(fruitCount) // TODO 必要であれば圧縮
+        }
 
-        val leafCount = world.random.randomInt(leafGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-        if (leafCount > 0) drops += MaterialCard.MIRAGE_LEAVES.item.createItemStack(leafCount)
+        if (isMaxAge(blockState)) {
+            val leafCount = world.random.randomInt(leafGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (leafCount > 0) drops += MaterialCard.MIRAGE_LEAVES.item.createItemStack(leafCount)
+        }
 
         return drops
     }
@@ -168,10 +174,11 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     private fun pick(world: ServerWorld, blockPos: BlockPos, player: PlayerEntity?, tool: ItemStack?) {
 
         // ドロップアイテムを計算
-        val block = world.getBlockState(blockPos).block
+        val blockState = world.getBlockState(blockPos)
+        val block = blockState.block
         val traitStacks = world.getTraitStacks(blockPos) ?: return
         val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
-        val drops = getAdditionalDrops(world, blockPos, block, traitStacks, traitEffects, player, tool)
+        val drops = getAdditionalDrops(world, blockPos, block, blockState, traitStacks, traitEffects, player, tool)
         val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
 
         // アイテムを生成
@@ -205,7 +212,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
             val tool = builder.getOptional(LootContextParameters.TOOL)
 
             itemStacks += createSeed(traitStacks)
-            if (isMaxAge(state)) itemStacks += getAdditionalDrops(world, blockPos, block, traitStacks, traitEffects, player, tool)
+            itemStacks += getAdditionalDrops(world, blockPos, block, blockState, traitStacks, traitEffects, player, tool)
         }
         return itemStacks
     }
