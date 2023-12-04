@@ -35,6 +35,8 @@ import net.minecraft.world.World
 
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable {
 
+    // Drop
+
     protected fun createSeed(traitStacks: TraitStacks): ItemStack {
         val itemStack = this.asItem().createItemStack()
         setTraitStacks(itemStack, traitStacks)
@@ -69,6 +71,11 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         val traitStacks = world.getTraitStacks(pos) ?: return EMPTY_ITEM_STACK
         return createSeed(traitStacks)
     }
+
+
+    // Visual
+
+    // TODO パーティクル
 
 }
 

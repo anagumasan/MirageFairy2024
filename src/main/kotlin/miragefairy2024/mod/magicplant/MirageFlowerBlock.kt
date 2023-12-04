@@ -232,11 +232,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
         super.onStateReplaced(state, world, pos, newState, moved)
     }
 
-
-    // Visual
-
-    // TODO パーティクル
-
 }
 
 class MirageFlowerBlockEntity(pos: BlockPos, state: BlockState) : MagicPlantBlockEntity(MagicPlantCard.MIRAGE_FLOWER.blockEntityType, pos, state)
