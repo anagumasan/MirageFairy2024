@@ -23,7 +23,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.sound.SoundCategory
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
@@ -171,29 +170,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
         return ActionResult.CONSUME
     }
 
-    private fun pick(world: ServerWorld, blockPos: BlockPos, player: PlayerEntity?, tool: ItemStack?) {
-
-        // ドロップアイテムを計算
-        val blockState = world.getBlockState(blockPos)
-        val block = blockState.block
-        val traitStacks = world.getTraitStacks(blockPos) ?: return
-        val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
-        val drops = getAdditionalDrops(world, blockPos, block, blockState, traitStacks, traitEffects, player, tool)
-        val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
-
-        // アイテムを生成
-        drops.forEach { itemStack ->
-            dropStack(world, blockPos, itemStack)
-        }
-        if (experience > 0) dropExperience(world, blockPos, experience)
-
-        // 成長段階を消費
-        world.setBlockState(blockPos, withAge(0), NOTIFY_LISTENERS)
-
-        // エフェクト
-        world.playSound(null, blockPos, soundGroup.breakSound, SoundCategory.BLOCKS, (soundGroup.volume + 1.0F) / 2.0F * 0.5F, soundGroup.pitch * 0.8F)
-
-    }
+    override fun getPickedBlockState(blockState: BlockState) = withAge(0)
 
     // 本来 LootTable を使ってすべて行う想定だが、他にドロップを自由に制御できる場所がないため苦肉の策でここでプログラムで生成する
     override fun getDroppedStacks(state: BlockState, builder: LootContextParameterSet.Builder): MutableList<ItemStack> {

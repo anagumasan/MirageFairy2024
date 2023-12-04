@@ -30,6 +30,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener
 import net.minecraft.network.packet.Packet
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.sound.SoundCategory
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.BlockPos
@@ -88,6 +89,32 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     protected abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
 
     protected abstract fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack>
+
+    protected fun pick(world: ServerWorld, blockPos: BlockPos, player: PlayerEntity?, tool: ItemStack?) {
+
+        // ドロップアイテムを計算
+        val blockState = world.getBlockState(blockPos)
+        val block = blockState.block
+        val traitStacks = world.getTraitStacks(blockPos) ?: return
+        val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
+        val drops = getAdditionalDrops(world, blockPos, block, blockState, traitStacks, traitEffects, player, tool)
+        val experience = world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey])
+
+        // アイテムを生成
+        drops.forEach { itemStack ->
+            dropStack(world, blockPos, itemStack)
+        }
+        if (experience > 0) dropExperience(world, blockPos, experience)
+
+        // 成長段階を消費
+        world.setBlockState(blockPos, getPickedBlockState(blockState), NOTIFY_LISTENERS)
+
+        // エフェクト
+        world.playSound(null, blockPos, soundGroup.breakSound, SoundCategory.BLOCKS, (soundGroup.volume + 1.0F) / 2.0F * 0.5F, soundGroup.pitch * 0.8F)
+
+    }
+
+    abstract fun getPickedBlockState(blockState: BlockState): BlockState
 
     /** 中央クリックをするとこの植物の本来の種子を返す。 */
     final override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
