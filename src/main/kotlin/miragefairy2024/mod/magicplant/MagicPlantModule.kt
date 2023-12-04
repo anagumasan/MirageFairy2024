@@ -33,46 +33,9 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.biome.Biome
 
-abstract class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
-    blockPath: String,
-    val blockEnName: String,
-    val blockJaName: String,
-    itemPath: String,
-    val itemEnName: String,
-    val itemJaName: String,
-    val seedPoemList: List<Poem>,
-    blockCreator: () -> B,
-    blockEntityCreator: (BlockPos, BlockState) -> BE,
-) {
-    companion object {
-        fun createCommonSettings(): FabricBlockSettings = FabricBlockSettings.create().noCollision().ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)
-    }
-
-    val blockIdentifier = Identifier(MirageFairy2024.modId, blockPath)
-    val itemIdentifier = Identifier(MirageFairy2024.modId, itemPath)
-    val block = blockCreator()
-    val blockEntityType = BlockEntityType(blockEntityCreator, setOf(block), null)
-    val item = MagicPlantSeedItem(block, Item.Settings())
-
-    fun init() {
-        block.register(blockIdentifier)
-        blockEntityType.register(blockIdentifier)
-        item.register(itemIdentifier)
-
-        item.registerItemGroup(mirageFairy2024ItemGroup)
-
-        block.registerCutoutRenderLayer()
-        item.registerGeneratedItemModelGeneration()
-
-        block.enJa(blockEnName, blockJaName)
-        item.enJa(itemEnName, itemJaName)
-        item.registerPoem(seedPoemList)
-        item.registerPoemGeneration(seedPoemList)
-
-        item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
-    }
-
-}
+val TRAIT_TRANSLATION = Translation({ "item.magicplant.trait" }, "Trait", "特性")
+val CREATIVE_ONLY_TRANSLATION = Translation({ "item.magicplant.creativeOnly" }, "Creative Only", "クリエイティブ専用")
+val INVALID_TRANSLATION = Translation({ "item.magicplant.invalid" }, "Invalid", "無効")
 
 fun initMagicPlantModule() {
 
@@ -202,6 +165,43 @@ fun initMagicPlantModule() {
 
 }
 
-val TRAIT_TRANSLATION = Translation({ "item.magicplant.trait" }, "Trait", "特性")
-val CREATIVE_ONLY_TRANSLATION = Translation({ "item.magicplant.creativeOnly" }, "Creative Only", "クリエイティブ専用")
-val INVALID_TRANSLATION = Translation({ "item.magicplant.invalid" }, "Invalid", "無効")
+abstract class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
+    blockPath: String,
+    val blockEnName: String,
+    val blockJaName: String,
+    itemPath: String,
+    val itemEnName: String,
+    val itemJaName: String,
+    val seedPoemList: List<Poem>,
+    blockCreator: () -> B,
+    blockEntityCreator: (BlockPos, BlockState) -> BE,
+) {
+    companion object {
+        fun createCommonSettings(): FabricBlockSettings = FabricBlockSettings.create().noCollision().ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)
+    }
+
+    val blockIdentifier = Identifier(MirageFairy2024.modId, blockPath)
+    val itemIdentifier = Identifier(MirageFairy2024.modId, itemPath)
+    val block = blockCreator()
+    val blockEntityType = BlockEntityType(blockEntityCreator, setOf(block), null)
+    val item = MagicPlantSeedItem(block, Item.Settings())
+
+    fun init() {
+        block.register(blockIdentifier)
+        blockEntityType.register(blockIdentifier)
+        item.register(itemIdentifier)
+
+        item.registerItemGroup(mirageFairy2024ItemGroup)
+
+        block.registerCutoutRenderLayer()
+        item.registerGeneratedItemModelGeneration()
+
+        block.enJa(blockEnName, blockJaName)
+        item.enJa(itemEnName, itemJaName)
+        item.registerPoem(seedPoemList)
+        item.registerPoemGeneration(seedPoemList)
+
+        item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
+    }
+
+}
