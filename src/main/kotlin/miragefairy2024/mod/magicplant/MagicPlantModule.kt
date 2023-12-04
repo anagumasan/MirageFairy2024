@@ -79,23 +79,21 @@ abstract class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
     val item = MagicPlantSeedItem(block, Item.Settings())
 
     fun init() {
-        val card = this
+        block.register(blockIdentifier)
+        blockEntityType.register(blockIdentifier)
+        item.register(itemIdentifier)
 
-        card.block.register(card.blockIdentifier)
-        card.blockEntityType.register(card.blockIdentifier)
-        card.item.register(card.itemIdentifier)
+        item.registerItemGroup(mirageFairy2024ItemGroup)
 
-        card.item.registerItemGroup(mirageFairy2024ItemGroup)
+        block.registerCutoutRenderLayer()
+        item.registerGeneratedItemModelGeneration()
 
-        card.block.registerCutoutRenderLayer()
-        card.item.registerGeneratedItemModelGeneration()
+        block.enJa(blockEnName, blockJaName)
+        item.enJa(itemEnName, itemJaName)
+        item.registerPoem(seedPoemList)
+        item.registerPoemGeneration(seedPoemList)
 
-        card.block.enJa(card.blockEnName, card.blockJaName)
-        card.item.enJa(card.itemEnName, card.itemJaName)
-        card.item.registerPoem(card.seedPoemList)
-        card.item.registerPoemGeneration(card.seedPoemList)
-
-        card.item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
+        item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
     }
 
 }
