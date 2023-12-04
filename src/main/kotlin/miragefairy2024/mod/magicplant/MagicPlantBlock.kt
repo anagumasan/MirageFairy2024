@@ -33,6 +33,8 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
+import net.minecraft.util.Hand
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
@@ -113,6 +115,15 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         world.playSound(null, blockPos, soundGroup.breakSound, SoundCategory.BLOCKS, (soundGroup.volume + 1.0F) / 2.0F * 0.5F, soundGroup.pitch * 0.8F)
 
     }
+
+    final override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+        if (!canPick(state)) return ActionResult.PASS
+        if (world.isClient) return ActionResult.SUCCESS
+        pick(world as ServerWorld, pos, player, player.mainHandStack)
+        return ActionResult.CONSUME
+    }
+
+    abstract fun canPick(blockState: BlockState): Boolean
 
     abstract fun getPickedBlockState(blockState: BlockState): BlockState
 

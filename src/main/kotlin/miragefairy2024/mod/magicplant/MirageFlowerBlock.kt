@@ -26,9 +26,6 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
-import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
-import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.random.Random
@@ -163,12 +160,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
         return drops
     }
 
-    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        if (!isMaxAge(state)) return ActionResult.PASS
-        if (world.isClient) return ActionResult.SUCCESS
-        pick(world as ServerWorld, pos, player, player.mainHandStack)
-        return ActionResult.CONSUME
-    }
+    override fun canPick(blockState: BlockState) = isMaxAge(blockState)
 
     override fun getPickedBlockState(blockState: BlockState) = withAge(0)
 
