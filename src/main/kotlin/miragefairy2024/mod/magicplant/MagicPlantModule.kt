@@ -3,6 +3,8 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.MirageFairy2024DataGenerator
 import miragefairy2024.mod.Poem
+import miragefairy2024.mod.magicplant.magicplants.MirageFlowerBlock
+import miragefairy2024.mod.magicplant.magicplants.MirageFlowerBlockEntity
 import miragefairy2024.mod.mirageFairy2024ItemGroup
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration

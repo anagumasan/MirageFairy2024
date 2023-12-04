@@ -1,6 +1,12 @@
-package miragefairy2024.mod.magicplant
+package miragefairy2024.mod.magicplant.magicplants
 
 import miragefairy2024.mod.MaterialCard
+import miragefairy2024.mod.magicplant.MagicPlantBlock
+import miragefairy2024.mod.magicplant.MagicPlantBlockEntity
+import miragefairy2024.mod.magicplant.MagicPlantCard
+import miragefairy2024.mod.magicplant.MutableTraitEffects
+import miragefairy2024.mod.magicplant.TraitEffectKeyCard
+import miragefairy2024.mod.magicplant.TraitStacks
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.randomInt
 import mirrg.kotlin.hydrogen.atLeast
