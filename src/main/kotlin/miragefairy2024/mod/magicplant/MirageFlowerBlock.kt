@@ -64,19 +64,13 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = MirageFlowerBlockEntity(pos, state)
 
 
-    // Trait
+    // Magic Plant
 
     override fun canCross(world: World, blockPos: BlockPos, blockState: BlockState) = isMaxAge(blockState)
-
-
-    // Growth
-
     override fun canGrow(blockState: BlockState) = !isMaxAge(blockState)
-
     override fun getBlockStateAfterGrowth(blockState: BlockState, amount: Int) = withAge(getAge(blockState) + amount atMost MAX_AGE)
-
-
-    // Drop
+    override fun canPick(blockState: BlockState) = isMaxAge(blockState)
+    override fun getBlockStateAfterPicking(blockState: BlockState) = withAge(0)
 
     override fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack> {
         val drops = mutableListOf<ItemStack>()
@@ -109,10 +103,6 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
         return drops
     }
-
-    override fun canPick(blockState: BlockState) = isMaxAge(blockState)
-
-    override fun getBlockStateAfterPicking(blockState: BlockState) = withAge(0)
 
 }
 
