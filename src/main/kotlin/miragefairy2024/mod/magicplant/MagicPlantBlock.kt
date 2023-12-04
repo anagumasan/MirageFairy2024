@@ -40,6 +40,7 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
 
     // Trait
 
+    /** あるワールド上の地点における特性の効果を計算する。 */
     protected fun calculateTraitEffects(world: World, blockPos: BlockPos, traitStacks: TraitStacks): MutableTraitEffects {
         val allTraitEffects = MutableTraitEffects()
         traitStacks.traitStackMap.forEach { (trait, level) ->
@@ -52,12 +53,14 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
 
     // Drop
 
+    /** この植物本来の種子を返す。 */
     protected fun createSeed(traitStacks: TraitStacks): ItemStack {
         val itemStack = this.asItem().createItemStack()
         setTraitStacks(itemStack, traitStacks)
         return itemStack
     }
 
+    /** 交配が可能であれば交配された種子、そうでなければこの植物本来の種子を返す。 */
     protected fun calculateCrossedSeed(world: World, blockPos: BlockPos, traitStacks: TraitStacks): ItemStack {
 
         val targetTraitStacksList = mutableListOf<TraitStacks>()
@@ -80,13 +83,16 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         return createSeed(crossTraitStacks(world.random, traitStacks, targetTraitStacks))
     }
 
+    /** 隣接する同種の植物が交配種子を生産するときに参加できるか否か */
     abstract fun canCross(world: World, blockPos: BlockPos, blockState: BlockState): Boolean
 
+    /** 中央クリックをするとこの植物の本来の種子を返す。 */
     final override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {
         val traitStacks = world.getTraitStacks(pos) ?: return EMPTY_ITEM_STACK
         return createSeed(traitStacks)
     }
 
+    /** 破壊時、経験値をドロップする。 */
     // 経験値のドロップを onStacksDropped で行うと BlockEntity が得られないためこちらで実装する
     final override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (!state.isOf(newState.block)) run {
