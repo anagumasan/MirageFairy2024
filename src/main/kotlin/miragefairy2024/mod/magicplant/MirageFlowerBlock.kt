@@ -64,7 +64,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = MirageFlowerBlockEntity(pos, state)
 
 
-    // Cross
+    // Trait
 
     override fun canCross(world: World, blockPos: BlockPos, blockState: BlockState) = isMaxAge(blockState)
 
