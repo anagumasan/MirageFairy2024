@@ -216,7 +216,7 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
             val blockPos = builder.getOptional(LootContextParameters.ORIGIN).or { return@run }.toBlockPos()
             val blockState = builder.getOptional(LootContextParameters.BLOCK_STATE) ?: return@run
             val block = blockState.block
-            val blockEntity = builder.getOptional(LootContextParameters.BLOCK_ENTITY) as? MirageFlowerBlockEntity ?: return@run
+            val blockEntity = builder.getOptional(LootContextParameters.BLOCK_ENTITY) as? MagicPlantBlockEntity ?: return@run
             val traitStacks = blockEntity.getTraitStacks() ?: return@run
             val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
             val player = builder.getOptional(LootContextParameters.THIS_ENTITY) as? PlayerEntity
