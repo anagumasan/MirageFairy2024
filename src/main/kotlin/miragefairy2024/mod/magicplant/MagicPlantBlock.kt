@@ -175,7 +175,7 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         if (experience > 0) dropExperience(world, blockPos, experience)
 
         // 成長段階を消費
-        world.setBlockState(blockPos, getPickedBlockState(blockState), NOTIFY_LISTENERS)
+        world.setBlockState(blockPos, getBlockStateAfterPicking(blockState), NOTIFY_LISTENERS)
 
         // エフェクト
         world.playSound(null, blockPos, soundGroup.breakSound, SoundCategory.BLOCKS, (soundGroup.volume + 1.0F) / 2.0F * 0.5F, soundGroup.pitch * 0.8F)
@@ -194,7 +194,7 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     abstract fun canPick(blockState: BlockState): Boolean
 
     /** このサイズで収穫されたあとのサイズ。 */
-    abstract fun getPickedBlockState(blockState: BlockState): BlockState
+    abstract fun getBlockStateAfterPicking(blockState: BlockState): BlockState
 
     /** 中央クリックをした際は、この植物の本来の種子を返す。 */
     final override fun getPickStack(world: BlockView, pos: BlockPos, state: BlockState): ItemStack {

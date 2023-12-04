@@ -112,7 +112,7 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
     override fun canPick(blockState: BlockState) = isMaxAge(blockState)
 
-    override fun getPickedBlockState(blockState: BlockState) = withAge(0)
+    override fun getBlockStateAfterPicking(blockState: BlockState) = withAge(0)
 
 }
 
