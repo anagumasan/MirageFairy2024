@@ -77,11 +77,10 @@ abstract class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
     val block = blockCreator()
     val blockEntityType = BlockEntityType(blockEntityCreator, setOf(block), null)
     val item = MagicPlantSeedItem(block, Item.Settings())
-}
 
-fun initMagicPlantModule() {
+    fun init() {
+        val card = this
 
-    fun init(card: MagicPlantCard<*, *>) {
         card.block.register(card.blockIdentifier)
         card.blockEntityType.register(card.blockIdentifier)
         card.item.register(card.itemIdentifier)
@@ -99,8 +98,12 @@ fun initMagicPlantModule() {
         card.item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
     }
 
+}
+
+fun initMagicPlantModule() {
+
     MirageFlowerCard.let { card ->
-        init(card)
+        card.init()
 
         card.block.registerVariantsBlockStateGeneration {
             (0..MirageFlowerBlock.MAX_AGE).map { age ->
