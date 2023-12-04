@@ -73,6 +73,7 @@ fun initMirageFlower() {
     val card = MirageFlowerCard
     card.init()
 
+    // 見た目
     card.block.registerVariantsBlockStateGeneration {
         (0..MirageFlowerBlock.MAX_AGE).map { age ->
             listOf("age" to "$age") to BlockStateVariant("block/" concat card.blockIdentifier concat "_age$age")
@@ -83,10 +84,11 @@ fun initMirageFlower() {
         texturedModel.registerModelGeneration("block/" concat card.blockIdentifier concat "_age$age")
     }
 
+    // 性質
     //card.block.registerTagGenerate(BlockTags.SMALL_FLOWERS) // これをやるとエンダーマンが勝手に引っこ抜いていく
 
-    // ミラージュの小さな塊の地形生成
-    run {
+    // 地形生成
+    run { // ミラージュの小さな塊
         val identifier = Identifier(MirageFairy2024.modId, "mirage_cluster")
         val configuredKey = RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, identifier)
         val placedKey = RegistryKey.of(RegistryKeys.PLACED_FEATURE, identifier)
@@ -114,9 +116,7 @@ fun initMirageFlower() {
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.VEGETAL_DECORATION, placedKey)
         BiomeModifications.addFeature(BiomeSelectors.foundInTheEnd().and(BiomeSelectors.excludeByKey(BiomeKeys.THE_END)), GenerationStep.Feature.VEGETAL_DECORATION, placedKey)
     }
-
-    // ネザー用ミラージュの塊の地形生成
-    run {
+    run { // ネザー用ミラージュの塊
         val identifier = Identifier(MirageFairy2024.modId, "nether_mirage_cluster")
         val configuredKey = RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, identifier)
         val placedKey = RegistryKey.of(RegistryKeys.PLACED_FEATURE, identifier)
@@ -143,9 +143,7 @@ fun initMirageFlower() {
         MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
         BiomeModifications.addFeature(BiomeSelectors.foundInTheNether(), GenerationStep.Feature.VEGETAL_DECORATION, placedKey)
     }
-
-    // ミラージュの大きな塊の地形生成
-    run {
+    run { // ミラージュの大きな塊
         val identifier = Identifier(MirageFairy2024.modId, "large_mirage_cluster")
         val configuredKey = RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, identifier)
         val placedKey = RegistryKey.of(RegistryKeys.PLACED_FEATURE, identifier)
