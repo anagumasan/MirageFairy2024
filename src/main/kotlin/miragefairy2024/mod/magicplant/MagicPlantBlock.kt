@@ -87,19 +87,20 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         val traitStacks = world.getTraitStacks(blockPos) ?: return
         val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
 
-        val nutrition = traitEffects[TraitEffectKeyCard.NUTRITION.traitEffectKey]
-        val environment = traitEffects[TraitEffectKeyCard.ENVIRONMENT.traitEffectKey]
-        val growthBoost = traitEffects[TraitEffectKeyCard.GROWTH_BOOST.traitEffectKey]
-
-        val actualGrowthAmount = world.random.randomInt(nutrition * environment * (1 + growthBoost) * speed)
-        val newBlockState = getBlockStateAfterGrowth(blockState, actualGrowthAmount)
-        if (newBlockState != blockState) {
-            world.setBlockState(blockPos, newBlockState, NOTIFY_LISTENERS)
+        // 成長
+        if (canGrow(blockState)) {
+            val nutrition = traitEffects[TraitEffectKeyCard.NUTRITION.traitEffectKey]
+            val environment = traitEffects[TraitEffectKeyCard.ENVIRONMENT.traitEffectKey]
+            val growthBoost = traitEffects[TraitEffectKeyCard.GROWTH_BOOST.traitEffectKey]
+            val actualGrowthAmount = world.random.randomInt(nutrition * environment * (1 + growthBoost) * speed)
+            val newBlockState = getBlockStateAfterGrowth(blockState, actualGrowthAmount)
+            if (newBlockState != blockState) {
+                world.setBlockState(blockPos, newBlockState, NOTIFY_LISTENERS)
+            }
         }
 
-        run {
-            if (!autoPick) return@run // 自動収穫が無効の場合は中止
-            if (!canAutoPick(blockState)) return@run // 自動収穫が不可能な場合は中止
+        // 自動収穫
+        if (autoPick && canAutoPick(blockState)) run {
             if (world.getEntitiesByType(EntityType.ITEM, blockPos.toBox()) { true }.isNotEmpty()) return@run // アイテムがそこに存在する場合は中止
             if (world.getEntitiesByType(EntityType.EXPERIENCE_ORB, blockPos.toBox()) { true }.isNotEmpty()) return@run // 経験値がそこに存在する場合は中止
             val naturalAbscission = traitEffects[TraitEffectKeyCard.NATURAL_ABSCISSION.traitEffectKey]
