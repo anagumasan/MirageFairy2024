@@ -12,6 +12,7 @@ import miragefairy2024.util.join
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.text
 import miragefairy2024.util.toBlockPos
+import miragefairy2024.util.toBox
 import miragefairy2024.util.yellow
 import mirrg.kotlin.hydrogen.max
 import mirrg.kotlin.hydrogen.or
@@ -23,6 +24,7 @@ import net.minecraft.block.PlantBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.item.TooltipContext
+import net.minecraft.entity.EntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.AliasedBlockItem
 import net.minecraft.item.ItemPlacementContext
@@ -40,8 +42,10 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.random.Random
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
+import net.minecraft.world.WorldView
 
 @Suppress("OVERRIDE_DEPRECATION")
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable {
@@ -57,6 +61,48 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         }
         return allTraitEffects
     }
+
+
+    // Growth
+
+    protected fun move(world: ServerWorld, blockPos: BlockPos, blockState: BlockState, speed: Double = 1.0, autoPick: Boolean = false) {
+        val traitStacks = world.getTraitStacks(blockPos) ?: return
+        val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
+
+        val nutrition = traitEffects[TraitEffectKeyCard.NUTRITION.traitEffectKey]
+        val environment = traitEffects[TraitEffectKeyCard.ENVIRONMENT.traitEffectKey]
+        val growthBoost = traitEffects[TraitEffectKeyCard.GROWTH_BOOST.traitEffectKey]
+
+        val actualGrowthAmount = world.random.randomInt(nutrition * environment * (1 + growthBoost) * speed)
+        val newBlockState = getBlockStateAfterGrowth(blockState, actualGrowthAmount)
+        if (newBlockState != blockState) {
+            world.setBlockState(blockPos, newBlockState, NOTIFY_LISTENERS)
+        }
+
+        run {
+            if (!autoPick) return@run // 自動収穫が無効の場合は中止
+            if (!canAutoPick(blockState)) return@run // 自動収穫が不可能な場合は中止
+            if (world.getEntitiesByType(EntityType.ITEM, blockPos.toBox()) { true }.isNotEmpty()) return@run // アイテムがそこに存在する場合は中止
+            if (world.getEntitiesByType(EntityType.EXPERIENCE_ORB, blockPos.toBox()) { true }.isNotEmpty()) return@run // 経験値がそこに存在する場合は中止
+            val naturalAbscission = traitEffects[TraitEffectKeyCard.NATURAL_ABSCISSION.traitEffectKey]
+            if (!(world.random.nextDouble() < naturalAbscission)) return@run // 確率で失敗
+            pick(world, blockPos, null, null)
+        }
+
+    }
+
+    final override fun hasRandomTicks(state: BlockState) = true
+    final override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) = move(world, pos, state, autoPick = true)
+
+    final override fun isFertilizable(world: WorldView, pos: BlockPos, state: BlockState) = canGrow(state)
+    final override fun canGrow(world: World, random: Random, pos: BlockPos, state: BlockState) = true
+    final override fun grow(world: ServerWorld, random: Random, pos: BlockPos, state: BlockState) = move(world, pos, state, speed = 10.0)
+
+    protected abstract fun canGrow(blockState: BlockState): Boolean
+
+    protected open fun canAutoPick(blockState: BlockState) = canPick(blockState)
+
+    protected abstract fun getBlockStateAfterGrowth(blockState: BlockState, amount: Int): BlockState
 
 
     // Drop

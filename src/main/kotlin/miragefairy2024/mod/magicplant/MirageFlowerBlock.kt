@@ -3,7 +3,6 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.mod.MaterialCard
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.randomInt
-import miragefairy2024.util.toBox
 import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.atMost
 import net.minecraft.block.Block
@@ -13,22 +12,18 @@ import net.minecraft.block.ShapeContext
 import net.minecraft.block.SideShapeType
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.enchantment.Enchantments
-import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.random.Random
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import net.minecraft.world.WorldView
 
 @Suppress("OVERRIDE_DEPRECATION")
 class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
@@ -87,39 +82,9 @@ class MirageFlowerBlock(settings: Settings) : MagicPlantBlock(settings) {
 
     // Growth
 
-    private fun move(world: ServerWorld, pos: BlockPos, state: BlockState, speed: Double = 1.0, autoPick: Boolean = false) {
-        val traitStacks = world.getTraitStacks(pos) ?: return
-        val traitEffects = calculateTraitEffects(world, pos, traitStacks)
+    override fun canGrow(blockState: BlockState) = !isMaxAge(blockState)
 
-        val nutrition = traitEffects[TraitEffectKeyCard.NUTRITION.traitEffectKey]
-        val environment = traitEffects[TraitEffectKeyCard.ENVIRONMENT.traitEffectKey]
-        val growthBoost = traitEffects[TraitEffectKeyCard.GROWTH_BOOST.traitEffectKey]
-
-        val actualGrowthAmount = world.random.randomInt(nutrition * environment * (1 + growthBoost) * speed)
-        val oldAge = getAge(state)
-        val newAge = oldAge + actualGrowthAmount atMost MAX_AGE
-        if (newAge != oldAge) {
-            world.setBlockState(pos, withAge(newAge), NOTIFY_LISTENERS)
-        }
-
-        run {
-            if (!autoPick) return@run // 自動収穫が無効の場合は中止
-            if (newAge < MAX_AGE) return@run // 最大成長時でない場合は中止
-            if (world.getEntitiesByType(EntityType.ITEM, pos.toBox()) { true }.isNotEmpty()) return@run // アイテムがそこに存在する場合は中止
-            if (world.getEntitiesByType(EntityType.EXPERIENCE_ORB, pos.toBox()) { true }.isNotEmpty()) return@run // 経験値がそこに存在する場合は中止
-            val naturalAbscission = traitEffects[TraitEffectKeyCard.NATURAL_ABSCISSION.traitEffectKey]
-            if (!(world.random.nextDouble() < naturalAbscission)) return@run // 確率で失敗
-            pick(world, pos, null, null)
-        }
-
-    }
-
-    override fun hasRandomTicks(state: BlockState) = true
-    override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) = move(world, pos, state, autoPick = true)
-
-    override fun isFertilizable(world: WorldView, pos: BlockPos, state: BlockState) = !isMaxAge(state)
-    override fun canGrow(world: World, random: Random, pos: BlockPos, state: BlockState) = true
-    override fun grow(world: ServerWorld, random: Random, pos: BlockPos, state: BlockState) = move(world, pos, state, speed = 10.0)
+    override fun getBlockStateAfterGrowth(blockState: BlockState, amount: Int) = withAge(getAge(blockState) + amount atMost MAX_AGE)
 
 
     // Drop
