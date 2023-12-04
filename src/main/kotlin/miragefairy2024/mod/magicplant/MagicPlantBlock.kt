@@ -66,7 +66,8 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
         return allTraitEffects
     }
 
-    override fun onPlaced(world: World, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
+    /** 種子によって置かれた際にその特性をコピーする。 */
+    final override fun onPlaced(world: World, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
         super.onPlaced(world, pos, state, placer, itemStack)
         run {
             if (world.isClient) return@run
@@ -79,10 +80,13 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
 
     // Growth
 
+    /** このサイズは成長が可能か。 */
     protected abstract fun canGrow(blockState: BlockState): Boolean
 
+    /** 指定のサイズで成長した後のサイズを返す。 */
     protected abstract fun getBlockStateAfterGrowth(blockState: BlockState, amount: Int): BlockState
 
+    /** 時間経過や骨粉などによって呼び出される成長と自動収穫などのためのイベントを処理します。 */
     protected fun move(world: ServerWorld, blockPos: BlockPos, blockState: BlockState, speed: Double = 1.0, autoPick: Boolean = false) {
         val traitStacks = world.getTraitStacks(blockPos) ?: return
         val traitEffects = calculateTraitEffects(world, blockPos, traitStacks)
@@ -121,12 +125,13 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     // Drop
 
     /** このサイズは収穫が可能か。 */
-    abstract fun canPick(blockState: BlockState): Boolean
+    protected abstract fun canPick(blockState: BlockState): Boolean
 
+    /** このサイズは自動収穫が可能か。 */
     protected open fun canAutoPick(blockState: BlockState) = canPick(blockState)
 
-    /** このサイズで収穫されたあとのサイズ。 */
-    abstract fun getBlockStateAfterPicking(blockState: BlockState): BlockState
+    /** 指定のサイズで収穫した後のサイズを返す。 */
+    protected abstract fun getBlockStateAfterPicking(blockState: BlockState): BlockState
 
     /** 確定で戻って来る本来の種子以外の追加種子及び生産物を計算する。 */
     protected abstract fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack>
