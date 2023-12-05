@@ -78,3 +78,30 @@ val worldGenTraitRecipeRegistry = mutableMapOf<Block, MutableList<WorldGenTraitR
 fun registerWorldGenTraitRecipe(recipe: WorldGenTraitRecipe) {
     worldGenTraitRecipeRegistry.getOrPut(recipe.block) { mutableListOf() } += recipe
 }
+
+
+// Util
+
+class WorldGenTraitRecipeInitScope(val block: Block) {
+
+    @Suppress("FunctionName")
+    fun A(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
+        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.A, traitCard.trait, levelString.toInt(2), condition))
+    }
+
+    @Suppress("FunctionName")
+    fun N(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
+        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.N, traitCard.trait, levelString.toInt(2), condition))
+    }
+
+    @Suppress("FunctionName")
+    fun R(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
+        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.R, traitCard.trait, levelString.toInt(2), condition))
+    }
+
+    @Suppress("FunctionName")
+    fun S(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
+        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.S, traitCard.trait, levelString.toInt(2), condition))
+    }
+
+}

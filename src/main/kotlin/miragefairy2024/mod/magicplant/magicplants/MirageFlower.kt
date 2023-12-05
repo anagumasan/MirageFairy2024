@@ -12,7 +12,7 @@ import miragefairy2024.mod.magicplant.TraitCard
 import miragefairy2024.mod.magicplant.TraitEffectKeyCard
 import miragefairy2024.mod.magicplant.TraitStacks
 import miragefairy2024.mod.magicplant.WorldGenTraitRecipe
-import miragefairy2024.mod.magicplant.registerWorldGenTraitRecipe
+import miragefairy2024.mod.magicplant.WorldGenTraitRecipeInitScope
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
@@ -180,27 +180,7 @@ fun initMirageFlower() {
     }
 
     // 特性
-    run {
-
-        @Suppress("FunctionName")
-        fun A(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-            registerWorldGenTraitRecipe(WorldGenTraitRecipe(card.block, WorldGenTraitRecipe.Rarity.A, traitCard.trait, levelString.toInt(2), condition))
-        }
-
-        @Suppress("FunctionName")
-        fun N(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-            registerWorldGenTraitRecipe(WorldGenTraitRecipe(card.block, WorldGenTraitRecipe.Rarity.N, traitCard.trait, levelString.toInt(2), condition))
-        }
-
-        @Suppress("FunctionName")
-        fun R(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-            registerWorldGenTraitRecipe(WorldGenTraitRecipe(card.block, WorldGenTraitRecipe.Rarity.R, traitCard.trait, levelString.toInt(2), condition))
-        }
-
-        @Suppress("FunctionName")
-        fun S(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-            registerWorldGenTraitRecipe(WorldGenTraitRecipe(card.block, WorldGenTraitRecipe.Rarity.S, traitCard.trait, levelString.toInt(2), condition))
-        }
+    WorldGenTraitRecipeInitScope(card.block).run {
 
         // 栄養系
         A("1000", TraitCard.ETHER_RESPIRATION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_THE_END))
