@@ -122,30 +122,3 @@ class RecipeWorldGenTraitGeneration : WorldGenTraitGeneration {
         return resultTraitStackList
     }
 }
-
-
-// Util
-
-class WorldGenTraitRecipeInitScope(val block: Block) {
-
-    @Suppress("FunctionName")
-    fun A(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.A, traitCard.trait, levelString.toInt(2), condition))
-    }
-
-    @Suppress("FunctionName")
-    fun N(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.N, traitCard.trait, levelString.toInt(2), condition))
-    }
-
-    @Suppress("FunctionName")
-    fun R(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.R, traitCard.trait, levelString.toInt(2), condition))
-    }
-
-    @Suppress("FunctionName")
-    fun S(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.S, traitCard.trait, levelString.toInt(2), condition))
-    }
-
-}

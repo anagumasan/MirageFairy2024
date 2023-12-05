@@ -13,6 +13,7 @@ import miragefairy2024.mod.magicplant.TraitEffectKeyCard
 import miragefairy2024.mod.magicplant.TraitStacks
 import miragefairy2024.mod.magicplant.WorldGenTraitRecipe
 import miragefairy2024.mod.magicplant.WorldGenTraitRecipeInitScope
+import miragefairy2024.mod.magicplant.initMagicPlant
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
@@ -79,7 +80,7 @@ object MirageFlowerCard : MagicPlantCard<MirageFlowerBlock, MirageFlowerBlockEnt
 
 fun initMirageFlower() {
     val card = MirageFlowerCard
-    card.init()
+    card.initMagicPlant()
 
     // 見た目
     card.block.registerVariantsBlockStateGeneration {
