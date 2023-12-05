@@ -8,9 +8,14 @@ import miragefairy2024.mod.magicplant.MagicPlantBlock
 import miragefairy2024.mod.magicplant.MagicPlantBlockEntity
 import miragefairy2024.mod.magicplant.MagicPlantCard
 import miragefairy2024.mod.magicplant.MutableTraitEffects
+import miragefairy2024.mod.magicplant.TraitCard
 import miragefairy2024.mod.magicplant.TraitEffectKeyCard
 import miragefairy2024.mod.magicplant.TraitStacks
+import miragefairy2024.mod.magicplant.WorldGenTraitRecipe
+import miragefairy2024.mod.magicplant.registerWorldGenTraitRecipe
 import miragefairy2024.util.BlockStateVariant
+import miragefairy2024.util.HumidityCategory
+import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.concat
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.randomInt
@@ -21,6 +26,7 @@ import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.atMost
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -36,6 +42,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.registry.RegistryKey
 import net.minecraft.registry.RegistryKeys
+import net.minecraft.registry.tag.TagKey
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
@@ -46,6 +53,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
+import net.minecraft.world.biome.Biome
 import net.minecraft.world.biome.BiomeKeys
 import net.minecraft.world.gen.GenerationStep
 import net.minecraft.world.gen.feature.Feature
@@ -169,6 +177,102 @@ fun initMirageFlower() {
         }
         MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.VEGETAL_DECORATION, placedKey)
+    }
+
+    // 特性
+    run {
+
+        @Suppress("FunctionName")
+        fun A(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
+            registerWorldGenTraitRecipe(WorldGenTraitRecipe(card.block, WorldGenTraitRecipe.Rarity.A, traitCard.trait, levelString.toInt(2), condition))
+        }
+
+        @Suppress("FunctionName")
+        fun N(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
+            registerWorldGenTraitRecipe(WorldGenTraitRecipe(card.block, WorldGenTraitRecipe.Rarity.N, traitCard.trait, levelString.toInt(2), condition))
+        }
+
+        @Suppress("FunctionName")
+        fun R(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
+            registerWorldGenTraitRecipe(WorldGenTraitRecipe(card.block, WorldGenTraitRecipe.Rarity.R, traitCard.trait, levelString.toInt(2), condition))
+        }
+
+        @Suppress("FunctionName")
+        fun S(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
+            registerWorldGenTraitRecipe(WorldGenTraitRecipe(card.block, WorldGenTraitRecipe.Rarity.S, traitCard.trait, levelString.toInt(2), condition))
+        }
+
+        run {
+            // 環境系
+            fun registerAdaptation(traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition) {
+                A("0100", traitCard, condition)
+                R("0010", traitCard, condition)
+            }
+            registerAdaptation(TraitCard.COLD_ADAPTATION, WorldGenTraitRecipe.Condition.Temperature(TemperatureCategory.LOW))
+            registerAdaptation(TraitCard.WARM_ADAPTATION, WorldGenTraitRecipe.Condition.Temperature(TemperatureCategory.MEDIUM))
+            registerAdaptation(TraitCard.HOT_ADAPTATION, WorldGenTraitRecipe.Condition.Temperature(TemperatureCategory.HIGH))
+            registerAdaptation(TraitCard.ARID_ADAPTATION, WorldGenTraitRecipe.Condition.Humidity(HumidityCategory.LOW))
+            registerAdaptation(TraitCard.MESIC_ADAPTATION, WorldGenTraitRecipe.Condition.Humidity(HumidityCategory.MEDIUM))
+            registerAdaptation(TraitCard.HUMID_ADAPTATION, WorldGenTraitRecipe.Condition.Humidity(HumidityCategory.HIGH))
+
+            // バイオーム系
+            fun registerBiome(traitCard: TraitCard, biomeTag: TagKey<Biome>) {
+                A("0100", traitCard, WorldGenTraitRecipe.Condition.InBiome(biomeTag))
+                R("0010", traitCard, WorldGenTraitRecipe.Condition.InBiome(biomeTag))
+                S("0001", traitCard, WorldGenTraitRecipe.Condition.InBiome(biomeTag))
+            }
+            registerBiome(TraitCard.FOUR_LEAFED, ConventionalBiomeTags.FLORAL)
+            registerBiome(TraitCard.NODED_STEM, ConventionalBiomeTags.BEACH)
+            registerBiome(TraitCard.FRUIT_OF_KNOWLEDGE, ConventionalBiomeTags.JUNGLE)
+            registerBiome(TraitCard.GOLDEN_APPLE, ConventionalBiomeTags.FOREST)
+            registerBiome(TraitCard.SPINY_LEAVES, ConventionalBiomeTags.MESA)
+            registerBiome(TraitCard.DESERT_GEM, ConventionalBiomeTags.DESERT)
+            registerBiome(TraitCard.HEATING_MECHANISM, ConventionalBiomeTags.SNOWY)
+            registerBiome(TraitCard.WATERLOGGING_TOLERANCE, ConventionalBiomeTags.RIVER)
+            registerBiome(TraitCard.ADVERSITY_FLOWER, ConventionalBiomeTags.MOUNTAIN)
+            registerBiome(TraitCard.FLESHY_LEAVES, ConventionalBiomeTags.SAVANNA)
+            registerBiome(TraitCard.NATURAL_ABSCISSION, ConventionalBiomeTags.TAIGA)
+            registerBiome(TraitCard.CARNIVOROUS_PLANT, ConventionalBiomeTags.SWAMP)
+            registerBiome(TraitCard.ETHER_PREDATION, ConventionalBiomeTags.IN_THE_END)
+            registerBiome(TraitCard.PAVEMENT_FLOWERS, ConventionalBiomeTags.IN_NETHER)
+            registerBiome(TraitCard.PROSPERITY_OF_SPECIES, ConventionalBiomeTags.PLAINS)
+        }
+        run {
+            // 栄養系
+            A("1000", TraitCard.ETHER_RESPIRATION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_THE_END))
+            A("0100", TraitCard.ETHER_RESPIRATION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_THE_END))
+            R("0010", TraitCard.ETHER_RESPIRATION)
+            S("0001", TraitCard.ETHER_RESPIRATION)
+            R("0010", TraitCard.PHOTOSYNTHESIS)
+            S("0100", TraitCard.PHAEOSYNTHESIS)
+            R("0010", TraitCard.OSMOTIC_ABSORPTION)
+            R("1000", TraitCard.CRYSTAL_ABSORPTION)
+            S("0100", TraitCard.CRYSTAL_ABSORPTION)
+            S("0010", TraitCard.CRYSTAL_ABSORPTION)
+            S("0001", TraitCard.CRYSTAL_ABSORPTION)
+
+            // 環境系
+            A("1000", TraitCard.AIR_ADAPTATION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_THE_END))
+            A("0100", TraitCard.AIR_ADAPTATION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_THE_END))
+            R("0010", TraitCard.AIR_ADAPTATION)
+            S("0001", TraitCard.AIR_ADAPTATION)
+
+            // 生産系
+            A("0100", TraitCard.SEEDS_PRODUCTION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_THE_END))
+            A("0010", TraitCard.SEEDS_PRODUCTION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_THE_END))
+            R("0001", TraitCard.SEEDS_PRODUCTION)
+            A("1000", TraitCard.FRUITS_PRODUCTION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_NETHER))
+            A("0010", TraitCard.FRUITS_PRODUCTION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_NETHER))
+            R("0001", TraitCard.FRUITS_PRODUCTION)
+            A("0010", TraitCard.LEAVES_PRODUCTION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_NETHER))
+            R("0001", TraitCard.LEAVES_PRODUCTION)
+            R("0010", TraitCard.EXPERIENCE_PRODUCTION)
+            S("0001", TraitCard.EXPERIENCE_PRODUCTION)
+
+            // 妖精の祝福
+            A("0010", TraitCard.FAIRY_BLESSING, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_NETHER))
+            R("0001", TraitCard.FAIRY_BLESSING)
+        }
     }
 
 }
