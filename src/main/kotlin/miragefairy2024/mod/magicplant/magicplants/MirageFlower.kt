@@ -43,7 +43,6 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.registry.RegistryKey
 import net.minecraft.registry.RegistryKeys
-import net.minecraft.registry.tag.TagKey
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.IntProperty
@@ -54,7 +53,6 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import net.minecraft.world.biome.Biome
 import net.minecraft.world.biome.BiomeKeys
 import net.minecraft.world.gen.GenerationStep
 import net.minecraft.world.gen.feature.Feature
@@ -180,74 +178,49 @@ fun initMirageFlower() {
     // 特性
     WorldGenTraitRecipeInitScope(card.block).run {
 
-        // 栄養系
-        A("1000", TraitCard.ETHER_RESPIRATION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_THE_END))
-        A("0100", TraitCard.ETHER_RESPIRATION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_THE_END))
-        R("0010", TraitCard.ETHER_RESPIRATION)
-        S("0001", TraitCard.ETHER_RESPIRATION)
-        R("0010", TraitCard.PHOTOSYNTHESIS)
-        S("0100", TraitCard.PHAEOSYNTHESIS)
-        R("0010", TraitCard.OSMOTIC_ABSORPTION)
-        R("1000", TraitCard.CRYSTAL_ABSORPTION)
-        S("0100", TraitCard.CRYSTAL_ABSORPTION)
-        S("0010", TraitCard.CRYSTAL_ABSORPTION)
-        S("0001", TraitCard.CRYSTAL_ABSORPTION)
+        // 標準特性
+        registerWorldGenTraitRecipe("A.RS", TraitCard.ETHER_RESPIRATION) // エーテル呼吸
+        registerWorldGenTraitRecipe("A.RS", TraitCard.AIR_ADAPTATION) // 空気適応
+        registerWorldGenTraitRecipe("..NR", TraitCard.SEEDS_PRODUCTION) // 種子生成
+        registerWorldGenTraitRecipe("N.NR", TraitCard.FRUITS_PRODUCTION) // 果実生成
+        registerWorldGenTraitRecipe("..NR", TraitCard.LEAVES_PRODUCTION) // 葉面生成
+        registerWorldGenTraitRecipe("..NR", TraitCard.FAIRY_BLESSING) // 妖精の祝福
 
-        // 環境系
-        fun registerAdaptation(traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition) {
-            A("0100", traitCard, condition)
-            R("0010", traitCard, condition)
-        }
-        registerAdaptation(TraitCard.COLD_ADAPTATION, WorldGenTraitRecipe.Condition.Temperature(TemperatureCategory.LOW))
-        registerAdaptation(TraitCard.WARM_ADAPTATION, WorldGenTraitRecipe.Condition.Temperature(TemperatureCategory.MEDIUM))
-        registerAdaptation(TraitCard.HOT_ADAPTATION, WorldGenTraitRecipe.Condition.Temperature(TemperatureCategory.HIGH))
-        registerAdaptation(TraitCard.ARID_ADAPTATION, WorldGenTraitRecipe.Condition.Humidity(HumidityCategory.LOW))
-        registerAdaptation(TraitCard.MESIC_ADAPTATION, WorldGenTraitRecipe.Condition.Humidity(HumidityCategory.MEDIUM))
-        registerAdaptation(TraitCard.HUMID_ADAPTATION, WorldGenTraitRecipe.Condition.Humidity(HumidityCategory.HIGH))
+        // R特性
+        registerWorldGenTraitRecipe("..RS", TraitCard.PHOTOSYNTHESIS) // 光合成
+        registerWorldGenTraitRecipe("..RS", TraitCard.OSMOTIC_ABSORPTION) // 浸透吸収
+        registerWorldGenTraitRecipe("RS..", TraitCard.CRYSTAL_ABSORPTION) // 鉱物吸収
+        registerWorldGenTraitRecipe("..RS", TraitCard.EXPERIENCE_PRODUCTION) // 経験値生成
 
-        // 環境系
-        A("1000", TraitCard.AIR_ADAPTATION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_THE_END))
-        A("0100", TraitCard.AIR_ADAPTATION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_THE_END))
-        R("0010", TraitCard.AIR_ADAPTATION)
-        S("0001", TraitCard.AIR_ADAPTATION)
+        // SR特性
+        registerWorldGenTraitRecipe(".S..", TraitCard.PHAEOSYNTHESIS) // 闇合成
 
-        // 生産系
-        A("0100", TraitCard.SEEDS_PRODUCTION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_THE_END))
-        A("0010", TraitCard.SEEDS_PRODUCTION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_THE_END))
-        R("0001", TraitCard.SEEDS_PRODUCTION)
-        A("1000", TraitCard.FRUITS_PRODUCTION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_NETHER))
-        A("0010", TraitCard.FRUITS_PRODUCTION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_NETHER))
-        R("0001", TraitCard.FRUITS_PRODUCTION)
-        A("0010", TraitCard.LEAVES_PRODUCTION, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_NETHER))
-        R("0001", TraitCard.LEAVES_PRODUCTION)
-        R("0010", TraitCard.EXPERIENCE_PRODUCTION)
-        S("0001", TraitCard.EXPERIENCE_PRODUCTION)
+        // 環境依存特性
+        registerWorldGenTraitRecipe(".A..", TraitCard.ETHER_RESPIRATION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_THE_END)) // エーテル呼吸
+        registerWorldGenTraitRecipe(".A..", TraitCard.AIR_ADAPTATION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_THE_END)) // 空気適応
+        registerWorldGenTraitRecipe(".NRS", TraitCard.COLD_ADAPTATION, WorldGenTraitRecipe.Condition.Temperature(TemperatureCategory.LOW)) // 寒冷適応
+        registerWorldGenTraitRecipe(".NRS", TraitCard.WARM_ADAPTATION, WorldGenTraitRecipe.Condition.Temperature(TemperatureCategory.MEDIUM)) // 温暖適応
+        registerWorldGenTraitRecipe(".NRS", TraitCard.HOT_ADAPTATION, WorldGenTraitRecipe.Condition.Temperature(TemperatureCategory.HIGH)) // 熱帯適応
+        registerWorldGenTraitRecipe(".NRS", TraitCard.ARID_ADAPTATION, WorldGenTraitRecipe.Condition.Humidity(HumidityCategory.LOW)) // 乾燥適応
+        registerWorldGenTraitRecipe(".NRS", TraitCard.MESIC_ADAPTATION, WorldGenTraitRecipe.Condition.Humidity(HumidityCategory.MEDIUM)) // 中湿適応
+        registerWorldGenTraitRecipe(".NRS", TraitCard.HUMID_ADAPTATION, WorldGenTraitRecipe.Condition.Humidity(HumidityCategory.HIGH)) // 湿潤適応
 
-        // 妖精の祝福
-        A("0010", TraitCard.FAIRY_BLESSING, WorldGenTraitRecipe.Condition.NotInBiome(ConventionalBiomeTags.IN_NETHER))
-        R("0001", TraitCard.FAIRY_BLESSING)
-
-        // バイオーム系
-        fun registerBiome(traitCard: TraitCard, biomeTag: TagKey<Biome>) {
-            A("0100", traitCard, WorldGenTraitRecipe.Condition.InBiome(biomeTag))
-            R("0010", traitCard, WorldGenTraitRecipe.Condition.InBiome(biomeTag))
-            S("0001", traitCard, WorldGenTraitRecipe.Condition.InBiome(biomeTag))
-        }
-        registerBiome(TraitCard.FOUR_LEAFED, ConventionalBiomeTags.FLORAL)
-        registerBiome(TraitCard.NODED_STEM, ConventionalBiomeTags.BEACH)
-        registerBiome(TraitCard.FRUIT_OF_KNOWLEDGE, ConventionalBiomeTags.JUNGLE)
-        registerBiome(TraitCard.GOLDEN_APPLE, ConventionalBiomeTags.FOREST)
-        registerBiome(TraitCard.SPINY_LEAVES, ConventionalBiomeTags.MESA)
-        registerBiome(TraitCard.DESERT_GEM, ConventionalBiomeTags.DESERT)
-        registerBiome(TraitCard.HEATING_MECHANISM, ConventionalBiomeTags.SNOWY)
-        registerBiome(TraitCard.WATERLOGGING_TOLERANCE, ConventionalBiomeTags.RIVER)
-        registerBiome(TraitCard.ADVERSITY_FLOWER, ConventionalBiomeTags.MOUNTAIN)
-        registerBiome(TraitCard.FLESHY_LEAVES, ConventionalBiomeTags.SAVANNA)
-        registerBiome(TraitCard.NATURAL_ABSCISSION, ConventionalBiomeTags.TAIGA)
-        registerBiome(TraitCard.CARNIVOROUS_PLANT, ConventionalBiomeTags.SWAMP)
-        registerBiome(TraitCard.ETHER_PREDATION, ConventionalBiomeTags.IN_THE_END)
-        registerBiome(TraitCard.PAVEMENT_FLOWERS, ConventionalBiomeTags.IN_NETHER)
-        registerBiome(TraitCard.PROSPERITY_OF_SPECIES, ConventionalBiomeTags.PLAINS)
+        // バイオーム限定特性
+        registerWorldGenTraitRecipe(".NRS", TraitCard.FOUR_LEAFED, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.FLORAL)) // 四つ葉
+        registerWorldGenTraitRecipe(".NRS", TraitCard.NODED_STEM, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.BEACH)) // 節状の茎
+        registerWorldGenTraitRecipe(".NRS", TraitCard.FRUIT_OF_KNOWLEDGE, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.JUNGLE)) // 知識の果実
+        registerWorldGenTraitRecipe(".NRS", TraitCard.GOLDEN_APPLE, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.FOREST)) // 金のリンゴ
+        registerWorldGenTraitRecipe(".NRS", TraitCard.SPINY_LEAVES, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.MESA)) // 棘状の葉
+        registerWorldGenTraitRecipe(".NRS", TraitCard.DESERT_GEM, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.DESERT)) // 砂漠の宝石
+        registerWorldGenTraitRecipe(".NRS", TraitCard.HEATING_MECHANISM, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.SNOWY)) // 発熱機構
+        registerWorldGenTraitRecipe(".NRS", TraitCard.WATERLOGGING_TOLERANCE, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.RIVER)) // 浸水耐性
+        registerWorldGenTraitRecipe(".NRS", TraitCard.ADVERSITY_FLOWER, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.MOUNTAIN)) // 高嶺の花
+        registerWorldGenTraitRecipe(".NRS", TraitCard.FLESHY_LEAVES, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.SAVANNA)) // 肉厚の葉
+        registerWorldGenTraitRecipe(".NRS", TraitCard.NATURAL_ABSCISSION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.TAIGA)) // 自然落果
+        registerWorldGenTraitRecipe(".NRS", TraitCard.CARNIVOROUS_PLANT, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.SWAMP)) // 食虫植物
+        registerWorldGenTraitRecipe(".NRS", TraitCard.ETHER_PREDATION, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_THE_END)) // エーテル捕食
+        registerWorldGenTraitRecipe(".NRS", TraitCard.PAVEMENT_FLOWERS, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.IN_NETHER)) // アスファルトに咲く花
+        registerWorldGenTraitRecipe(".NRS", TraitCard.PROSPERITY_OF_SPECIES, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.PLAINS)) // 種の繁栄
 
     }
 

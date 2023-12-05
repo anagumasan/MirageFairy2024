@@ -41,24 +41,19 @@ fun MagicPlantCard<*, *>.initMagicPlant() {
 
 class WorldGenTraitRecipeInitScope(val block: Block) {
 
-    @Suppress("FunctionName")
-    fun A(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.A, traitCard.trait, levelString.toInt(2), condition))
-    }
-
-    @Suppress("FunctionName")
-    fun N(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.N, traitCard.trait, levelString.toInt(2), condition))
-    }
-
-    @Suppress("FunctionName")
-    fun R(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.R, traitCard.trait, levelString.toInt(2), condition))
-    }
-
-    @Suppress("FunctionName")
-    fun S(levelString: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
-        registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, WorldGenTraitRecipe.Rarity.S, traitCard.trait, levelString.toInt(2), condition))
+    fun registerWorldGenTraitRecipe(pattern: String, traitCard: TraitCard, condition: WorldGenTraitRecipe.Condition = WorldGenTraitRecipe.Condition.Always) {
+        pattern.forEachIndexed { i, ch ->
+            val rarity = when (ch) {
+                '.' -> return@forEachIndexed
+                'A' -> WorldGenTraitRecipe.Rarity.A
+                'N' -> WorldGenTraitRecipe.Rarity.N
+                'R' -> WorldGenTraitRecipe.Rarity.R
+                'S' -> WorldGenTraitRecipe.Rarity.S
+                else -> throw IllegalArgumentException()
+            }
+            val level = 1 shl (pattern.length - 1 - i)
+            registerWorldGenTraitRecipe(WorldGenTraitRecipe(block, rarity, traitCard.trait, level, condition))
+        }
     }
 
 }
