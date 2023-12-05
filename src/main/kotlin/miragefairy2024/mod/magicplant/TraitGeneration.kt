@@ -103,21 +103,36 @@ class RecipeWorldGenTraitGeneration : WorldGenTraitGeneration {
 
         // 抽選
         val r = world.random.nextDouble()
-        if (r < 0.01) { // S
-            if (sTraitStackList.isNotEmpty()) {
-                resultTraitStackList += sTraitStackList[world.random.nextInt(sTraitStackList.size)]
+        when {
+            r < 0.01 -> { // +S
+                resultTraitStackList += aTraitStackList
+                resultTraitStackList += nTraitStackList
+                if (sTraitStackList.isNotEmpty()) {
+                    resultTraitStackList += sTraitStackList[world.random.nextInt(sTraitStackList.size)]
+                }
             }
-        } else if (r >= 0.01 && r < 0.1) { // R
-            if (rTraitStackList.isNotEmpty()) {
-                resultTraitStackList += rTraitStackList[world.random.nextInt(rTraitStackList.size)]
+
+            r >= 0.02 && r < 0.1 -> { // +R
+                resultTraitStackList += aTraitStackList
+                resultTraitStackList += nTraitStackList
+                if (rTraitStackList.isNotEmpty()) {
+                    resultTraitStackList += rTraitStackList[world.random.nextInt(rTraitStackList.size)]
+                }
             }
-        } else if (r >= 0.1 && r < 0.2) { // N
-            if (nTraitStackList.isNotEmpty()) {
-                nTraitStackList.removeAt(world.random.nextInt(rTraitStackList.size))
+
+            r >= 0.01 && r < 0.02 -> { // -N
+                resultTraitStackList += aTraitStackList
+                if (nTraitStackList.isNotEmpty()) {
+                    nTraitStackList.removeAt(world.random.nextInt(nTraitStackList.size))
+                    resultTraitStackList += nTraitStackList
+                }
+            }
+
+            else -> { // 0
+                resultTraitStackList += aTraitStackList
                 resultTraitStackList += nTraitStackList
             }
         }
-        resultTraitStackList += aTraitStackList // A
 
         return resultTraitStackList
     }
