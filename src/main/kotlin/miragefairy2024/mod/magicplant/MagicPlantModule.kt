@@ -71,21 +71,31 @@ abstract class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
     val item = MagicPlantSeedItem(block, Item.Settings())
 
     fun init() {
+
+        // 登録
         block.register(blockIdentifier)
         blockEntityType.register(blockIdentifier)
         item.register(itemIdentifier)
 
+        // 分類
         item.registerItemGroup(mirageFairy2024ItemGroup)
 
+        // 見た目
         block.registerCutoutRenderLayer()
         item.registerGeneratedItemModelGeneration()
 
+        // 翻訳
         block.enJa(blockEnName, blockJaName)
         item.enJa(itemEnName, itemJaName)
         item.registerPoem(seedPoemList)
         item.registerPoemGeneration(seedPoemList)
 
+        // 性質
+        //block.registerTagGenerate(BlockTags.SMALL_FLOWERS) // これをやるとエンダーマンが勝手に引っこ抜いていく
+
+        // レシピ
         item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
+
     }
 
 }

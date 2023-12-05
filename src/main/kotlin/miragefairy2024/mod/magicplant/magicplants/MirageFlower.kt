@@ -92,9 +92,6 @@ fun initMirageFlower() {
         texturedModel.registerModelGeneration("block/" concat card.blockIdentifier concat "_age$age")
     }
 
-    // 性質
-    //card.block.registerTagGenerate(BlockTags.SMALL_FLOWERS) // これをやるとエンダーマンが勝手に引っこ抜いていく
-
     // 地形生成
     run { // ミラージュの小さな塊
         val identifier = Identifier(MirageFairy2024.modId, "mirage_cluster")
