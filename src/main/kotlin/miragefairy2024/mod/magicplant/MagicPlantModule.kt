@@ -38,11 +38,12 @@ fun initMagicPlantModule() {
         card.trait.enJa(card.enName, card.jaName)
     }
 
+    worldGenTraitGenerations += RecipeWorldGenTraitGeneration()
+
     TRAIT_TRANSLATION.enJa()
     CREATIVE_ONLY_TRANSLATION.enJa()
     INVALID_TRANSLATION.enJa()
 
-    worldGenTraitGenerations += RecipeWorldGenTraitGeneration()
 
     initMirageFlower()
 
