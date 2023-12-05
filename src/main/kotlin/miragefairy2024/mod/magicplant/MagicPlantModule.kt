@@ -13,7 +13,6 @@ import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerGeneratedItemModelGeneration
 import miragefairy2024.util.registerItemGroup
-import mirrg.kotlin.hydrogen.or
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
@@ -43,46 +42,7 @@ fun initMagicPlantModule() {
     CREATIVE_ONLY_TRANSLATION.enJa()
     INVALID_TRANSLATION.enJa()
 
-    worldGenTraitGenerations += WorldGenTraitGeneration { world, blockPos, block ->
-        val resultTraitStackList = mutableListOf<TraitStack>()
-
-        // レシピ判定
-        val aTraitStackList = mutableListOf<TraitStack>()
-        val nTraitStackList = mutableListOf<TraitStack>()
-        val rTraitStackList = mutableListOf<TraitStack>()
-        val sTraitStackList = mutableListOf<TraitStack>()
-        worldGenTraitRecipeRegistry[block].or { listOf() }.forEach { recipe ->
-            if (recipe.condition.canSpawn(world, blockPos)) {
-                val traitStackList = when (recipe.rarity) {
-                    WorldGenTraitRecipe.Rarity.A -> aTraitStackList
-                    WorldGenTraitRecipe.Rarity.N -> nTraitStackList
-                    WorldGenTraitRecipe.Rarity.R -> rTraitStackList
-                    WorldGenTraitRecipe.Rarity.S -> sTraitStackList
-                }
-                traitStackList += TraitStack(recipe.trait, recipe.level)
-            }
-        }
-
-        // 抽選
-        val r = world.random.nextDouble()
-        if (r < 0.01) { // S
-            if (sTraitStackList.isNotEmpty()) {
-                resultTraitStackList += sTraitStackList[world.random.nextInt(sTraitStackList.size)]
-            }
-        } else if (r >= 0.01 && r < 0.1) { // R
-            if (rTraitStackList.isNotEmpty()) {
-                resultTraitStackList += rTraitStackList[world.random.nextInt(rTraitStackList.size)]
-            }
-        } else if (r >= 0.1 && r < 0.2) { // N
-            if (nTraitStackList.isNotEmpty()) {
-                nTraitStackList.removeAt(world.random.nextInt(rTraitStackList.size))
-                resultTraitStackList += nTraitStackList
-            }
-        }
-        resultTraitStackList += aTraitStackList // A
-
-        resultTraitStackList
-    }
+    worldGenTraitGenerations += RecipeWorldGenTraitGeneration()
 
     initMirageFlower()
 

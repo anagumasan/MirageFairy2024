@@ -5,6 +5,7 @@ import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.humidityCategory
 import miragefairy2024.util.temperatureCategory
 import miragefairy2024.util.text
+import mirrg.kotlin.hydrogen.or
 import net.minecraft.block.Block
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.text.Text
@@ -77,6 +78,49 @@ val worldGenTraitRecipeRegistry = mutableMapOf<Block, MutableList<WorldGenTraitR
 
 fun registerWorldGenTraitRecipe(recipe: WorldGenTraitRecipe) {
     worldGenTraitRecipeRegistry.getOrPut(recipe.block) { mutableListOf() } += recipe
+}
+
+class RecipeWorldGenTraitGeneration : WorldGenTraitGeneration {
+    override fun spawn(world: World, blockPos: BlockPos, block: Block): List<TraitStack> {
+        val resultTraitStackList = mutableListOf<TraitStack>()
+
+        // レシピ判定
+        val aTraitStackList = mutableListOf<TraitStack>()
+        val nTraitStackList = mutableListOf<TraitStack>()
+        val rTraitStackList = mutableListOf<TraitStack>()
+        val sTraitStackList = mutableListOf<TraitStack>()
+        worldGenTraitRecipeRegistry[block].or { listOf() }.forEach { recipe ->
+            if (recipe.condition.canSpawn(world, blockPos)) {
+                val traitStackList = when (recipe.rarity) {
+                    WorldGenTraitRecipe.Rarity.A -> aTraitStackList
+                    WorldGenTraitRecipe.Rarity.N -> nTraitStackList
+                    WorldGenTraitRecipe.Rarity.R -> rTraitStackList
+                    WorldGenTraitRecipe.Rarity.S -> sTraitStackList
+                }
+                traitStackList += TraitStack(recipe.trait, recipe.level)
+            }
+        }
+
+        // 抽選
+        val r = world.random.nextDouble()
+        if (r < 0.01) { // S
+            if (sTraitStackList.isNotEmpty()) {
+                resultTraitStackList += sTraitStackList[world.random.nextInt(sTraitStackList.size)]
+            }
+        } else if (r >= 0.01 && r < 0.1) { // R
+            if (rTraitStackList.isNotEmpty()) {
+                resultTraitStackList += rTraitStackList[world.random.nextInt(rTraitStackList.size)]
+            }
+        } else if (r >= 0.1 && r < 0.2) { // N
+            if (nTraitStackList.isNotEmpty()) {
+                nTraitStackList.removeAt(world.random.nextInt(rTraitStackList.size))
+                resultTraitStackList += nTraitStackList
+            }
+        }
+        resultTraitStackList += aTraitStackList // A
+
+        return resultTraitStackList
+    }
 }
 
 
