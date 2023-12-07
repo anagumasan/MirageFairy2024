@@ -47,6 +47,16 @@ enum class MaterialCard(
         "mirage_leaves", "Mirage Leaves", "ミラージュの葉",
         listOf(Poem("Don't cut your fingers!", "刻まれる、記憶の破片。")),
     ),
+    VEROPEDA_LEAF(
+        // TODO add purpose
+        "veropeda_leaf", "Veropeda Leaf", "ヴェロペダの葉",
+        listOf(Poem("Said to house the soul of a demon", "その身融かされるまでの快楽。")),
+    ),
+    VEROPEDA_BERRIES(
+        // TODO add purpose
+        "veropeda_berries", "Veropeda Berries", "ヴェロペダの実",
+        listOf(Poem("Has analgesic and stimulant effects", "悪魔の囁きを喰らう。")),
+    ),
 
     TINY_MIRAGE_FLOUR(
         "tiny_mirage_flour", "Tiny Pile of Mirage Flour", "小さなミラージュの花粉",
