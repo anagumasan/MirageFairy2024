@@ -14,18 +14,25 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toBlockPos
 import miragefairy2024.util.toBox
 import miragefairy2024.util.yellow
+import mirrg.kotlin.hydrogen.atLeast
+import mirrg.kotlin.hydrogen.atMost
 import mirrg.kotlin.hydrogen.max
 import mirrg.kotlin.hydrogen.or
 import net.minecraft.block.Block
 import net.minecraft.block.BlockEntityProvider
 import net.minecraft.block.BlockState
+import net.minecraft.block.Blocks
 import net.minecraft.block.Fertilizable
 import net.minecraft.block.PlantBlock
+import net.minecraft.block.SideShapeType
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.item.TooltipContext
+import net.minecraft.enchantment.EnchantmentHelper
+import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.AliasedBlockItem
 import net.minecraft.item.ItemPlacementContext
@@ -38,11 +45,14 @@ import net.minecraft.network.packet.Packet
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
+import net.minecraft.state.StateManager
+import net.minecraft.state.property.IntProperty
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
@@ -50,6 +60,11 @@ import net.minecraft.world.WorldView
 
 @Suppress("OVERRIDE_DEPRECATION")
 abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), BlockEntityProvider, Fertilizable {
+
+    // Behaviour
+
+    override fun canPlantOnTop(floor: BlockState, world: BlockView, pos: BlockPos) = world.getBlockState(pos).isSideSolid(world, pos, Direction.UP, SideShapeType.CENTER) || floor.isOf(Blocks.FARMLAND)
+
 
     // Trait
 
@@ -246,6 +261,70 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     // Visual
 
     // TODO パーティクル
+
+}
+
+abstract class SimpleMagicPlantBlock(settings: Settings, val ageProperty: IntProperty) : MagicPlantBlock(settings) {
+
+    // Property
+
+    val maxAge: Int = ageProperty.values.max()
+
+    init {
+        defaultState = defaultState.with(ageProperty, 0)
+    }
+
+    override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
+        builder.add(ageProperty)
+    }
+
+    fun getAge(state: BlockState) = state[ageProperty]!!
+    fun isMaxAge(state: BlockState) = getAge(state) >= maxAge
+    fun withAge(age: Int): BlockState = defaultState.with(ageProperty, age atLeast 0 atMost maxAge)
+
+
+    // Magic Plant
+
+    override fun canCross(world: World, blockPos: BlockPos, blockState: BlockState) = isMaxAge(blockState)
+    override fun canGrow(blockState: BlockState) = !isMaxAge(blockState)
+    override fun getBlockStateAfterGrowth(blockState: BlockState, amount: Int) = withAge(getAge(blockState) + amount atMost maxAge)
+    override fun canPick(blockState: BlockState) = isMaxAge(blockState)
+    override fun getBlockStateAfterPicking(blockState: BlockState) = withAge(0)
+
+    override fun getAdditionalDrops(world: World, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, player: PlayerEntity?, tool: ItemStack?): List<ItemStack> {
+        val drops = mutableListOf<ItemStack>()
+
+        val fortune = if (tool != null) EnchantmentHelper.getLevel(Enchantments.FORTUNE, tool).toDouble() else 0.0
+        val luck = player?.getAttributeValue(EntityAttributes.GENERIC_LUCK) ?: 0.0
+
+        val seedGeneration = traitEffects[TraitEffectKeyCard.SEEDS_PRODUCTION.traitEffectKey]
+        val fruitGeneration = traitEffects[TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey]
+        val leafGeneration = traitEffects[TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey]
+        val generationBoost = traitEffects[TraitEffectKeyCard.PRODUCTION_BOOST.traitEffectKey]
+        val fortuneFactor = traitEffects[TraitEffectKeyCard.FORTUNE_FACTOR.traitEffectKey]
+
+        if (isMaxAge(blockState)) {
+            val seedCount = world.random.randomInt(seedGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            repeat(seedCount) {
+                drops += calculateCrossedSeed(world, blockPos, traitStacks)
+            }
+        }
+
+        if (isMaxAge(blockState)) {
+            val fruitCount = world.random.randomInt(fruitGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (fruitCount > 0) drops += getFruitDrops(fruitCount)
+        }
+
+        if (isMaxAge(blockState)) {
+            val leafCount = world.random.randomInt(leafGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (leafCount > 0) drops += getLeafDrops(leafCount)
+        }
+
+        return drops
+    }
+
+    abstract fun getFruitDrops(count: Int): List<ItemStack>
+    abstract fun getLeafDrops(count: Int): List<ItemStack>
 
 }
 
