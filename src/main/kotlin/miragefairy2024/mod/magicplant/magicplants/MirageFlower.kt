@@ -91,7 +91,7 @@ fun initMirageFlower() {
 
     // 見た目
     card.block.registerVariantsBlockStateGeneration { normal("block/" concat card.blockIdentifier) with MirageFlowerBlock.AGE }
-    (0..MirageFlowerBlock.MAX_AGE).forEach { age ->
+    MirageFlowerBlock.AGE.values.forEach { age ->
         val texturedModel = Models.CROSS.with(TextureKey.CROSS to ("block/" concat card.blockIdentifier concat "_age$age"))
         texturedModel.registerModelGeneration("block/" concat card.blockIdentifier concat "_age$age")
     }
