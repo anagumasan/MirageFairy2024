@@ -32,10 +32,13 @@ class WorldGenTraitRecipe(
         /** 必ず付与される。 */
         A,
 
-        /** 10%の確率で選ばれるN欠損テーブルに乗る。 */
+        /** 1%の確率で選ばれるC欠損テーブルに乗る。 */
+        C,
+
+        /** 90%の確率で選ばれるN獲得テーブルに乗る。 */
         N,
 
-        /** 10%の確率で選ばれるR獲得テーブルに乗る。 */
+        /** 8%の確率で選ばれるR獲得テーブルに乗る。 */
         R,
 
         /** 1%の確率で選ばれるSR獲得テーブルに乗る。 */
@@ -86,6 +89,7 @@ class RecipeWorldGenTraitGeneration : WorldGenTraitGeneration {
 
         // レシピ判定
         val aTraitStackList = mutableListOf<TraitStack>()
+        val cTraitStackList = mutableListOf<TraitStack>()
         val nTraitStackList = mutableListOf<TraitStack>()
         val rTraitStackList = mutableListOf<TraitStack>()
         val sTraitStackList = mutableListOf<TraitStack>()
@@ -93,6 +97,7 @@ class RecipeWorldGenTraitGeneration : WorldGenTraitGeneration {
             if (recipe.condition.canSpawn(world, blockPos)) {
                 val traitStackList = when (recipe.rarity) {
                     WorldGenTraitRecipe.Rarity.A -> aTraitStackList
+                    WorldGenTraitRecipe.Rarity.C -> cTraitStackList
                     WorldGenTraitRecipe.Rarity.N -> nTraitStackList
                     WorldGenTraitRecipe.Rarity.R -> rTraitStackList
                     WorldGenTraitRecipe.Rarity.S -> sTraitStackList
@@ -106,7 +111,7 @@ class RecipeWorldGenTraitGeneration : WorldGenTraitGeneration {
         when {
             r < 0.01 -> { // +S
                 resultTraitStackList += aTraitStackList
-                resultTraitStackList += nTraitStackList
+                resultTraitStackList += cTraitStackList
                 if (sTraitStackList.isNotEmpty()) {
                     resultTraitStackList += sTraitStackList[world.random.nextInt(sTraitStackList.size)]
                 }
@@ -114,23 +119,26 @@ class RecipeWorldGenTraitGeneration : WorldGenTraitGeneration {
 
             r >= 0.02 && r < 0.1 -> { // +R
                 resultTraitStackList += aTraitStackList
-                resultTraitStackList += nTraitStackList
+                resultTraitStackList += cTraitStackList
                 if (rTraitStackList.isNotEmpty()) {
                     resultTraitStackList += rTraitStackList[world.random.nextInt(rTraitStackList.size)]
                 }
             }
 
-            r >= 0.01 && r < 0.02 -> { // -N
+            r >= 0.01 && r < 0.02 -> { // -C
                 resultTraitStackList += aTraitStackList
-                if (nTraitStackList.isNotEmpty()) {
-                    nTraitStackList.removeAt(world.random.nextInt(nTraitStackList.size))
-                    resultTraitStackList += nTraitStackList
+                if (cTraitStackList.isNotEmpty()) {
+                    cTraitStackList.removeAt(world.random.nextInt(cTraitStackList.size))
+                    resultTraitStackList += cTraitStackList
                 }
             }
 
-            else -> { // 0
+            else -> { // +N
                 resultTraitStackList += aTraitStackList
-                resultTraitStackList += nTraitStackList
+                resultTraitStackList += cTraitStackList
+                if (nTraitStackList.isNotEmpty()) {
+                    resultTraitStackList += nTraitStackList[world.random.nextInt(nTraitStackList.size)]
+                }
             }
         }
 

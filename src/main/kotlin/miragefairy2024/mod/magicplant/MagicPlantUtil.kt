@@ -46,6 +46,7 @@ class WorldGenTraitRecipeInitScope(val block: Block) {
             val rarity = when (ch) {
                 '.' -> return@forEachIndexed
                 'A' -> WorldGenTraitRecipe.Rarity.A
+                'C' -> WorldGenTraitRecipe.Rarity.C
                 'N' -> WorldGenTraitRecipe.Rarity.N
                 'R' -> WorldGenTraitRecipe.Rarity.R
                 'S' -> WorldGenTraitRecipe.Rarity.S
