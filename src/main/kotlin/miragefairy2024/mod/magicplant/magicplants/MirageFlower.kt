@@ -96,17 +96,17 @@ fun initMirageFlower() {
 
     // 地形生成
     run {
-        // 妖精の輪
+        // 妖精の輪Feature
         val fairyRingFeature = FairyRingFeature(FairyRingFeatureConfig.CODEC)
         Registry.register(Registries.FEATURE, Identifier(MirageFairy2024.modId, "fairy_ring"), fairyRingFeature)
 
-        // ミラージュの小さな塊
+        // 小さな塊
         val mirageClusterConfiguredFeatureKey = registerDynamicGeneration(RegistryKeys.CONFIGURED_FEATURE, Identifier(MirageFairy2024.modId, "mirage_cluster")) {
             val blockStateProvider = BlockStateProvider.of(card.block.withAge(MirageFlowerBlock.MAX_AGE))
             Feature.FLOWER with RandomPatchFeatureConfig(6, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, SimpleBlockFeatureConfig(blockStateProvider)))
         }
 
-        // ミラージュの大きな塊
+        // 妖精の輪
         val largeMirageClusterConfiguredFeatureKey = registerDynamicGeneration(RegistryKeys.CONFIGURED_FEATURE, Identifier(MirageFairy2024.modId, "large_mirage_cluster")) {
             val blockStateProvider = BlockStateProvider.of(card.block.withAge(MirageFlowerBlock.MAX_AGE))
             fairyRingFeature with FairyRingFeatureConfig(100, 6F, 8F, 3, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, SimpleBlockFeatureConfig(blockStateProvider)))
