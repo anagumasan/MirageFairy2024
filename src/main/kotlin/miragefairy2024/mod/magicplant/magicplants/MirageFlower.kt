@@ -73,7 +73,7 @@ import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier
 import net.minecraft.world.gen.stateprovider.BlockStateProvider
 
 object MirageFlowerCard : MagicPlantCard<MirageFlowerBlock, MirageFlowerBlockEntity>(
-    "mirage_flower", "Mirage Flower", "ミラージュの花",
+    "mirage_flower", "Mirage Flower", "妖花ミラージュ",
     "mirage_bulb", "Mirage Bulb", "ミラージュの球根",
     listOf(
         Poem("Evolution to escape extermination", "可憐にして人畜無害たる魔物。"),
