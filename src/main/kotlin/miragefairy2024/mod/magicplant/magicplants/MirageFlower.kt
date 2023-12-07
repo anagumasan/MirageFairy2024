@@ -16,12 +16,10 @@ import miragefairy2024.mod.magicplant.TraitStacks
 import miragefairy2024.mod.magicplant.WorldGenTraitRecipe
 import miragefairy2024.mod.magicplant.WorldGenTraitRecipeInitScope
 import miragefairy2024.mod.magicplant.initMagicPlant
-import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.concat
 import miragefairy2024.util.createItemStack
-import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerVariantsBlockStateGeneration
@@ -92,11 +90,7 @@ fun initMirageFlower() {
     card.initMagicPlant()
 
     // 見た目
-    card.block.registerVariantsBlockStateGeneration {
-        (0..MirageFlowerBlock.MAX_AGE).map { age ->
-            propertiesOf("age" to "$age") to BlockStateVariant("block/" concat card.blockIdentifier concat "_age$age")
-        }
-    }
+    card.block.registerVariantsBlockStateGeneration { normal("block/" concat card.blockIdentifier) with MirageFlowerBlock.AGE }
     (0..MirageFlowerBlock.MAX_AGE).forEach { age ->
         val texturedModel = Models.CROSS.with(TextureKey.CROSS to ("block/" concat card.blockIdentifier concat "_age$age"))
         texturedModel.registerModelGeneration("block/" concat card.blockIdentifier concat "_age$age")

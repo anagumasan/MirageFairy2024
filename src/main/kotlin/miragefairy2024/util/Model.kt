@@ -6,6 +6,7 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
 import mirrg.kotlin.hydrogen.join
+import mirrg.kotlin.hydrogen.or
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.data.client.BlockStateModelGenerator
@@ -16,6 +17,7 @@ import net.minecraft.data.client.TextureKey
 import net.minecraft.data.client.TextureMap
 import net.minecraft.data.client.TexturedModel
 import net.minecraft.item.Item
+import net.minecraft.state.property.Property
 import net.minecraft.util.Identifier
 import java.util.Optional
 import java.util.function.BiConsumer
@@ -74,28 +76,64 @@ enum class BlockStateVariantRotation(val degrees: Int) {
 }
 
 class BlockStateVariant(
-    val model: Identifier,
-    val x: BlockStateVariantRotation? = null,
-    val y: BlockStateVariantRotation? = null,
-    val uvlock: Boolean? = null,
-    val weight: Int? = null,
+    private val parent: BlockStateVariant? = null,
+    private val model: Identifier? = null,
+    private val x: BlockStateVariantRotation? = null,
+    private val y: BlockStateVariantRotation? = null,
+    private val uvlock: Boolean? = null,
+    private val weight: Int? = null,
 ) {
-    fun toJson(): JsonElement = jsonObjectNotNull(
-        "model" to model.string.jsonElement,
-        x?.let { "x" to x.degrees.jsonElement },
-        y?.let { "y" to y.degrees.jsonElement },
-        uvlock?.let { "uvlock" to uvlock.jsonElement },
-        weight?.let { "weight" to weight.jsonElement },
-    )
+    fun getModel() = model.or { parent?.model }
+    fun getX() = x.or { parent?.x }
+    fun getY() = y.or { parent?.y }
+    fun getUvlock() = uvlock.or { parent?.uvlock }
+    fun getWeight() = weight.or { parent?.weight }
 }
+
+fun BlockStateVariant.with(
+    model: Identifier? = null,
+    x: BlockStateVariantRotation? = null,
+    y: BlockStateVariantRotation? = null,
+    uvlock: Boolean? = null,
+    weight: Int? = null,
+) = BlockStateVariant(
+    parent = this,
+    model = model,
+    x = x,
+    y = y,
+    uvlock = uvlock,
+    weight = weight,
+)
+
+fun BlockStateVariant.toJson(): JsonElement = jsonObjectNotNull(
+    getModel()?.let { "model" to it.string.jsonElement },
+    getX()?.let { "x" to it.degrees.jsonElement },
+    getY()?.let { "y" to it.degrees.jsonElement },
+    getUvlock()?.let { "uvlock" to it.jsonElement },
+    getWeight()?.let { "weight" to it.jsonElement },
+)
 
 fun propertiesOf(vararg properties: Pair<String, String>) = listOf(*properties)
 
-fun Block.registerVariantsBlockStateGeneration(entriesGetter: () -> List<Pair<List<Pair<String, String>>, BlockStateVariant>>) = MirageFairy2024DataGenerator.blockStateModelGenerators {
+class VariantsBlockStateGenerationRegistrationScope {
+    infix fun <T : Comparable<T>> List<Pair<List<Pair<String, String>>, BlockStateVariant>>.with(property: Property<T>): List<Pair<List<Pair<String, String>>, BlockStateVariant>> {
+        val key = property.name
+        return property.values.flatMap { value ->
+            val valueString = property.name(value)
+            this.map { (properties, variant) ->
+                propertiesOf(*properties.toTypedArray(), key to valueString) to variant.with(model = variant.getModel()!! concat "_$key$valueString")
+            }
+        }
+    }
+
+    fun normal(model: Identifier) = listOf(propertiesOf() to BlockStateVariant(model = model))
+}
+
+fun Block.registerVariantsBlockStateGeneration(entriesGetter: VariantsBlockStateGenerationRegistrationScope.() -> List<Pair<List<Pair<String, String>>, BlockStateVariant>>) = MirageFairy2024DataGenerator.blockStateModelGenerators {
     it.blockStateCollector.accept(object : BlockStateSupplier {
         override fun get() = jsonObject(
             "variants" to jsonObject(
-                *entriesGetter()
+                *entriesGetter(VariantsBlockStateGenerationRegistrationScope())
                     .map { (propertiesMap, modelId) ->
                         val propertiesString = propertiesMap
                             .sortedBy { (property, _) -> property }
