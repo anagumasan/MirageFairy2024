@@ -68,6 +68,7 @@ import net.minecraft.world.gen.feature.RandomPatchFeatureConfig
 import net.minecraft.world.gen.feature.SimpleBlockFeatureConfig
 import net.minecraft.world.gen.feature.util.FeatureContext
 import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier
+import net.minecraft.world.gen.placementmodifier.CountMultilayerPlacementModifier
 import net.minecraft.world.gen.placementmodifier.RarityFilterPlacementModifier
 import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier
 import net.minecraft.world.gen.stateprovider.BlockStateProvider
@@ -133,7 +134,7 @@ fun initMirageFlower() {
         MirageFairy2024DataGenerator.onBuildRegistry += {
             it.addRegistry(RegistryKeys.CONFIGURED_FEATURE) { context ->
                 val blockStateProvider = BlockStateProvider.of(card.block.withAge(MirageFlowerBlock.MAX_AGE))
-                val configuredFeature = Feature.FLOWER with RandomPatchFeatureConfig(40, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, SimpleBlockFeatureConfig(blockStateProvider)))
+                val configuredFeature = Feature.FLOWER with RandomPatchFeatureConfig(6, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, SimpleBlockFeatureConfig(blockStateProvider)))
                 context.register(configuredKey, configuredFeature)
             }
         }
@@ -141,9 +142,8 @@ fun initMirageFlower() {
         MirageFairy2024DataGenerator.onBuildRegistry += {
             it.addRegistry(RegistryKeys.PLACED_FEATURE) { context ->
                 val placementModifiers = listOf(
-                    RarityFilterPlacementModifier.of(2),
-                    SquarePlacementModifier.of(),
-                    PlacedFeatures.BOTTOM_TO_TOP_RANGE,
+                    RarityFilterPlacementModifier.of(64),
+                    CountMultilayerPlacementModifier.of(1),
                     BiomePlacementModifier.of(),
                 )
                 val placedFeature = PlacedFeature(context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(configuredKey), placementModifiers)
