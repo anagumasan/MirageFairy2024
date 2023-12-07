@@ -181,7 +181,7 @@ fun initOresModule() {
                 context.register(configuredKey, configuredFeature)
             }
         }
-        MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.CONFIGURED_FEATURE
+        MirageFairy2024DataGenerator.dynamicGenerationRegistries += RegistryKeys.CONFIGURED_FEATURE
         MirageFairy2024DataGenerator.onBuildRegistry += {
             it.addRegistry(RegistryKeys.PLACED_FEATURE) { context ->
                 val placementModifiers = listOf(
@@ -194,7 +194,7 @@ fun initOresModule() {
                 context.register(placedKey, placedFeature)
             }
         }
-        MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
+        MirageFairy2024DataGenerator.dynamicGenerationRegistries += RegistryKeys.PLACED_FEATURE
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, placedKey)
     }
     worldGen(OreCard.MIRANAGITE_ORE)

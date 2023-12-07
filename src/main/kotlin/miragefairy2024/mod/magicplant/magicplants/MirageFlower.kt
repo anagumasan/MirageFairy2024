@@ -114,7 +114,7 @@ fun initMirageFlower() {
                 context.register(mirageClusterConfiguredFeatureKey, configuredFeature)
             }
         }
-        MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.CONFIGURED_FEATURE
+        MirageFairy2024DataGenerator.dynamicGenerationRegistries += RegistryKeys.CONFIGURED_FEATURE
 
         // ミラージュの大きな塊
         MirageFairy2024DataGenerator.onBuildRegistry += {
@@ -124,7 +124,7 @@ fun initMirageFlower() {
                 context.register(largeMirageClusterConfiguredFeatureKey, configuredFeature)
             }
         }
-        MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.CONFIGURED_FEATURE
+        MirageFairy2024DataGenerator.dynamicGenerationRegistries += RegistryKeys.CONFIGURED_FEATURE
 
         // 地上とエンド
         MirageFairy2024DataGenerator.onBuildRegistry += {
@@ -139,7 +139,7 @@ fun initMirageFlower() {
                 context.register(mirageClusterPlacedFeatureKey, placedFeature)
             }
         }
-        MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
+        MirageFairy2024DataGenerator.dynamicGenerationRegistries += RegistryKeys.PLACED_FEATURE
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.VEGETAL_DECORATION, mirageClusterPlacedFeatureKey)
         BiomeModifications.addFeature(BiomeSelectors.foundInTheEnd().and(BiomeSelectors.excludeByKey(BiomeKeys.THE_END)), GenerationStep.Feature.VEGETAL_DECORATION, mirageClusterPlacedFeatureKey)
 
@@ -155,7 +155,7 @@ fun initMirageFlower() {
                 context.register(netherMirageClusterPlacedFeatureKey, placedFeature)
             }
         }
-        MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
+        MirageFairy2024DataGenerator.dynamicGenerationRegistries += RegistryKeys.PLACED_FEATURE
         BiomeModifications.addFeature(BiomeSelectors.foundInTheNether(), GenerationStep.Feature.VEGETAL_DECORATION, netherMirageClusterPlacedFeatureKey)
 
         // 地上の妖精の輪
@@ -171,7 +171,7 @@ fun initMirageFlower() {
                 context.register(largeMirageClusterPlacedFeatureKey, placedFeature)
             }
         }
-        MirageFairy2024DataGenerator.dynamicGeneratingRegistries += RegistryKeys.PLACED_FEATURE
+        MirageFairy2024DataGenerator.dynamicGenerationRegistries += RegistryKeys.PLACED_FEATURE
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.VEGETAL_DECORATION, largeMirageClusterPlacedFeatureKey)
     }
 

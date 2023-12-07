@@ -29,7 +29,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
     val itemTagGenerators = DataGeneratorRegistry<(TagKey<Item>) -> FabricTagProvider<Item>.FabricTagBuilder>()
     val blockLootTableGenerators = DataGeneratorRegistry<FabricBlockLootTableProvider>()
     val recipeGenerators = DataGeneratorRegistry<RecipeExporter>()
-    val dynamicGeneratingRegistries = mutableSetOf<RegistryKey<out Registry<*>>>()
+    val dynamicGenerationRegistries = mutableSetOf<RegistryKey<out Registry<*>>>()
     val englishTranslationGenerators = DataGeneratorRegistry<FabricLanguageProvider.TranslationBuilder>()
     val japaneseTranslationGenerators = DataGeneratorRegistry<FabricLanguageProvider.TranslationBuilder>()
 
@@ -67,7 +67,7 @@ object MirageFairy2024DataGenerator : DataGeneratorEntrypoint {
             object : FabricDynamicRegistryProvider(output, registriesFuture) {
                 override fun getName() = "World Gen"
                 override fun configure(registries: RegistryWrapper.WrapperLookup, entries: Entries) {
-                    dynamicGeneratingRegistries.forEach {
+                    dynamicGenerationRegistries.forEach {
                         entries.addAll(registries.getWrapperOrThrow(it))
                     }
                 }
