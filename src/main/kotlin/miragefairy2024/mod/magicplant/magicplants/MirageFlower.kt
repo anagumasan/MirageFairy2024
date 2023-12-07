@@ -165,7 +165,7 @@ fun initMirageFlower() {
         MirageFairy2024DataGenerator.onBuildRegistry += {
             it.addRegistry(RegistryKeys.CONFIGURED_FEATURE) { context ->
                 val blockStateProvider = BlockStateProvider.of(card.block.withAge(MirageFlowerBlock.MAX_AGE))
-                val configuredFeature = Feature.FLOWER with RandomPatchFeatureConfig(100, 8, 3, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, SimpleBlockFeatureConfig(blockStateProvider)))
+                val configuredFeature = fairyRingFeature with FairyRingFeatureConfig(100, 6F, 8F, 3, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, SimpleBlockFeatureConfig(blockStateProvider)))
                 context.register(configuredKey, configuredFeature)
             }
         }

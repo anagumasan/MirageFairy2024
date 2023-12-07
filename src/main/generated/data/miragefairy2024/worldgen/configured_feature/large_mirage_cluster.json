@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:flower",
+  "type": "miragefairy2024:fairy_ring",
   "config": {
     "feature": {
       "feature": {
@@ -26,8 +26,9 @@
         }
       ]
     },
+    "max_radius": 8.0,
+    "min_radius": 6.0,
     "tries": 100,
-    "xz_spread": 8,
     "y_spread": 3
   }
 }
