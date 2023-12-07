@@ -21,6 +21,7 @@ import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.concat
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerVariantsBlockStateGeneration
@@ -93,7 +94,7 @@ fun initMirageFlower() {
     // 見た目
     card.block.registerVariantsBlockStateGeneration {
         (0..MirageFlowerBlock.MAX_AGE).map { age ->
-            listOf("age" to "$age") to BlockStateVariant("block/" concat card.blockIdentifier concat "_age$age")
+            propertiesOf("age" to "$age") to BlockStateVariant("block/" concat card.blockIdentifier concat "_age$age")
         }
     }
     (0..MirageFlowerBlock.MAX_AGE).forEach { age ->

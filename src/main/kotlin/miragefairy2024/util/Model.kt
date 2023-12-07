@@ -89,6 +89,8 @@ class BlockStateVariant(
     )
 }
 
+fun propertiesOf(vararg properties: Pair<String, String>) = listOf(*properties)
+
 fun Block.registerVariantsBlockStateGeneration(entriesGetter: () -> List<Pair<List<Pair<String, String>>, BlockStateVariant>>) = MirageFairy2024DataGenerator.blockStateModelGenerators {
     it.blockStateCollector.accept(object : BlockStateSupplier {
         override fun get() = jsonObject(
