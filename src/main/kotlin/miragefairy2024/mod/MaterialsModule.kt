@@ -47,6 +47,10 @@ enum class MaterialCard(
         "mirage_leaves", "Mirage Leaves", "ミラージュの葉",
         listOf(Poem("Don't cut your fingers!", "刻まれる、記憶の破片。")),
     ),
+    MIRAGE_STEM(
+        "mirage_stem", "Mirage Stem", "ミラージュの茎",
+        listOf(Poem("Cell wall composed of amorphous ether", "植物が手掛ける、分子レベルの硝子細工。")),
+    ),
     VEROPEDA_LEAF(
         // TODO add purpose
         "veropeda_leaf", "Veropeda Leaf", "ヴェロペダの葉",
