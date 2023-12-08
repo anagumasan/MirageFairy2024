@@ -34,6 +34,7 @@ import net.minecraft.registry.Registry
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.entry.RegistryEntry
 import net.minecraft.sound.BlockSoundGroup
+import net.minecraft.state.property.IntProperty
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
@@ -187,7 +188,7 @@ fun initMirageFlower() {
 }
 
 @Suppress("OVERRIDE_DEPRECATION")
-class MirageFlowerBlock(settings: Settings) : SimpleMagicPlantBlock(settings, Properties.AGE_3) {
+class MirageFlowerBlock(settings: Settings) : SimpleMagicPlantBlock(settings) {
     companion object {
         private val AGE_TO_SHAPE: Array<VoxelShape> = arrayOf(
             createCuboidShape(5.0, 0.0, 5.0, 11.0, 5.0, 11.0),
@@ -197,6 +198,7 @@ class MirageFlowerBlock(settings: Settings) : SimpleMagicPlantBlock(settings, Pr
         )
     }
 
+    override val ageProperty: IntProperty get() = Properties.AGE_3
     override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext) = AGE_TO_SHAPE[getAge(state)]
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = MirageFlowerBlockEntity(pos, state)
     override fun getFruitDrops(count: Int): List<ItemStack> = listOf(MaterialCard.MIRAGE_FLOUR.item.createItemStack(count))

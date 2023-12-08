@@ -264,13 +264,17 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
 
 }
 
-abstract class SimpleMagicPlantBlock(settings: Settings, val ageProperty: IntProperty) : MagicPlantBlock(settings) {
+abstract class SimpleMagicPlantBlock(settings: Settings) : MagicPlantBlock(settings) {
 
     // Property
 
+    abstract val ageProperty: IntProperty
+
+    @Suppress("LeakingThis") // 親クラスのコンストラクタでappendPropertiesが呼ばれるため回避不可能
     val maxAge: Int = ageProperty.values.max()
 
     init {
+        @Suppress("LeakingThis") // 親クラスのコンストラクタでappendPropertiesが呼ばれるため回避不可能
         defaultState = defaultState.with(ageProperty, 0)
     }
 
