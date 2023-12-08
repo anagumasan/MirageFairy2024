@@ -14,6 +14,9 @@ import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder
 import net.minecraft.data.server.recipe.RecipeProvider
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder
+import net.minecraft.entity.effect.StatusEffectInstance
+import net.minecraft.entity.effect.StatusEffects
+import net.minecraft.item.FoodComponent
 import net.minecraft.item.Item
 import net.minecraft.item.Items
 import net.minecraft.recipe.Ingredient
@@ -26,6 +29,7 @@ enum class MaterialCard(
     val enName: String,
     val jaName: String,
     val poemList: List<Poem>,
+    val foodComponent: FoodComponent? = null,
 ) {
 
     FAIRY_PLASTIC(
@@ -66,6 +70,13 @@ enum class MaterialCard(
         // TODO add purpose
         "veropeda_berries", "Veropeda Berries", "ヴェロペダの実",
         listOf(Poem("Has analgesic and stimulant effects", "悪魔の囁きを喰らう。")),
+        foodComponent = FoodComponent.Builder()
+            .hunger(1)
+            .saturationModifier(0.1F)
+            .snack()
+            .statusEffect(StatusEffectInstance(StatusEffects.REGENERATION, 20 * 3), 1.0F)
+            .statusEffect(StatusEffectInstance(StatusEffects.NAUSEA, 20 * 20), 0.01F)
+            .build(),
     ),
 
     TINY_MIRAGE_FLOUR(
@@ -103,7 +114,9 @@ enum class MaterialCard(
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
-    val item = Item(Item.Settings())
+    val item = Item.Settings()
+        .let { if (foodComponent != null) it.food(foodComponent) else it }
+        .let { Item(it) }
 }
 
 fun initMaterialsModule() {
