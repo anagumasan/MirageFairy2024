@@ -15,6 +15,7 @@ import miragefairy2024.mod.magicplant.initMagicPlant
 import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.concat
+import miragefairy2024.util.createCuboidShape
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.registerDynamicGeneration
 import miragefairy2024.util.registerModelGeneration
@@ -191,10 +192,10 @@ fun initMirageFlower() {
 class MirageFlowerBlock(settings: Settings) : SimpleMagicPlantBlock(settings) {
     companion object {
         private val AGE_TO_SHAPE: Array<VoxelShape> = arrayOf(
-            createCuboidShape(5.0, 0.0, 5.0, 11.0, 5.0, 11.0),
-            createCuboidShape(2.0, 0.0, 2.0, 14.0, 12.0, 14.0),
-            createCuboidShape(2.0, 0.0, 2.0, 14.0, 15.0, 14.0),
-            createCuboidShape(2.0, 0.0, 2.0, 14.0, 16.0, 14.0),
+            createCuboidShape(3.0, 5.0),
+            createCuboidShape(6.0, 12.0),
+            createCuboidShape(6.0, 15.0),
+            createCuboidShape(6.0, 16.0),
         )
     }
 
