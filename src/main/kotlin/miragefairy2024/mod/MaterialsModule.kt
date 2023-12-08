@@ -62,12 +62,10 @@ enum class MaterialCard(
         listOf(Poem("Cell wall composed of amorphous ether", "植物が手掛ける、分子レベルの硝子細工。")),
     ),
     VEROPEDA_LEAF(
-        // TODO add purpose
         "veropeda_leaf", "Veropeda Leaf", "ヴェロペダの葉",
         listOf(Poem("Said to house the soul of a demon", "その身融かされるまでの快楽。")),
     ),
     VEROPEDA_BERRIES(
-        // TODO add purpose
         "veropeda_berries", "Veropeda Berries", "ヴェロペダの実",
         listOf(Poem("Has analgesic and stimulant effects", "悪魔の囁きを喰らう。")),
         foodComponent = FoodComponent.Builder()
