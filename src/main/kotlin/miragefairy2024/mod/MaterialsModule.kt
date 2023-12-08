@@ -7,11 +7,17 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.group
 import miragefairy2024.util.register
+import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerGeneratedItemModelGeneration
 import miragefairy2024.util.registerItemGroup
+import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder
+import net.minecraft.data.server.recipe.RecipeProvider
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder
 import net.minecraft.item.Item
+import net.minecraft.item.Items
+import net.minecraft.recipe.Ingredient
+import net.minecraft.recipe.RecipeSerializer
 import net.minecraft.recipe.book.RecipeCategory
 import net.minecraft.util.Identifier
 
