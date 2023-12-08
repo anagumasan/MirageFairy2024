@@ -135,4 +135,47 @@ fun initMaterialsModule() {
     registerCompressionRecipeGeneration(MaterialCard.ULTRA_RARE_MIRAGE_FLOUR, MaterialCard.SUPER_RARE_MIRAGE_FLOUR)
     registerCompressionRecipeGeneration(MaterialCard.SUPER_RARE_MIRAGE_FLOUR, MaterialCard.EXTREMELY_RARE_MIRAGE_FLOUR)
 
+    // ミラージュの葉
+    MaterialCard.MIRAGE_LEAVES.item.registerComposterInput(0.5F)
+
+    // ミラージュの茎
+    MirageFairy2024DataGenerator.recipeGenerators {
+        val input = MaterialCard.MIRAGE_LEAVES.item
+        val output = MaterialCard.MIRAGE_STEM.item
+        ShapelessRecipeJsonBuilder
+            .create(RecipeCategory.MISC, output, 1)
+            .group(output)
+            .input(input)
+            .criterion(input)
+            .offerTo(it, Identifier.of(MirageFairy2024.modId, output.getIdentifier().path))
+    }
+    MaterialCard.MIRAGE_STEM.item.registerComposterInput(0.5F)
+    MirageFairy2024DataGenerator.recipeGenerators {
+        val input = MaterialCard.MIRAGE_STEM.item
+        val output = Items.STICK
+        ShapedRecipeJsonBuilder
+            .create(RecipeCategory.MISC, output, 2)
+            .group(output)
+            .input('#', input)
+            .pattern("#")
+            .pattern("#")
+            .criterion(input)
+            .offerTo(it, Identifier.of(MirageFairy2024.modId, "${output.getIdentifier().path}_from_${input.getIdentifier().path}"))
+    }
+
+    // ヴェロペダの葉
+    MaterialCard.VEROPEDA_LEAF.item.registerComposterInput(0.5F)
+    MirageFairy2024DataGenerator.recipeGenerators {
+        val input = MaterialCard.VEROPEDA_LEAF.item
+        val output = Items.IRON_NUGGET
+        CookingRecipeJsonBuilder
+            .create(Ingredient.ofItems(input), RecipeCategory.MISC, output, 0.1F, 200, RecipeSerializer.SMELTING)
+            .group(output)
+            .criterion(RecipeProvider.hasItem(MaterialCard.VEROPEDA_LEAF.item), RecipeProvider.conditionsFromItem(MaterialCard.VEROPEDA_LEAF.item))
+            .offerTo(it, Identifier.of(MirageFairy2024.modId, "${output.getIdentifier().path}_from_${input.getIdentifier().path}"))
+    }
+
+    // ヴェロペダの実
+    MaterialCard.VEROPEDA_BERRIES.item.registerComposterInput(0.3F)
+
 }
