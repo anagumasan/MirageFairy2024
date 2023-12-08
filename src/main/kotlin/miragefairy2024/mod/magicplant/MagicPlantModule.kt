@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.mod.Poem
 import miragefairy2024.mod.magicplant.magicplants.initMirageFlower
+import miragefairy2024.mod.magicplant.magicplants.initVeropeda
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -38,6 +39,7 @@ fun initMagicPlantModule() {
 
 
     initMirageFlower()
+    initVeropeda()
 
 }
 
