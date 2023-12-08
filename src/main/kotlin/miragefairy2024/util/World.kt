@@ -10,6 +10,7 @@ fun BlockView.getMoisture(blockPos: BlockPos): Double {
     val blockState = this.getBlockState(blockPos)
     if (blockState.isOf(Blocks.FARMLAND)) return 0.5 + 0.5 * (blockState.get(FarmlandBlock.MOISTURE) / 7.0)
     if (blockState.isIn(BlockTags.DIRT)) return 0.5
+    if (blockState.isIn(BlockTags.SAND)) return 0.25
     return 0.0
 }
 
