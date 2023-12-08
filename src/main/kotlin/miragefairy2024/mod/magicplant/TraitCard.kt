@@ -88,7 +88,7 @@ enum class TraitEffectKeyCard(
     PRODUCTION_BOOST("production_boost", "PRD", "生産能力", Formatting.DARK_RED, false),
     EXPERIENCE_PRODUCTION("experience_production", "XP", "経験値", Formatting.YELLOW, false),
     FORTUNE_FACTOR("fortune_factor", "FTN", "幸運係数", Formatting.DARK_PURPLE, false),
-    NATURAL_ABSCISSION("natural_abscission", "Natural Abscission", "自然落果", Formatting.RED, true),
+    NATURAL_ABSCISSION("natural_abscission", "NA", "自然落果", Formatting.RED, true),
     ;
 
     val identifier = Identifier(MirageFairy2024.modId, path)
