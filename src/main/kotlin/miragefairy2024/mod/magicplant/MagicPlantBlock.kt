@@ -154,7 +154,7 @@ abstract class MagicPlantBlock(settings: Settings) : PlantBlock(settings), Block
     /** この植物本来の種子を返す。 */
     protected fun createSeed(traitStacks: TraitStacks): ItemStack {
         val itemStack = this.asItem().createItemStack()
-        setTraitStacks(itemStack, traitStacks)
+        itemStack.setTraitStacks(traitStacks)
         return itemStack
     }
 
@@ -466,6 +466,6 @@ fun ItemStack.getTraitStacks(): TraitStacks? {
     return TraitStacks.readFromNbt(nbt)
 }
 
-fun setTraitStacks(itemStack: ItemStack, traitStacks: TraitStacks) {
-    itemStack.getOrCreateNbt().put("TraitStacks", traitStacks.toNbt())
+fun ItemStack.setTraitStacks(traitStacks: TraitStacks) {
+    getOrCreateNbt().put("TraitStacks", traitStacks.toNbt())
 }
