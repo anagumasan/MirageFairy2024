@@ -5,6 +5,7 @@ import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.EntryIngredient
 import me.shedaniel.rei.api.common.plugins.REIServerPlugin
+import miragefairy2024.mod.magicplant.MagicPlantCropNotation
 import miragefairy2024.mod.magicplant.TraitStack
 import miragefairy2024.mod.magicplant.TraitStacks
 import miragefairy2024.mod.magicplant.WorldGenTraitRecipe
@@ -19,6 +20,12 @@ import miragefairy2024.util.toBlock
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.toIdentifier
+import miragefairy2024.util.toItemStack
+import miragefairy2024.util.toNbt
+import mirrg.kotlin.hydrogen.castOrThrow
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
+import net.minecraft.nbt.NbtList
 import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -29,6 +36,7 @@ enum class ReiCategoryCard(
     jaName: String,
 ) {
     WORLD_GEN_TRAIT("world_gen_trait", "World Gen Trait", "地形生成特性"),
+    MAGIC_PLANT_CROP("magic_plant_crop", "Magic Plant Crop", "魔法植物収穫物"),
     ;
 
     val translation = Translation({ "category.rei.${MirageFairy2024.modId}.$path" }, enName, jaName)
@@ -38,6 +46,7 @@ enum class ReiCategoryCard(
 class MirageFairy2024ReiServerPlugin : REIServerPlugin {
     override fun registerDisplaySerializer(registry: DisplaySerializerRegistry) {
         registry.register(WorldGenTraitDisplay.IDENTIFIER, WorldGenTraitDisplay.SERIALIZER)
+        registry.register(MagicPlantCropDisplay.IDENTIFIER, MagicPlantCropDisplay.SERIALIZER)
     }
 }
 
@@ -72,6 +81,27 @@ class WorldGenTraitDisplay(val recipe: WorldGenTraitRecipe) : BasicDisplay(listO
             val trait = TraitStack(this.trait, this.level)
             val itemStack = this.block.asItem().createItemStack().also { it.setTraitStacks(TraitStacks.of(listOf(trait))) }
             return listOf(itemStack.toEntryStack().toEntryIngredient())
+        }
+    }
+
+    override fun getCategoryIdentifier() = IDENTIFIER
+}
+
+class MagicPlantCropDisplay(val recipe: MagicPlantCropNotation) : BasicDisplay(listOf(recipe.seed.toEntryStack().toEntryIngredient()), recipe.crops.map { it.toEntryStack().toEntryIngredient() }) {
+    companion object {
+        val IDENTIFIER: CategoryIdentifier<MagicPlantCropDisplay> by lazy { CategoryIdentifier.of(MirageFairy2024.modId, "plugins/${ReiCategoryCard.MAGIC_PLANT_CROP.path}") }
+        val SERIALIZER: Serializer<MagicPlantCropDisplay> by lazy {
+            Serializer.ofRecipeLess({ _, _, tag ->
+                MagicPlantCropDisplay(
+                    MagicPlantCropNotation(
+                        tag.getCompound("Seed").toItemStack(),
+                        tag.getList("Crops", NbtElement.COMPOUND_TYPE.toInt()).map { it.castOrThrow<NbtCompound>().toItemStack() }
+                    )
+                )
+            }, { display, tag ->
+                tag.put("Seed", display.recipe.seed.toNbt())
+                tag.put("Crops", display.recipe.crops.mapTo(NbtList()) { it.toNbt() })
+            })
         }
     }
 
