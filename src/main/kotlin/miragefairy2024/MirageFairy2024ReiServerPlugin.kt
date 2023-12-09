@@ -46,7 +46,7 @@ class WorldGenTraitDisplay(val recipe: WorldGenTraitRecipe) : BasicDisplay(listO
     companion object {
         val IDENTIFIER: CategoryIdentifier<WorldGenTraitDisplay> by lazy { CategoryIdentifier.of(MirageFairy2024.modId, "plugins/${ReiCategoryCard.WORLD_GEN_TRAIT.path}") }
         val SERIALIZER: Serializer<WorldGenTraitDisplay> by lazy {
-            Serializer.ofRecipeLess({ input, output, tag ->
+            Serializer.ofRecipeLess({ _, _, tag ->
                 WorldGenTraitDisplay(
                     WorldGenTraitRecipe(
                         tag.getString("Block").toIdentifier().toBlock(),
