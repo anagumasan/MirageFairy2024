@@ -23,6 +23,17 @@ import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
+enum class ReiCategoryCard(
+    val path: String,
+    enName: String,
+    jaName: String,
+) {
+    WORLD_GEN_TRAIT("world_gen_trait", "World Gen Trait", "地形生成特性"),
+    ;
+
+    val translation = Translation({ "category.rei.${MirageFairy2024.modId}.$path" }, enName, jaName)
+}
+
 @Suppress("unused")
 class MirageFairy2024ReiServerPlugin : REIServerPlugin {
     override fun registerDisplaySerializer(registry: DisplaySerializerRegistry) {
@@ -33,8 +44,7 @@ class MirageFairy2024ReiServerPlugin : REIServerPlugin {
 
 class WorldGenTraitDisplay(val recipe: WorldGenTraitRecipe) : BasicDisplay(listOf(), recipe.getOutput()) {
     companion object {
-        val IDENTIFIER: CategoryIdentifier<WorldGenTraitDisplay> by lazy { CategoryIdentifier.of(MirageFairy2024.modId, "plugins/world_gen_trait") }
-        val TRANSLATION = Translation({ "category.rei.${MirageFairy2024.modId}.world_gen_trait" }, "World Gen Trait", "地形生成特性")
+        val IDENTIFIER: CategoryIdentifier<WorldGenTraitDisplay> by lazy { CategoryIdentifier.of(MirageFairy2024.modId, "plugins/${ReiCategoryCard.WORLD_GEN_TRAIT.path}") }
         val SERIALIZER: Serializer<WorldGenTraitDisplay> by lazy {
             Serializer.ofRecipeLess({ input, output, tag ->
                 WorldGenTraitDisplay(

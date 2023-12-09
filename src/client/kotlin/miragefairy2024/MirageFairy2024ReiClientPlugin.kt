@@ -39,7 +39,7 @@ class MirageFairy2024ReiClientPlugin : REIClientPlugin {
 
 class WorldGenTraitCategory : DisplayCategory<WorldGenTraitDisplay> {
     override fun getCategoryIdentifier() = WorldGenTraitDisplay.IDENTIFIER
-    override fun getTitle(): Text = WorldGenTraitDisplay.TRANSLATION()
+    override fun getTitle(): Text = ReiCategoryCard.WORLD_GEN_TRAIT.translation()
     override fun getIcon(): Renderer = MirageFlowerCard.item.createItemStack().toEntryStack()
     override fun getDisplayWidth(display: WorldGenTraitDisplay) = 180
     override fun getDisplayHeight() = 36
