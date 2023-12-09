@@ -9,6 +9,7 @@ import miragefairy2024.mod.magicplant.SimpleMagicPlantBlock
 import miragefairy2024.mod.magicplant.TraitCard
 import miragefairy2024.mod.magicplant.WorldGenTraitRecipeInitScope
 import miragefairy2024.mod.magicplant.initMagicPlant
+import miragefairy2024.mod.magicplant.registerMagicPlantDropNotation
 import miragefairy2024.util.concat
 import miragefairy2024.util.createCuboidShape
 import miragefairy2024.util.createItemStack
@@ -142,6 +143,9 @@ fun initVeropeda() {
         registerWorldGenTraitRecipe(".S..", TraitCard.HUMID_ADAPTATION) // 湿潤適応
 
     }
+
+    // レシピ
+    registerMagicPlantDropNotation(card.item, MaterialCard.VEROPEDA_BERRIES.item, MaterialCard.VEROPEDA_LEAF.item)
 
 }
 

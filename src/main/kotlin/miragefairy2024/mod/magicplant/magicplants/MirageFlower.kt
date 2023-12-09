@@ -12,6 +12,7 @@ import miragefairy2024.mod.magicplant.TraitCard
 import miragefairy2024.mod.magicplant.WorldGenTraitRecipe
 import miragefairy2024.mod.magicplant.WorldGenTraitRecipeInitScope
 import miragefairy2024.mod.magicplant.initMagicPlant
+import miragefairy2024.mod.magicplant.registerMagicPlantDropNotation
 import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.concat
@@ -185,6 +186,9 @@ fun initMirageFlower() {
         registerWorldGenTraitRecipe(".CRS", TraitCard.PROSPERITY_OF_SPECIES, WorldGenTraitRecipe.Condition.InBiome(ConventionalBiomeTags.PLAINS)) // 種の繁栄
 
     }
+
+    // レシピ
+    registerMagicPlantDropNotation(card.item, MaterialCard.MIRAGE_FLOUR.item, MaterialCard.MIRAGE_LEAVES.item)
 
 }
 

@@ -5,6 +5,7 @@ import miragefairy2024.mod.Poem
 import miragefairy2024.mod.magicplant.magicplants.initMirageFlower
 import miragefairy2024.mod.magicplant.magicplants.initVeropeda
 import miragefairy2024.util.Translation
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.BlockState
@@ -12,6 +13,7 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.block.piston.PistonBehavior
 import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 
@@ -63,4 +65,13 @@ abstract class MagicPlantCard<B : MagicPlantBlock, BE : BlockEntity>(
     val block = blockCreator()
     val blockEntityType = BlockEntityType(blockEntityCreator, setOf(block), null)
     val item = MagicPlantSeedItem(block, Item.Settings())
+}
+
+
+val magicPlantCropNotations = mutableListOf<MagicPlantCropNotation>()
+
+class MagicPlantCropNotation(val seed: ItemStack, val crops: List<ItemStack>)
+
+fun registerMagicPlantDropNotation(seed: Item, vararg drops: Item) {
+    magicPlantCropNotations += MagicPlantCropNotation(seed.createItemStack(), drops.map { it.createItemStack() })
 }
