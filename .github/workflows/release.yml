@@ -1,0 +1,50 @@
+name: release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v4
+      - name: コミットバージョン
+        run: git log -n 1
+      - name: gradlewのためのセキュリティチェック
+        uses: gradle/wrapper-validation-action@v1
+      - name: Javaのセットアップ
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'microsoft'
+      - name: プロジェクトのビルド
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+      - name: ビルドされたファイルの一覧
+        run: ls -1 build/libs
+      - name: リリースに必要な情報の抽出
+        run: |
+          mod_version=$(echo ${{ github.ref }} | perl -lpE 's|^refs/tags/v||')
+          echo "Mod Version: $mod_version"
+          echo "mod_version=$mod_version" >> $GITHUB_ENV
+      - name: リリースの作成
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: リリースのアップロード
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/libs/MirageFairy2024-${{ env.mod_version }}.jar
+          asset_name: MirageFairy2024-${{ env.mod_version }}.jar
+          asset_content_type: application/java-archive
