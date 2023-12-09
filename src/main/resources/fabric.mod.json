@@ -32,6 +32,18 @@
         "value": "miragefairy2024.MirageFairy2024DataGenerator",
         "adapter": "kotlin"
       }
+    ],
+    "rei_server": [
+      {
+        "value": "miragefairy2024.MirageFairy2024ReiServerPlugin",
+        "adapter": "kotlin"
+      }
+    ],
+    "rei_client": [
+      {
+        "value": "miragefairy2024.MirageFairy2024ReiClientPlugin",
+        "adapter": "kotlin"
+      }
     ]
   },
   "mixins": [
