@@ -34,7 +34,7 @@ jobs:
           gh release create
           v${{ env.mod_version }}
           --verify-tag
-          --title ${{ github.ref }}
+          --title v${{ env.mod_version }}
           build/libs/MirageFairy2024-${{ env.mod_version }}.jar#MirageFairy2024-${{ env.mod_version }}.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
