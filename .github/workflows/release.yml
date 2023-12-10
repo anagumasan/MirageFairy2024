@@ -32,7 +32,7 @@ jobs:
       - name: リリースの作成
         run: >
           gh release create
-          ${{ github.ref }}
+          v${{ env.mod_version }}
           --verify-tag
           --title ${{ github.ref }}
           build/libs/MirageFairy2024-${{ env.mod_version }}.jar#MirageFairy2024-${{ env.mod_version }}.jar
